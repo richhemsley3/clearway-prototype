@@ -11,7 +11,7 @@
 
  var DUE={over:['no','Overdue'], now:['wa','Due now'], soon:['Later'], done:['ok','Done']};
  function dueTag(d){ return d==='soon' ? '<span class="st nt">Later</span>' : '<span class="st '+DUE[d][0]+'">'+DUE[d][1]+'</span>' }
- function turn(w){ return '<span class="turn'+(w==='you'?' you':'')+'">'+(w==='you'?'You':'Clearway')+'</span>' }
+ function turn(w){ return '<span class="turn'+(w==='you'?' you':'')+'">'+(w==='you'?'You':'GPN')+'</span>' }
  function qOpen(){ return QUEUE.filter(function(q){ return q.dstate!=='done' }) }
  function soonest(){
    var o=qOpen().filter(function(q){return q.dstate==='over'});
@@ -130,7 +130,7 @@
       +'<p class="why">'+esc(s.gates)+'</p>'
       +'<div class="act"><button class="btn pri" id="paAct">'+esc(actionFor(s))+'</button>'
       +'<span class="lnk" id="paWhy">'+(s.state==='rejected'?'What did not clear':'Why we need it')+'</span></div>'
-      +'<div class="also"><span>Also open</span><span><b>'+mine.length+'</b> with you</span><span><b>'+ours.length+'</b> with Clearway</span>'
+      +'<div class="also"><span>Also open</span><span><b>'+mine.length+'</b> with you</span><span><b>'+ours.length+'</b> with GPN</span>'
       +(over.length?'<span><b>'+over.length+'</b> overdue</span>':'')+'</div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
       +'<div class="rr"><span class="l">Risk due diligence</span><span class="v st ok">Passed, 28 August</span></div>'
@@ -150,7 +150,7 @@
        return '<span class="'+(i<cur?'done':i===cur?'cur':'')+'">'+n+'</span>' }).join('')+'</div>'
     +'<p class="t13" style="color:var(--g550); margin-top:14px; max-width:74ch">Contracting closes when both signatures and our risk sign-off are in. Integration is scheduled from there and runs six to nine weeks, depending on how much of the message path you already have. Nobody has gone from introduction to live in under seven weeks.</p>';
 
-   var SC=[['all','Everything',open.length],['you','With you',mine.length],['cw','With Clearway',ours.length],['done','Accepted',QUEUE.length-open.length]];
+   var SC=[['all','Everything',open.length],['you','With you',mine.length],['cw','With GPN',ours.length],['done','Accepted',QUEUE.length-open.length]];
    $('#paSeg').innerHTML='<span class="seg">'+SC.map(function(t){
      return '<button data-q="'+t[0]+'" aria-pressed="'+(qScope===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')
     +'</span><div class="rt"><span class="lnk" id="paDl">Download everything we hold</span></div>';
@@ -168,7 +168,7 @@
      $('#paQueue').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">'
       +(qScope==='cw'?'Nothing is with us.':qScope==='you'?'Nothing is with you.':qScope==='done'?'Nothing has been accepted yet.':'Nothing is open.')+'</div>'
       +'<p>'+(qScope==='cw'?'Every open item is on your side. When something comes back to us for review it appears here with our own due date on it.'
-        :qScope==='you'?'Everything open is with Clearway. You will get an email the moment one of them moves.'
+        :qScope==='you'?'Everything open is with us. You will get an email the moment one of them moves.'
         :qScope==='done'?'Documents we have accepted move here and stay, with the date and who sent them.'
         :'Contracting is closed and nothing is outstanding.')+'</p>'
       +'<div class="act"><span class="lnk" id="qAll">Show everything</span></div></div>';
@@ -219,7 +219,7 @@
    var q=QUEUE.filter(function(x){return x.k===k})[0]; if(!q) return;
    if(q.k==='ack'){ go('pa-rules'); return; }
    var h='<div class="rec" style="margin-bottom:20px">'
-    +'<div class="rr"><span class="l">Whose turn</span><span class="v">'+(q.who==='you'?'You':'Clearway')+'</span></div>'
+    +'<div class="rr"><span class="l">Whose turn</span><span class="v">'+(q.who==='you'?'You':'GPN')+'</span></div>'
     +'<div class="rr"><span class="l">'+(q.dstate==='done'?'Accepted':'Due')+'</span><span class="v">'+esc(q.due||'21 August')+'</span></div>'
     +'<div class="rr"><span class="l">What it holds up</span><span class="v" style="max-width:32ch">'+esc(q.gates||'Nothing — it is on file')+'</span></div></div>'
     +'<p style="font-size:15px; color:var(--g650); line-height:1.6">'+esc(q.note)+'</p>';
@@ -237,7 +237,7 @@
 
    var act = q.dstate==='done' ? 'Download' : q.who==='cw' ? 'Ask Dara where it is'
      : q.kind==='Signature' ? 'Remind Marcus' : q.state==='rejected' ? 'Send a replacement' : 'Send the document';
-   panel(q.t, q.kind+' · '+(q.who==='you'?'your turn':'with Clearway'), h, act, function(){
+   panel(q.t, q.kind+' · '+(q.who==='you'?'your turn':'with GPN'), h, act, function(){
      if(q.dstate==='done'){ toast('Sent to your downloads.'); return; }
      if(q.who==='cw'){ toast('Dara has been asked. She will come back today.'); return; }
      if(q.kind==='Signature'){ signAgreement(); drawApply();
@@ -351,7 +351,7 @@
    return '<div class="sech"><h2>Milestones</h2><span class="t13">'+done+' of five done · next is certification</span>'
     +'<div class="rt"><span class="t13">target go live 6 October</span></div></div><div class="ms">'
     +MILE.map(function(m){
-      var own = m.own==='you' ? (internal?'Northgate':'You') : m.own==='cw' ? 'Clearway' : 'Both';
+      var own = m.own==='you' ? (internal?'Northgate':'You') : m.own==='cw' ? 'GPN' : 'Both';
       var detail = m.k==='cert'
         ? (internal?'Sixty-one cases selected for Northgate’s configuration. ':'Sixty-one cases were selected for your configuration. ')
           +pass+' have passed'+(fail?', '+fail+(fail===1?' is failing':' are failing'):' and none are failing')+' and '+(tot-pass-fail)+' have not been run.'
@@ -460,7 +460,7 @@
      $('#mAll').addEventListener('click',function(){ msgF='all'; drawMsgs(); });
      return;
    }
-   var ST={you:['wa','Awaiting your reply'], none:['nt','With Clearway'], done:['ok','Resolved']};
+   var ST={you:['wa','Awaiting your reply'], none:['nt','With GPN'], done:['ok','Resolved']};
    var h='<table class="tb" style="margin-top:22px"><thead><tr><th>Thread</th><th class="opt2">About</th><th class="opt">With</th><th>Status</th><th class="n">Last</th></tr></thead><tbody>';
    rows.forEach(function(t){
      var on=msgOpen===t.id;
@@ -470,7 +470,7 @@
      if(on){
        h+='<tr class="expand"><td colspan="5"><div style="max-width:74ch">'
         +t.msgs.map(function(m){
-          var us=m[1]==='Clearway';
+          var us=m[1]==='Global Payment Network';
           return '<div style="padding:14px 0; border-bottom:1px solid var(--g100)"><div class="t13" style="color:var(--g550)">'+esc(m[0])+' · '+esc(m[1])+' · '+esc(m[2])+'</div>'
            +'<p style="font-size:15px; line-height:1.55; margin-top:6px'+(us?'':'; color:var(--g650)')+'">'+esc(m[3])+'</p></div>' }).join('')
         +'<div class="field" style="margin-top:18px"><label>Reply<small>as '+esc(ACC[acc].who)+'</small></label><textarea class="in" rows="3" id="rep" placeholder="Type a reply"></textarea></div>'
@@ -682,7 +682,7 @@
       +'<div class="own">Both<br><span class="st wa">Not started</span></div><div class="when">Book by 10 September</div></div>'
       +MILE.slice(1).map(function(m){
         return '<div class="m is-soon"><div class="dot"></div><div><h4>'+esc(m.t)+'</h4><p>Opens once the milestone before it closes.</p></div>'
-         +'<div class="own">'+(m.own==='cw'?'Clearway':m.own==='you'?'Ridgeline':'Both')+'<br><span class="st nt">Not started</span></div><div class="when">—</div></div>' }).join('')
+         +'<div class="own">'+(m.own==='cw'?'GPN':m.own==='you'?'Ridgeline':'Both')+'<br><span class="st nt">Not started</span></div><div class="when">—</div></div>' }).join('')
       +'</div>'
       +'<div class="note plain" style="margin-top:34px"><div class="k">First thing to do</div><p>Book the kick-off with their engineering contact this week. Every week connectivity slips, go live slips with it, and Ridgeline has told their depots they are live in November.</p><div class="act"><span class="lnk" id="inBook">Book the kick-off</span></div></div>';
      $('#inBook').addEventListener('click',function(){ toast('Invite sent to Ridgeline engineering and Priya Raman for Thursday.') });
@@ -760,7 +760,7 @@
     +'<div class="sech" style="margin-top:44px"><h2>'+esc(a.n)+'</h2><span class="t13">'+a.v+' · '+a.ep+' endpoints · '+a.st+'</span>'
     +'<div class="rt"><span class="lnk" id="apiTry">Try it in the sandbox</span></div></div>'
     +'<div class="cols2" style="margin-top:18px">'
-    +'<div><div class="code">'+esc(a.sample+'\nHost: a41f-sandbox.clearway-api.net\nAuthorization: Bearer {token}\nIdempotency-Key: 9f2c-4471-a41f\n\n'+a.body)+'</div>'
+    +'<div><div class="code">'+esc(a.sample+'\nHost: a41f-sandbox.gpn-api.net\nAuthorization: Bearer {token}\nIdempotency-Key: 9f2c-4471-a41f\n\n'+a.body)+'</div>'
     +'<p class="t13" style="color:var(--g550); margin-top:14px">The same request in sandbox and in production. Only the host and the key change, and both carry the environment in the string.</p></div>'
     +'<div class="rec"><h4>Before you build against it</h4>'
     +'<div class="rr"><span class="l">Idempotency</span><span class="v">Required on every write</span></div>'
@@ -802,8 +802,8 @@
    }
    $('#tkNow').style.display='';
    var envRec='<div class="rec"><h4>This environment</h4>'
-    +'<div class="rr"><span class="l">Host</span><span class="v"><span class="key">'+(env==='sand'?'a41f-sandbox.clearway-api.net':env==='cert'?'a41f-cert.clearway-api.net':'a41f-preprod.clearway-api.net')+'</span></span></div>'
-    +'<div class="rr"><span class="l">Key</span><span class="v"><span class="key">'+(env==='sand'?'ck_sand_a41f…9d2c':env==='cert'?'ck_cert_a41f…41b8':'ck_pre_a41f…77e0')+'</span></span></div>'
+    +'<div class="rr"><span class="l">Host</span><span class="v"><span class="key">'+(env==='sand'?'a41f-sandbox.gpn-api.net':env==='cert'?'a41f-cert.gpn-api.net':'a41f-preprod.gpn-api.net')+'</span></span></div>'
+    +'<div class="rr"><span class="l">Key</span><span class="v"><span class="key">'+(env==='sand'?'gpn_sand_a41f…9d2c':env==='cert'?'gpn_cert_a41f…41b8':'gpn_pre_a41f…77e0')+'</span></span></div>'
     +'<div class="rr"><span class="l">Prefix</span><span class="v">a41f · Northgate only</span></div>'
     +'<div class="rr"><span class="l">Mutual TLS</span><span class="v st '+(env==='sand'?'nt':'wa')+'">'+(env==='sand'?'Not required here':'Certificate expires 21 September')+'</span></div>'
     +'<div class="rr"><span class="l">Rate limit</span><span class="v">'+(env==='sand'?'50 a second':'200 a second')+'</span></div></div>';
@@ -986,8 +986,8 @@
  delete WS.ng; delete WS.bp;
 
  $('#wsmenu').innerHTML=
-   '<h6>Agent · inside Clearway</h6>'
-  +'<a data-w="cw"><i>CW</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Dara Whitfield · 24 accounts</span></span></a>'
+   '<h6>Agent · inside the network</h6>'
+  +'<a data-w="cw"><i>GPN</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Dara Whitfield · 24 accounts</span></span></a>'
   +'<h6>Participant · outside</h6>'
   +'<a data-w="pa1"><i>RF</i><span style="color:var(--g900); font-size:14.5px">Ridgeline Freight<span>Applying · not yet a participant</span></span></a>'
   +'<a data-w="pa2"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate Financial<span>Approved · boarding</span></span></a>'

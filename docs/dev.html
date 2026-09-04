@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Clearway Developers · Clearway prototype</title>
+<title>Global Payment Network Developers · prototype</title>
 <style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&display=swap');
 /* =====================================================================
-   Clearway prototype system — encoded from the Partner Desk brief, Sep 2026
+   Global Payment Network prototype system — encoded from the Partner Desk brief, Sep 2026
    Register: Ramp × Mercury. One weight. Tone, not lines. One signal colour.
    Rules of use are in the comments; if a part isn't here, don't invent it.
    ===================================================================== */
@@ -380,7 +380,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 .turn{font-size:13px; color:var(--g550); white-space:nowrap}
 .turn.you{color:var(--g900)}
 
-/* ── Clearway developer site · register A ────────────────────────────────────
+/* ── Global Payment Network developer site · register A ────────────────────────────────────
    Brief: an integration lead evaluating us before anyone signs. One job per view.
    Structure taken from real developer sites, not their paint:
      Stripe    two header rows (product + topic tabs), three-column reference with a
@@ -531,7 +531,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
 
 <div class="hdr">
   <div class="r1">
-    <span class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway <b>Developers</b></span>
+    <span class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Global Payment Network <b>Developers</b></span>
     <span class="srch"><svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>Search the docs<span class="kbd">⌘K</span></span>
     <span class="rt"><span class="ver">v3 · 2026-07-14</span><span class="lnk">Sign in</span><button class="btn" data-go="sandbox">Get sandbox access</button></span>
   </div>
@@ -550,7 +550,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
 <!-- ══════════════════ OVERVIEW · products and services ══════════════════ -->
 <section class="view on" data-v="home">
   <div class="band"><div class="wrap">
-    <p class="eyebrow">Clearway · a card network with an HTTP front door</p>
+    <p class="eyebrow">Global Payment Network · a card network with an HTTP front door</p>
     <h1 class="d">Everything a card program needs, and nothing you have to run yourself.</h1>
     <p class="lede">Issue on your own BIN, decide your own authorizations, settle once a day, and let us keep the sockets, the scheme connectivity and the primary account numbers. Eleven products, four service commitments, one certification.</p>
     <div class="cta"><button class="btn go" data-go="products">Browse the products</button><span class="lnk" data-go="guides">Read the quickstart</span><span class="lnk" data-go="sandbox">Open the sandbox</span></div>
@@ -601,7 +601,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
     <p class="eyebrow">Where the line sits</p>
     <h2 class="d">What stays yours, and what stops being your problem.</h2>
     <p class="sub">Most processors blur this. It is the first thing your risk team will ask, so here it is as a table rather than a claim.</p>
-    <table class="tb" style="margin-top:32px"><thead><tr><th>Responsibility</th><th>You</th><th>Clearway</th></tr></thead><tbody>
+    <table class="tb" style="margin-top:32px"><thead><tr><th>Responsibility</th><th>You</th><th>GPN</th></tr></thead><tbody>
       <tr><td>The authorization decision<span class="s2">Approve, decline, partial, and why</span></td><td>Yours, always</td><td class="st nt">Stand-in only past 500 ms</td></tr>
       <tr><td>Cardholder relationship<span class="s2">Who gets a card, what it may buy</span></td><td>Yours</td><td class="st nt">Never contacts them</td></tr>
       <tr><td>Primary account numbers<span class="s2">Storage, display, PCI scope</span></td><td class="st nt">Never touches your systems</td><td>Ours · vaulted</td></tr>
@@ -727,7 +727,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
           </tbody></table>
           <div class="art"><h2 id="s-clock">The clock</h2></div>
           <p class="fine" style="margin-top:10px; max-width:64ch">Settlement cuts at 21:00 UTC. Rather than wait for tomorrow, push the sandbox clock forward and the cycle closes immediately.</p>
-          <div class="code" style="white-space:pre; margin-top:16px; font-size:12.5px; line-height:1.75"><span class="cp">Copy</span>curl https://api.clearway.dev/v3/sandbox/clock \
+          <div class="code" style="white-space:pre; margin-top:16px; font-size:12.5px; line-height:1.75"><span class="cp">Copy</span>curl https://api.gpn.dev/v3/sandbox/clock \
   -u sk_sandbox_4f2c…c91e: \
   -d advance_to=cutoff</div>
         </div>
@@ -887,9 +887,9 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
  ];
  var G=function(o){return o};
  var GUIDES={
-  ov:{crumb:['Guides','Get started'],t:'Overview',deck:'What Clearway is, in the order you will meet it.',
+  ov:{crumb:['Guides','Get started'],t:'Overview',deck:'What Global Payment Network is, in the order you will meet it.',
    body:[['h2','The shape of it','shape'],
-    ['p','Clearway is a card network with an HTTP front door. Cards are issued on a BIN we assign to you; when one is presented, we reach your endpoint and you decide. At 21:00 UTC we settle the day. Everything else — reversals, partials, stand-in, disputes — is a variation on those three moments.'],
+    ['p','Global Payment Network is a card network with an HTTP front door. Cards are issued on a BIN we assign to you; when one is presented, we reach your endpoint and you decide. At 21:00 UTC we settle the day. Everything else — reversals, partials, stand-in, disputes — is a variation on those three moments.'],
     ['h2','What you build','build'],
     ['p','One endpoint, and as much of the rest as you want. The only component you must write is the authorization handler. Card creation, settlement pulls and dispute filing are ordinary REST calls you can make from anywhere.'],
     ['ul',['An HTTPS endpoint that answers an authorization inside 500 ms.','A store mapping our card tokens to your own accounts.','A daily job, or a webhook consumer, for the settlement file.']],
@@ -900,17 +900,17 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
    body:[['h2','Before you start','before'],
     ['p','You need a sandbox key, which arrives with the mutual NDA and takes about two minutes. Nothing here can move money: the key is scoped to a test BIN on our test range.'],
     ['h2','Create a card','card'],
-    ['code','curl https://api.clearway.dev/v3/cards \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: card-000418" \\\n  -d bin=471288 \\\n  -d cardholder="H RUIZ" \\\n  -d limits[per_txn]=250000'],
+    ['code','curl https://api.gpn.dev/v3/cards \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: card-000418" \\\n  -d bin=471288 \\\n  -d cardholder="H RUIZ" \\\n  -d limits[per_txn]=250000'],
     ['h2','Answer an authorization','answer'],
     ['p','Point us at any endpoint you control — a tunnel is fine in sandbox — and we will POST the authorization there. Reply approve inside 500 ms.'],
     ['h2','Pull the cycle','cycle'],
     ['p','After the 21:00 UTC cut-off the settlement file is available. In sandbox you can push the clock forward rather than wait for tomorrow.'],
-    ['code','curl https://api.clearway.dev/v3/sandbox/clock \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -d advance_to=cutoff']],
+    ['code','curl https://api.gpn.dev/v3/sandbox/clock \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -d advance_to=cutoff']],
    prev:['Overview','ov'],next:['Authentication','auth']},
   auth:{crumb:['Guides','Get started'],t:'Authentication',deck:'One secret, sent as HTTP basic auth, scoped to one environment.',
    body:[['h2','Keys','keys'],
     ['p','A key is a string beginning <b>sk_sandbox_</b> or <b>sk_live_</b>. Send it as the basic-auth username with an empty password. There is no separate publishable key: nothing about this API is safe to run in a browser.'],
-    ['code','curl https://api.clearway.dev/v3/cards/card_1466 \\\n  -u sk_sandbox_4f2c…c91e:'],
+    ['code','curl https://api.gpn.dev/v3/cards/card_1466 \\\n  -u sk_sandbox_4f2c…c91e:'],
     ['h2','Scope','scope'],
     ['p','A key belongs to exactly one environment and one set of programs. A sandbox key cannot reach a live BIN, which is why the sandbox is safe to hand to a contractor.'],
     ['h2','Rotation','rot'],
@@ -931,7 +931,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
   tap:{crumb:['Guides','Authorization'],t:'Answering the tap',deck:'The one endpoint you write yourself, and the 500 ms you have to answer it in.',
    body:[['h2','What arrives','arrives'],
     ['p','When a card is presented, the terminal reaches us and we reach you. We POST a JSON body to the endpoint you registered, over mutual TLS, and hold the connection open. Every ISO 8583 data element you would expect is there, kept by name rather than by position — <b>amount</b> is DE 4, <b>entry_mode</b> is DE 22, <b>acceptor</b> is DE 43.'],
-    ['code','POST https://auth.yourhost.example/clearway/v1\nContent-Type: application/json\n\n{\n  "id": "auth_8f2c41e",\n  "amount": 4820,\n  "currency": "usd",\n  "card": "card_1466",\n  "acceptor": "BAYLINE FUEL 14",\n  "entry_mode": "071",\n  "partial_approval": true\n}'],
+    ['code','POST https://auth.yourhost.example/gpn/v1\nContent-Type: application/json\n\n{\n  "id": "auth_8f2c41e",\n  "amount": 4820,\n  "currency": "usd",\n  "card": "card_1466",\n  "acceptor": "BAYLINE FUEL 14",\n  "entry_mode": "071",\n  "partial_approval": true\n}'],
     ['h2','What you send back','back'],
     ['p','Answer with a decision and, if you are approving less than was asked for, the amount you actually approved. Anything you return that is not a decision we ignore, so you can echo your own correlation ids safely.'],
     ['ol',['Decide. Your rules, your funds, your call — we do not second-guess an approve or a decline.',
@@ -961,7 +961,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
     ['p','A hold you no longer need is money the cardholder cannot spend. Reverse it and the funds free immediately rather than ageing out after a week.'],
     ['h2','Full and partial','fp'],
     ['p','Omit the amount to release the whole hold. Pass an amount to release part of it — useful when the final basket is smaller than the pre-authorization.'],
-    ['code','curl https://api.clearway.dev/v3/authorizations/auth_71ab/reverse \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: rev-71ab-1" \\\n  -d reason=cardholder'],
+    ['code','curl https://api.gpn.dev/v3/authorizations/auth_71ab/reverse \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: rev-71ab-1" \\\n  -d reason=cardholder'],
     ['h2','Too late','late'],
     ['p','Once an authorization has cleared there is nothing to reverse and we answer 409. From that point the instrument is a refund or a dispute, not a reversal.']],
    prev:['Partial approvals','partial'],next:['Stand-in','si']},
@@ -1052,7 +1052,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
  var GRP={cards:'Cards',auth:'Authorizations',prog:'Programs',set:'Settlement',dis:'Disputes',wh:'Webhooks'};
  var EP={
   'cards.create':{m:'POST',p:'/v3/cards',t:'Create a card',sdk:['cards','create'],
-   d:'Issues a virtual PAN on one of your BINs and returns a <b>token</b>. The PAN is held by Clearway and revealed to the cardholder through the hosted view, so it never crosses your systems and your PCI scope stays where it is.',
+   d:'Issues a virtual PAN on one of your BINs and returns a <b>token</b>. The PAN is held by Global Payment Network and revealed to the cardholder through the hosted view, so it never crosses your systems and your PCI scope stays where it is.',
    meta:['idempotent','returns in 40 ms','60/min in sandbox'],
    ex:{'bin':'471288','cardholder':'H RUIZ','limits.per_txn':250000,'limits.per_day':1000000},
    params:[['bin','string','required','One of your program BINs. Maps to the first six digits of DE 2.',null],
@@ -1147,7 +1147,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
    params:[['cycle','string','required','YYYY-MM-DD. Path parameter.',null],
     ['format','enum','','<b>jsonl</b> (default) or <b>csv</b>.',null]],
    errs:[['404','no_cycle','No cycle on that date.'],['409','cycle_open','The cycle has not cut yet. Wait for 21:00 UTC, or advance the sandbox clock.']],
-   resp:'{\n  "cycle": "2026-09-02",\n  "format": "jsonl",\n  "rows": 41208,\n  "bytes": 9140233,\n  "url": "https://files.clearway.dev/s/2026-09-02.jsonl.gz?sig=…",\n  "expires": "2026-09-03T12:04:00Z"\n}'},
+   resp:'{\n  "cycle": "2026-09-02",\n  "format": "jsonl",\n  "rows": 41208,\n  "bytes": 9140233,\n  "url": "https://files.gpn.dev/s/2026-09-02.jsonl.gz?sig=…",\n  "expires": "2026-09-03T12:04:00Z"\n}'},
   'dis.list':{m:'GET',p:'/v3/disputes',t:'List disputes',sdk:['disputes','list'],
    d:'Open cases with the stage each one is at and the representment deadline in calendar days. The authorization is linked, because it is the evidence you will need.',
    meta:['paginated'],ex:{},
@@ -1165,13 +1165,13 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
     ['422','evidence_empty','The bundle has no documents in it.']],
    resp:'{\n  "id": "cb_20831",\n  "stage": "representment",\n  "filed": "2026-09-03T11:40:02Z",\n  "decision_expected_by": "2026-10-03"\n}'},
   'wh.create':{m:'POST',p:'/v3/webhooks',t:'Add an endpoint',sdk:['webhooks','create'],
-   d:'Registers a URL to receive events. Every delivery is signed with <b>Clearway-Signature</b> over the raw body; verify first, parse second, and keep a five-minute replay window.',
-   meta:['idempotent'],ex:{'url':'https://hooks.northgate.dev/clearway','events':'authorization.*'},
+   d:'Registers a URL to receive events. Every delivery is signed with <b>GPN-Signature</b> over the raw body; verify first, parse second, and keep a five-minute replay window.',
+   meta:['idempotent'],ex:{'url':'https://hooks.northgate.dev/gpn','events':'authorization.*'},
    params:[['url','string','required','HTTPS only. We will not deliver to a plain HTTP endpoint, even in sandbox.',null],
     ['events','array','required','Event names or prefixes: <b>authorization.*</b>, <b>settlement.closed</b>, <b>dispute.*</b>.',null],
     ['description','string','','For your own benefit on the keys screen.',null]],
    errs:[['422','not_https','The URL must be HTTPS.'],['422','unreachable','We could not complete a TLS handshake with that host.']],
-   resp:'{\n  "id": "wh_3f81",\n  "url": "https://hooks.northgate.dev/clearway",\n  "events": ["authorization.*"],\n  "secret": "whsec_…d8a1",\n  "state": "delivering"\n}'},
+   resp:'{\n  "id": "wh_3f81",\n  "url": "https://hooks.northgate.dev/gpn",\n  "events": ["authorization.*"],\n  "secret": "whsec_…d8a1",\n  "state": "delivering"\n}'},
   'wh.test':{m:'POST',p:'/v3/webhooks/test',t:'Send a test event',sdk:['webhooks','test'],
    d:'Fires a synthetic event at one of your endpoints so you can prove signature verification works before a real authorization depends on it.',
    meta:['sandbox and live'],ex:{webhook:'wh_3f81',event:'authorization.created'},
@@ -1194,7 +1194,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
      if(v && typeof v==='object'){
        if(style==='js')  return pad+JSON.stringify(k)+': {\n'+render(v,ind+2,style)+'\n'+pad+'}';
        if(style==='py')  return pad+k+'={\n'+Object.keys(v).map(function(x){return pad+'  '+JSON.stringify(x)+': '+lit(v[x])}).join(',\n')+'\n'+pad+'}';
-       return pad+pascal(k)+': &clearway.'+pascal(k)+'{\n'+Object.keys(v).map(function(x){return pad+'  '+pascal(x)+': '+lit(v[x])}).join(',\n')+'\n'+pad+'}';
+       return pad+pascal(k)+': &gpn.'+pascal(k)+'{\n'+Object.keys(v).map(function(x){return pad+'  '+pascal(x)+': '+lit(v[x])}).join(',\n')+'\n'+pad+'}';
      }
      if(style==='js') return pad+JSON.stringify(k)+': '+lit(v);
      if(style==='py') return pad+k+'='+lit(v);
@@ -1205,22 +1205,22 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
    var path=subst(e.p), ks=Object.keys(e.ex||{}), t=nest(e.ex);
    var pk=(e.p.match(/\{(\w+)\}/)||[])[1], pathArg=pk?'"'+PV[pk]+'"':'';
    if(l==='curl'){
-     var s='curl https://api.clearway.dev'+path+' \\\n  -u sk_sandbox_4f2c…c91e:';
+     var s='curl https://api.gpn.dev'+path+' \\\n  -u sk_sandbox_4f2c…c91e:';
      if(e.m!=='GET'&&e.m!=='POST') s+=' \\\n  -X '+e.m;
      if(/idempotent/.test(e.meta.join(' '))&&e.m!=='GET') s+=' \\\n  -H "Idempotency-Key: '+e.sdk[1].toLowerCase()+'-000418"';
      ks.forEach(function(k){ var v=e.ex[k], f=k.replace(/\.(\w+)/g,'[$1]');
        s+=' \\\n  -d '+f+'='+(typeof v==='string'&&/[^\w.@:\/*-]/.test(v)?'"'+v+'"':v); });
      return s;
    }
-   if(l==='node') return 'const cw = require("@clearway/sdk")(process.env.CLEARWAY_KEY);\n\nconst res = await cw.'+e.sdk[0]+'.'+e.sdk[1]+'('
+   if(l==='node') return 'const client = require("@gpn/sdk")(process.env.GPN_KEY);\n\nconst res = await client.'+e.sdk[0]+'.'+e.sdk[1]+'('
      +[pathArg, ks.length?'{\n'+render(t,2,'js')+'\n}':''].filter(Boolean).join(', ')+');';
    if(l==='python'){
      var pyfn=e.sdk[1].replace(/([A-Z])/g,function(m){return '_'+m.toLowerCase()});
-     return 'import clearway\ncw = clearway.Client(os.environ["CLEARWAY_KEY"])\n\nres = cw.'+e.sdk[0]+'.'+pyfn+'('
+     return 'import gpn\nclient = gpn.Client(os.environ["GPN_KEY"])\n\nres = client.'+e.sdk[0]+'.'+pyfn+'('
        +(pathArg?pathArg+(ks.length?',':''):'')+(ks.length?'\n'+render(t,2,'py')+'\n':'')+')';
    }
-   return 'cw := clearway.New(os.Getenv("CLEARWAY_KEY"))\n\nres, err := cw.'+pascal(e.sdk[0])+'.'+pascal(e.sdk[1])+'(ctx'
-     +(pathArg?', '+pathArg:'')+(ks.length?', &clearway.'+pascal(e.sdk[1])+'Params{\n'+render(t,2,'go')+'\n}':'')+')';
+   return 'client := gpn.New(os.Getenv("GPN_KEY"))\n\nres, err := client.'+pascal(e.sdk[0])+'.'+pascal(e.sdk[1])+'(ctx'
+     +(pathArg?', '+pathArg:'')+(ks.length?', &gpn.'+pascal(e.sdk[1])+'Params{\n'+render(t,2,'go')+'\n}':'')+')';
  }
  var rcur='cards.create', lang='curl', open={};
  function railRef(active){

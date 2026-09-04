@@ -1,10 +1,10 @@
-<title>Clearway</title>
+<title>Global Payment Network</title>
 <style>
 /*FONTS*/
 /*CSS*/
 /* ── One app, one sidebar ─────────────────────────────────────────────────────
    Two workspaces behind a switcher, because the personas are genuinely different:
-   Clearway internal (Dara, who runs 24 partner accounts) and a partner's own
+   the network's own desk (Dara, who runs 24 partner accounts) and a partner's own
    account (Northgate, who watch their own money). Cross-links move between them.
    Same system throughout: two backgrounds, orange only on what needs you. */
 
@@ -127,8 +127,8 @@
     <div class="ws">
       <div class="cur" id="wscur"></div>
       <div class="menu" id="wsmenu">
-        <h6>Clearway</h6>
-        <a data-w="cw"><i>CW</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Internal · 24 accounts</span></span></a>
+        <h6>Global Payment Network</h6>
+        <a data-w="cw"><i>GPN</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Internal · 24 accounts</span></span></a>
         <h6>Partner accounts</h6>
         <a data-w="ng"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate Financial<span>BIN 471288 · live</span></span></a>
         <a data-w="bp"><i>BP</i><span style="color:var(--g900); font-size:14.5px">Bayline Payments<span>BIN 465120 · live</span></span></a>
@@ -908,7 +908,7 @@
 
  /* ══════════ SHELL ══════════ */
  var WS={
-  cw:{i:'CW', n:'Partner desk', s:'Internal · 24 accounts', who:'Dara Whitfield',
+  cw:{i:'GPN', n:'Partner desk', s:'Internal · 24 accounts', who:'Dara Whitfield',
       nav:[['pd-partners','Partners',String(A.length)],['pd-pipeline','Pipeline',String(A.filter(function(p){return p.cat==='enr'}).length)],['pd-tasks','Tasks',String(TASKS.reduce(function(a,g){return a+g[1].filter(function(t){return !t[3]}).length},0))],['pd-reports','Reports','']]},
   ng:{i:'NF', n:'Northgate Financial', s:'BIN 471288 · live', who:'Northgate Spend',
       nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','142']]},
@@ -969,7 +969,7 @@
    if(TXSUB[n]) setTimeout(function(){ drawTxSub(n) },30);
    if(PDRAW[n]) PDRAW[n]();
  }
- function wire(){ $$('[data-back]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(){ setWs('cw'); openRecord(0); toast('Back in the Clearway desk, on Northgate’s record.'); }) });
+ function wire(){ $$('[data-back]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(){ setWs('cw'); openRecord(0); toast('Back on the network desk, on Northgate’s record.'); }) });
    $$('[data-go]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(e){ e.preventDefault(); go(a.dataset.go) }) });
    $$('[data-open]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(){ openRecord(+a.dataset.open) }) }); }
 

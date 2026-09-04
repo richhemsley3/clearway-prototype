@@ -1,6 +1,6 @@
-# Clearway
+# Global Payment Network
 
-A design prototype for a payment network's three audiences, built as single-file HTML.
+A design prototype for a card network's three audiences, built as single-file HTML.
 
 **[View the prototypes →](https://richhemsley3.github.io/clearway-prototype/)**
 
@@ -23,7 +23,7 @@ someone is being asked to sign on another.
 
 ## Everything here is invented
 
-Clearway is not a real network. Ridgeline Freight, Northgate Financial, Meridian Trust, every person
+Global Payment Network is not a real network. Ridgeline Freight, Northgate Financial, Meridian Trust, every person
 named, every figure, every response code and every date are fictional, written to carry a design
 argument rather than to describe anything that exists. Nothing in this repository is confidential
 material belonging to any organisation.
@@ -48,7 +48,7 @@ The prototypes obey a small set of rules, and most of the decisions follow from 
 ```
 build.py            assembles a prototype from its parts
 src/                the parts
-  clearway.css        the design system: tokens, components, responsive rules
+  gpn.css             the design system: tokens, components, responsive rules
   app-body.html       the shell and views for the three-persona app
   spine.txt           the shared data — one deal, three sides
   pjs.txt             the three experiences, reading and writing the spine

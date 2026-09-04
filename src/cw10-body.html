@@ -1,4 +1,4 @@
-<title>Clearway Enrollment</title>
+<title>Global Payment Network Enrollment</title>
 <style>
 /*FONTS*/
 /*CSS*/
@@ -34,7 +34,7 @@
 
 <div class="app">
   <aside class="sb">
-    <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</div>
+    <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>GPN</div>
     <nav id="nav">
       <a class="on" data-go="flow"><svg class="i" viewBox="0 0 24 24"><path d="M5 4h9l5 5v11H5z"/><path d="M14 4v5h5"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>Enrollment<span class="ct" id="navct">4 of 15</span></a>
       <a data-go="team"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M17.5 13.5a6.5 6.5 0 0 1 4 6.5"/></svg>Team &amp; access<span class="ct">5</span></a>
@@ -103,13 +103,13 @@
             <span class="k">Roles</span><span>Issuing · program management</span>
             <span class="k">Settlement</span><span>USD · Cascade Trust · cut-off 21:00 UTC</span>
             <span class="k">Collateral</span><span>Transmitter rate · confirmed 28 August</span>
-            <span class="k">Endpoint</span><span>auth.northgate.example/clearway/v1</span>
+            <span class="k">Endpoint</span><span>auth.northgate.example/gpn/v1</span>
           </div>
         </div>
         <div>
           <div class="sech" style="margin-top:0"><h2>Northgate Spend</h2><span class="t13">as cardholders will see it</span></div>
           <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start"><span class="chip"></span><span class="nm">Clearway</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start"><span class="chip"></span><span class="nm">GPN</span></div>
             <div><div class="pan">4712 8800 4419 9265</div><div class="sub"><span>M. Osei</span><span>11/29</span><span>Debit</span></div></div>
           </div>
           <div class="tot" style="border-top:1px solid var(--g150); margin-top:14px; max-width:340px"><span>Statement descriptor</span><span style="color:var(--g900)">NORTHGATE SPEND</span></div>
@@ -170,7 +170,7 @@
   {q:"Debit, credit, or prepaid?",t:'choice',v:0,o:[['Debit'],['Credit'],['Prepaid']],
    why:"This one is permanent. A BIN’s product type is written into the range assignment at certification, and changing it later means a new BIN and new plastic.",
    who:"Nine out of ten program managers who come to us for credit actually want debit with a credit-shaped statement. Worth ten minutes before you answer."},
-  {q:"Which BIN would you like?",s:"Six digits, from the range Clearway holds.",t:'text',v:'471288',mono:1,help:'Available · 4712 8800 0000 0000 → 4712 8899 9999 9999',
+  {q:"Which BIN would you like?",s:"Six digits, from the range Global Payment Network holds.",t:'text',v:'471288',mono:1,help:'Available · 4712 8800 0000 0000 → 4712 8899 9999 9999',
    why:"A hundred million card numbers, Luhn-checked. We keep the last one percent back for test cards."},
   {q:"How should the card reach people?",t:'multi',v:[0,1],
    o:[['Virtual','In the wallet the moment you approve them.','live at cutover'],
@@ -181,7 +181,7 @@
    o:[['JSON over HTTPS','ISO 8583 fields kept by name. Adds about 3 ms at p99.','recommended'],
       ['ISO 8583 over an mTLS socket','Binary and persistent. Worth it only if you already run a switch.','for switches']],
    why:"Sandbox credentials issue the moment you finish. Production credentials come with the certification pass and not a minute earlier."},
-  {q:"Where should we send authorizations?",s:"One endpoint, mutually authenticated. You can add failover addresses after certification.",t:'text',v:'https://auth.northgate.example/clearway/v1',mono:1,help:'mTLS · CN=northgate-sandbox · 203.0.113.16/28',
+  {q:"Where should we send authorizations?",s:"One endpoint, mutually authenticated. You can add failover addresses after certification.",t:'text',v:'https://auth.northgate.example/gpn/v1',mono:1,help:'mTLS · CN=northgate-sandbox · 203.0.113.16/28',
    why:"We hold the connection open and expect an answer inside 500 ms. Past that we stand in on your behalf, and tell you we did.",
    who:"Send me this endpoint before you run the suite and I will pre-check it. Step three is where hosts usually burn their first certification run."},
   {q:"Twenty-four cases. All of them, in one run.",s:"Fired at your sandbox endpoint. Batch your fixes — patching mid-suite restarts it.",t:'rev',
@@ -228,7 +228,7 @@
    $('#rec').innerHTML=REC.map(function(r){ var shown=r[1]<cur;
      return '<div class="rr'+(shown?'':' e')+'"><span class="l">'+r[0]+'</span><span class="v">'+(shown?esc(r[2]()):'—')+'</span></div>' }).join('');
    var bin=(S[10].v+'000000').slice(0,6);
-   $('#preview').innerHTML= cur>10 ? '<div class="rec" style="margin-top:26px"><h4>'+esc(S[8].v.split(' —')[0])+'</h4></div><div class="card"><div style="display:flex; justify-content:space-between; align-items:flex-start"><span class="chip"></span><span class="nm">Clearway</span></div><div><div class="pan">'+bin.slice(0,4)+' '+bin.slice(4)+'•• •••• 9265</div><div class="sub"><span>M. Osei</span><span>'+esc(S[9].o[S[9].v][0])+'</span></div></div></div>' : '';
+   $('#preview').innerHTML= cur>10 ? '<div class="rec" style="margin-top:26px"><h4>'+esc(S[8].v.split(' —')[0])+'</h4></div><div class="card"><div style="display:flex; justify-content:space-between; align-items:flex-start"><span class="chip"></span><span class="nm">GPN</span></div><div><div class="pan">'+bin.slice(0,4)+' '+bin.slice(4)+'•• •••• 9265</div><div class="sub"><span>M. Osei</span><span>'+esc(S[9].o[S[9].v][0])+'</span></div></div></div>' : '';
  }
  function render(){
    var s=S[cur], ci=0; CH.forEach(function(c,i){ if(cur>=c.f&&cur<=c.t) ci=i });

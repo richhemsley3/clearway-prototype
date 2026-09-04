@@ -34,7 +34,7 @@ def main():
     else:
         s = s.replace('/*FONTS*/', WEB_FONT, 1)
 
-    s = s.replace('/*CSS*/', read('clearway.css'), 1)
+    s = s.replace('/*CSS*/', read('gpn.css'), 1)
     for marker, part in (('/*PDATA*/', 'pdata.txt'),
                          ('/*PVIEWS*/', 'pviews.txt'),
                          ('/*TXVIEWS*/', 'txviews.txt'),
@@ -50,7 +50,7 @@ def main():
         s = s.replace("'Proxima Nova'", "'Figtree'")
 
     title = re.search(r'<title>(.*?)</title>', s)
-    title = title.group(1) if title else 'Clearway'
+    title = title.group(1) if title else 'Global Payment Network'
     s = re.sub(r'<title>.*?</title>\s*', '', s, count=1)
 
     doc = (
@@ -58,7 +58,7 @@ def main():
         '<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1">\n'
         '<meta name="robots" content="noindex,nofollow">\n'
-        f'<title>{title} · Clearway prototype</title>\n'
+        f'<title>{title} · prototype</title>\n'
         '<style>:root{color-scheme:light}body{margin:0;padding:0}'
         'img{max-width:100%}[hidden]{display:none!important}</style>\n'
         '</head>\n<body>\n' + s + '\n</body>\n</html>\n'

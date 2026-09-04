@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Clearway Developers · Clearway prototype</title>
+<title>Global Payment Network Developers · prototype</title>
 <style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&display=swap');
 /* =====================================================================
-   Clearway prototype system — encoded from the Partner Desk brief, Sep 2026
+   Global Payment Network prototype system — encoded from the Partner Desk brief, Sep 2026
    Register: Ramp × Mercury. One weight. Tone, not lines. One signal colour.
    Rules of use are in the comments; if a part isn't here, don't invent it.
    ===================================================================== */
@@ -417,7 +417,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 
 <div class="app">
   <aside class="sb">
-    <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</div>
+    <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>GPN</div>
     <nav id="nav">
       <a class="on" data-go="home"><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/></svg>Overview</a>
       <a data-go="cert"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12l3 3 5-6"/></svg>Certification<span class="ct">21 of 24</span></a>
@@ -501,9 +501,9 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
         <tr><td style="color:var(--g400)">Local testing<span class="s2">Revoked 28 Aug</span></td><td class="k" style="color:var(--g400)">sk_sandbox_11b8…e2a0</td><td style="color:var(--g400)">12 Aug</td><td style="color:var(--g400)">27 Aug</td><td class="n"></td></tr>
       </tbody></table></div>
 
-      <div class="sech"><h2>Webhooks</h2><span class="t13">signed with Clearway-Signature · five-minute replay window</span><div class="rt"><span class="lnk">Add endpoint</span><span class="lnk">Send a test event</span></div></div>
+      <div class="sech"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span><div class="rt"><span class="lnk">Add endpoint</span><span class="lnk">Send a test event</span></div></div>
       <div class="keys"><table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th>Events</th><th>Delivery, 24 h</th><th>Status</th><th class="n"></th></tr></thead><tbody>
-        <tr><td class="k">https://hooks.northgate.dev/clearway<span class="s2">Production host · added 14 Aug</span></td><td>authorization.*, card.*</td><td><span class="lat"><i><b style="width:99%"></b></i>99.8%</span></td><td class="st ok">Delivering</td><td class="n"><span class="lnk">Recent deliveries</span></td></tr>
+        <tr><td class="k">https://hooks.northgate.dev/gpn<span class="s2">Production host · added 14 Aug</span></td><td>authorization.*, card.*</td><td><span class="lat"><i><b style="width:99%"></b></i>99.8%</span></td><td class="st ok">Delivering</td><td class="n"><span class="lnk">Recent deliveries</span></td></tr>
         <tr class="hot"><td class="k">https://staging.northgate.dev/cw<span class="s2">Staging · 412 failures since 06:10, TLS certificate expired</span></td><td>settlement.*</td><td><span class="lat"><i><b style="width:31%"></b></i>31%</span></td><td class="st no">Failing</td><td class="n"><button class="btn pri sm">Retry delivery</button></td></tr>
       </tbody></table></div>
       <div class="kv" style="margin-top:28px; max-width:640px"><span class="k">Signing secret</span><span><span class="key">whsec_…d8a1</span> <span class="lnk" style="margin-left:14px">Reveal</span> <span class="lnk" style="margin-left:14px">Roll</span></span><span class="k">Retries</span><span>Five, exponential from 30 seconds, then we stop and mark the endpoint failing.</span></div>
@@ -524,7 +524,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
         <div class="doc">
           <h2>Create a card</h2>
           <div class="endpoint"><span class="key">POST /v3/cards</span><span class="t13">idempotent · returns in 40 ms</span></div>
-          <p>Issues a virtual PAN on one of your BINs and returns a <b>token</b>. The PAN itself is held by Clearway and revealed to the cardholder through the hosted view, so it never crosses your systems and your PCI scope stays where it is. Send an <b>Idempotency-Key</b>; a retry inside 24 hours returns the original card instead of a second one.</p>
+          <p>Issues a virtual PAN on one of your BINs and returns a <b>token</b>. The PAN itself is held by Global Payment Network and revealed to the cardholder through the hosted view, so it never crosses your systems and your PCI scope stays where it is. Send an <b>Idempotency-Key</b>; a retry inside 24 hours returns the original card instead of a second one.</p>
           <div class="ctabs" id="ltabs"><button aria-pressed="true" data-l="0">cURL</button><button data-l="1">Node</button><button data-l="2">Python</button><button data-l="3">Response</button></div>
           <div class="code" id="codebox"></div>
 
@@ -595,9 +595,9 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
   [22,'Dispute on a partial approval','blk',0,'Runs once case 14 passes'],[23,'Chargeback received','ok',47],[24,'Go-live checklist','ok',0]
  ];
  var CODE=[
-  '<span class="ln">1</span>curl https://api.clearway.dev/v3/cards \\<br><span class="ln">2</span>&nbsp;&nbsp;-u <span class="s">sk_sandbox_4f2c…c91e</span>: \\<br><span class="ln">3</span>&nbsp;&nbsp;-H "Idempotency-Key: card-ng-000418" \\<br><span class="ln">4</span>&nbsp;&nbsp;-d bin=471288 \\<br><span class="ln">5</span>&nbsp;&nbsp;-d cardholder="H RUIZ" \\<br><span class="ln">6</span>&nbsp;&nbsp;-d limits[per_txn]=250000 \\<br><span class="ln">7</span>&nbsp;&nbsp;-d limits[per_day]=1000000',
-  '<span class="ln">1</span><span class="c">// npm i @clearway/sdk</span><br><span class="ln">2</span>const cw = require("@clearway/sdk")(<span class="s">process.env.CLEARWAY_KEY</span>);<br><span class="ln">3</span><br><span class="ln">4</span>const card = await cw.cards.create({<br><span class="ln">5</span>&nbsp;&nbsp;bin: "471288",<br><span class="ln">6</span>&nbsp;&nbsp;cardholder: "H RUIZ",<br><span class="ln">7</span>&nbsp;&nbsp;limits: { per_txn: 250000, per_day: 1000000 }<br><span class="ln">8</span>}, { idempotencyKey: "card-ng-000418" });',
-  '<span class="ln">1</span><span class="c"># pip install clearway</span><br><span class="ln">2</span>import clearway<br><span class="ln">3</span>cw = clearway.Client(<span class="s">os.environ["CLEARWAY_KEY"]</span>)<br><span class="ln">4</span><br><span class="ln">5</span>card = cw.cards.create(<br><span class="ln">6</span>&nbsp;&nbsp;bin="471288", cardholder="H RUIZ",<br><span class="ln">7</span>&nbsp;&nbsp;limits={"per_txn": 250000, "per_day": 1000000},<br><span class="ln">8</span>&nbsp;&nbsp;idempotency_key="card-ng-000418")',
+  '<span class="ln">1</span>curl https://api.gpn.dev/v3/cards \\<br><span class="ln">2</span>&nbsp;&nbsp;-u <span class="s">sk_sandbox_4f2c…c91e</span>: \\<br><span class="ln">3</span>&nbsp;&nbsp;-H "Idempotency-Key: card-ng-000418" \\<br><span class="ln">4</span>&nbsp;&nbsp;-d bin=471288 \\<br><span class="ln">5</span>&nbsp;&nbsp;-d cardholder="H RUIZ" \\<br><span class="ln">6</span>&nbsp;&nbsp;-d limits[per_txn]=250000 \\<br><span class="ln">7</span>&nbsp;&nbsp;-d limits[per_day]=1000000',
+  '<span class="ln">1</span><span class="c">// npm i @gpn/sdk</span><br><span class="ln">2</span>const gpn = require("@gpn/sdk")(<span class="s">process.env.GPN_KEY</span>);<br><span class="ln">3</span><br><span class="ln">4</span>const card = await gpn.cards.create({<br><span class="ln">5</span>&nbsp;&nbsp;bin: "471288",<br><span class="ln">6</span>&nbsp;&nbsp;cardholder: "H RUIZ",<br><span class="ln">7</span>&nbsp;&nbsp;limits: { per_txn: 250000, per_day: 1000000 }<br><span class="ln">8</span>}, { idempotencyKey: "card-ng-000418" });',
+  '<span class="ln">1</span><span class="c"># pip install gpn</span><br><span class="ln">2</span>import gpn<br><span class="ln">3</span>gpn = gpn.Client(<span class="s">os.environ["GPN_KEY"]</span>)<br><span class="ln">4</span><br><span class="ln">5</span>card = cw.cards.create(<br><span class="ln">6</span>&nbsp;&nbsp;bin="471288", cardholder="H RUIZ",<br><span class="ln">7</span>&nbsp;&nbsp;limits={"per_txn": 250000, "per_day": 1000000},<br><span class="ln">8</span>&nbsp;&nbsp;idempotency_key="card-ng-000418")',
   '<span class="ln">1</span>{<br><span class="ln">2</span>&nbsp;&nbsp;"token": <span class="s">"card_1466"</span>,<br><span class="ln">3</span>&nbsp;&nbsp;"last4": "9265",<br><span class="ln">4</span>&nbsp;&nbsp;"state": "active",<br><span class="ln">5</span>&nbsp;&nbsp;"form_factor": "virtual",<br><span class="ln">6</span>&nbsp;&nbsp;"limits": { "per_txn": 250000, "per_day": 1000000 },<br><span class="ln">7</span>&nbsp;&nbsp;"created": "2026-09-03T09:39:57Z"<br><span class="ln">8</span>}'
  ];
 

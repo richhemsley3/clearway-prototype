@@ -73,7 +73,7 @@
    items:[['Primary circuit','done'],['Backup circuit','done'],['IP allowlist, four ranges','done'],['Mutual TLS handshake','done']]},
 
   {k:'conf', t:'Business configuration', own:'cw', st:'done', d:'Completed 14 August',
-   detail:'BIN 471288 ranges, fee tables, settlement account and dispute routing, all set by Clearway operations.',
+   detail:'BIN 471288 ranges, fee tables, settlement account and dispute routing, all set by GPN operations.',
    items:[['BIN ranges','done'],['Fee schedule','done'],['Settlement account','done'],['Dispute routing','done']]},
 
   {k:'cert', t:'Testing and certification', own:'you', st:'now', d:'Window booked 15–19 September',
@@ -132,7 +132,7 @@
  ];
 
  var WAIVER = [
-  ['CLEARING-09','End-of-day file delivered at 02:00 rather than 00:30','Variance granted to 31 December 2026','Clearway operations']
+  ['CLEARING-09','End-of-day file delivered at 02:00 rather than 00:30','Variance granted to 31 December 2026','GPN operations']
  ];
 
  /* ── Pre-production. Half of these we can check ourselves. ── */
@@ -173,40 +173,40 @@
  /* ── Threads. The reference is the object id, and the status says
        whose turn it is rather than where it sits in a state machine. ── */
  var THREAD = [
-  {a:'rf', id:'MSG-4488', t:'Second signature on the participation agreement', w:'Dara Whitfield', r:'Clearway', st:'you', last:'Yesterday at 10:05',
-   msgs:[['Dara Whitfield','Clearway','2 September, 10:05','Elena signed on the 1st. We are waiting on Marcus. October integration slots close on the 12th, and after that the next window is November, so this is worth a nudge rather than a wait.'],
+  {a:'rf', id:'MSG-4488', t:'Second signature on the participation agreement', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'Yesterday at 10:05',
+   msgs:[['Dara Whitfield','Global Payment Network','2 September, 10:05','Elena signed on the 1st. We are waiting on Marcus. October integration slots close on the 12th, and after that the next window is November, so this is worth a nudge rather than a wait.'],
          ['Elena Ridge','Ridgeline','1 September, 09:20','Signed. Marcus is travelling until Thursday but he has it on his phone.']]},
 
-  {a:'rf', id:'MSG-4483', t:'Beneficial ownership: the address check', w:'Clearway risk', r:'Clearway', st:'you', last:'29 August',
-   msgs:[['Clearway risk','Clearway','29 August, 15:40','We sent the declaration back. The ownership side is fine — both owners matched. The address did not: the utility bill is dated 3 June and we need one issued inside the last thirty days. Anything from July or August will clear it.']]},
+  {a:'rf', id:'MSG-4483', t:'Beneficial ownership: the address check', w:'GPN risk', r:'Global Payment Network', st:'you', last:'29 August',
+   msgs:[['GPN risk','Global Payment Network','29 August, 15:40','We sent the declaration back. The ownership side is fine — both owners matched. The address did not: the utility bill is dated 3 June and we need one issued inside the last thirty days. Anything from July or August will clear it.']]},
 
-  {a:'rf', id:'MSG-4479', t:'Introduction and what happens next', w:'Dara Whitfield', r:'Clearway', st:'none', last:'4 August',
-   msgs:[['Dara Whitfield','Clearway','4 August, 11:00','Cascade Trust introduced us. Fleet fuel and prepaid, single geography — that is a straightforward shape and the usual path is about eleven weeks from here to live.']]},
+  {a:'rf', id:'MSG-4479', t:'Introduction and what happens next', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'4 August',
+   msgs:[['Dara Whitfield','Global Payment Network','4 August, 11:00','Cascade Trust introduced us. Fleet fuel and prepaid, single geography — that is a straightforward shape and the usual path is about eleven weeks from here to live.']]},
 
-  {a:'mt', id:'MSG-3120', t:'Four Visa disputes lapse on Friday', w:'Clearway disputes', r:'Clearway', st:'you', last:'Today at 08:15',
-   msgs:[['Clearway disputes','Clearway','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
+  {a:'mt', id:'MSG-3120', t:'Four Visa disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
+   msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
 
-  {a:'mt', id:'MSG-3114', t:'Settlement cut-off moves to 16:30 in October', w:'Clearway operations', r:'Clearway', st:'none', last:'28 August',
-   msgs:[['Clearway operations','Clearway','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
+  {a:'mt', id:'MSG-3114', t:'Settlement cut-off moves to 16:30 in October', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
+   msgs:[['GPN operations','Global Payment Network','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
 
-  {a:'mt', id:'MSG-3090', t:'Evidence upload latency', w:'Clearway engineering', r:'Clearway', st:'done', last:'24 August',
-   msgs:[['Clearway engineering','Clearway','24 August, 10:12','Fixed and deployed. The 09:12 to 09:41 window on the 24th caught 1,840 of your requests. Evidence upload is a file path, not a message path, so nothing in authorization was affected.'],
+  {a:'mt', id:'MSG-3090', t:'Evidence upload latency', w:'GPN engineering', r:'Global Payment Network', st:'done', last:'24 August',
+   msgs:[['GPN engineering','Global Payment Network','24 August, 10:12','Fixed and deployed. The 09:12 to 09:41 window on the 24th caught 1,840 of your requests. Evidence upload is a file path, not a message path, so nothing in authorization was affected.'],
          ['Lena Ostrom','Meridian Trust','24 August, 09:30','Evidence uploads are timing out. Anything on your side?']]},
 
-  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Clearway', st:'you', last:'Yesterday at 16:20',
-   msgs:[['Dara Whitfield','Clearway','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
+  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'Yesterday at 16:20',
+   msgs:[['Dara Whitfield','Global Payment Network','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
          ['Idris Vance','Northgate','2 September, 09:04','Ravi thinks the partial approval is a one-line change on our side. Can we hold the window while he confirms?']]},
 
-  {a:'nf', id:'MSG-4468', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Clearway', st:'you', last:'1 September',
-   msgs:[['Dara Whitfield','Clearway','1 September, 11:30','Halvard’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date. This is not a soft deadline, and it is the single thing most likely to move go live.'],
+  {a:'nf', id:'MSG-4468', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'1 September',
+   msgs:[['Dara Whitfield','Global Payment Network','1 September, 11:30','Halvard’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date. This is not a soft deadline, and it is the single thing most likely to move go live.'],
          ['Idris Vance','Northgate','29 August, 14:12','He has an appointment on the 8th. Is a receipt from the passport office enough to hold the file open?'],
-         ['Dara Whitfield','Clearway','29 August, 15:01','A receipt holds it for thirty days. Send it the day he has it.']]},
+         ['Dara Whitfield','Global Payment Network','29 August, 15:01','A receipt holds it for thirty days. Send it the day he has it.']]},
 
-  {a:'nf', id:'MSG-4459', t:'October release notes · dispute handling v6.0', w:'Clearway operations', r:'Clearway', st:'none', last:'28 August',
-   msgs:[['Clearway operations','Clearway','28 August, 08:00','Dispute handling rules move to v6.0 on 1 September. Retrieval acknowledgement drops from 48 hours to 24. Nothing else in the release affects you.']]},
+  {a:'nf', id:'MSG-4459', t:'October release notes · dispute handling v6.0', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
+   msgs:[['GPN operations','Global Payment Network','28 August, 08:00','Dispute handling rules move to v6.0 on 1 September. Retrieval acknowledgement drops from 48 hours to 24. Nothing else in the release affects you.']]},
 
-  {a:'nf', id:'MSG-4402', t:'Fee schedule confirmation', w:'Priya Raman', r:'Clearway', st:'done', last:'14 August',
-   msgs:[['Priya Raman','Clearway','14 August, 10:22','Signed schedule attached, effective from activation.'],
+  {a:'nf', id:'MSG-4402', t:'Fee schedule confirmation', w:'Priya Raman', r:'Global Payment Network', st:'done', last:'14 August',
+   msgs:[['Priya Raman','Global Payment Network','14 August, 10:22','Signed schedule attached, effective from activation.'],
          ['Idris Vance','Northgate','13 August, 17:45','Confirmed on our side.']]}
  ];
 
