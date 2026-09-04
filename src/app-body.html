@@ -11,10 +11,10 @@
 
 /* workspace switcher */
 .ws{position:relative; margin:0 0 20px}
-.ws .cur{display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--r-part); cursor:pointer; font-size:15px}
+.ws .cur{display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:var(--r-part); cursor:pointer; font-size:14.5px; letter-spacing:-.01em}
 .ws .cur:hover{background:var(--g100)}
 .ws .cur i{width:26px; height:26px; border-radius:7px; background:var(--navy); color:#fff; display:grid; place-items:center; font-size:11px; font-style:normal; flex:none}
-.ws .cur .nm{line-height:1.2; min-width:0; overflow:hidden}
+.ws .cur .nm{line-height:1.2; min-width:0; flex:1; overflow:hidden}
 .ws .cur .nm, .ws .cur .nm span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .ws .cur .nm span{display:block; font-size:12px; color:var(--g550)}
 .ws .cur .ch{margin-left:auto; color:var(--g400); font-size:11px}
@@ -360,10 +360,11 @@
  }
  function paintNow(){
    var p=A[0];
-   $('#now').innerHTML='<div><div class="k">Needs you first</div><h2>'+esc(p.n)+' <span>· a document expires in nine days</span></h2>'
+   var mv=typeof movesNow==='function'?movesNow():[], replies=mv.filter(function(x){return x.kind==='Reply'}).length, today=mv.filter(function(x){return x.due==='Today'}).length;
+   $('#now').innerHTML='<div><div class="k">Most at risk in the book</div><h2>'+esc(p.n)+' <span>· a document expires in nine days</span></h2>'
     +'<p class="why">'+esc(p.next)+'</p>'
     +'<div class="act"><button class="btn pri" id="chase">'+esc(p.nextAct)+'</button><span class="lnk" data-open="0">Open the record</span></div>'
-    +'<div class="also"><span>Also today</span><span><b>2</b> other partners need a reply</span><span><b>9</b> open tasks</span></div></div>'
+    +'<div class="also"><span>Also today</span><span><b>'+today+'</b> moves due today</span><span><b>'+replies+'</b> '+(replies===1?'reply owed':'replies owed')+'</span><span class="lnk" data-go="pd-tasks">See Today</span></div></div>'
     +'<div class="inst sm"><div class="cap t13">Health, last fourteen weeks</div>'+line(p.spark.map(function(n){return Math.round(n*0.84)}),{w:380,h:150,min:50,max:90})+'<div class="ax"><span>14 weeks ago</span><span>now</span></div></div>';
    $('#chase').addEventListener('click',function(){ toast('Chase sent to Halvard Ruiz, copied to Idris Vance.',function(){ toast('Chase cancelled.') }) });
  }
@@ -415,14 +416,15 @@
        +'<td class="pick"><span class="cb'+(picked[idx]?' done':'')+'" data-p="'+idx+'"></span></td>'
        +'<td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+' · '+esc(p.stage.toLowerCase())+'</span></td>'
        +'<td class="st '+stw(p.hs)+'">'+esc(p.hl)+'</td>'
-       +'<td class="n">'+esc(p.vol)+'</td><td class="n opt">'+esc(p.apr)+'</td><td class="opt">'+esc(p.last)+'</td>'
+       +'<td class="n">'+esc(String(p.vol).replace(' / mo',''))+'</td><td class="n opt">'+esc(p.apr)+'</td><td class="opt">'+esc(p.last)+'</td>'
        +'<td class="s2 opt2" style="display:table-cell; font-size:13.5px">'+(p.next?esc(p.nextAct):'—')+'</td></tr>';
     }).join('')+'</tbody></table>'
-    +'<div class="tfoot"><span>'+r.length+' shown</span><span>·</span><span class="lnk">Load the rest of the book</span></div>';
+    +'<div class="tfoot"><span>'+r.length+(r.length===A.length?' accounts · the whole book':' of '+A.length+' accounts')+'</span>'+(r.length<A.length?'<span>·</span><span class="lnk" data-clear>Show all</span>':'')+'</div>';
    $$('#ptable th.so').forEach(function(h){ h.addEventListener('click',function(){
      if(sort.k===h.dataset.s) sort.d*=-1; else { sort.k=h.dataset.s; sort.d=1 }
      paintTable();
    }) });
+   var sa=el.querySelector('[data-clear]'); if(sa) sa.addEventListener('click',function(){ filter='all'; scope='all'; q=''; if($('#q')) $('#q').value=''; paintTabs(); paintScope(); load(); });
    $$('#ptable tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){
      if(e.target.closest('.cb')) return; openRecord(+tr.dataset.i);
    }) });
@@ -521,20 +523,36 @@
        : '<div class="blank"><div class="t">No programs yet.</div><p>'+esc(p.n)+' has not been assigned a BIN. Programs appear here once the range is allocated at certification.</p><div class="act"><span class="lnk">Start a program</span></div></div>';
    }
    else if(rtab==='case'){
+     var isMT=p.n==='Meridian Trust', isNF=p.n==='Northgate Financial', isLive=p.cat==='live';
+     var nDis=isMT?'9':isLive?'0':'—', nCert=isNF?String(openFails().length):isLive?'0':'—', nInc=isLive?'2':'—';
      h+='<div class="tabstrip" style="margin-top:20px" id="csub">'
-       +[['dis','Disputes','3'],['cert','Certification','1'],['inc','Incidents','2']].map(function(v){ return '<button data-cs="'+v[0]+'" aria-pressed="'+(csub===v[0])+'">'+v[1]+'<span class="ct">'+v[2]+'</span></button>' }).join('')
-       +'<div class="rt"><span class="lnk" data-x="tx">Open in their account</span></div></div>';
-     if(csub==='dis') h+='<p class="t13" style="margin-top:22px; color:var(--g550)">These are the partner\u2019s own records. Opening one takes you into their account.</p>'
-       +'<table class="tb" style="margin-top:12px"><tbody>'
-       +'<tr class="hot"><td>CB-20831<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td class="st wa" style="width:130px">Due Thursday</td><td class="n" style="width:170px"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-       +'<tr><td>CB-20819<span class="s2">Reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st wa">Due Thursday</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-       +'<tr><td>CB-20802<span class="s2">Reason 4837 · no cardholder authorization</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td class="st nt">14 Sep</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-       +'</tbody></table>';
-     else if(csub==='cert') h+='<div class="note" style="margin-top:24px"><div class="k">Blocking go-live</div><p>Case 14 fails: the handler answers DE 39 = 10 correctly, then echoes the requested amount in DE 4 instead of the approved one. Twenty-three of twenty-four pass.</p><div class="act"><button class="btn pri">Open case 14 with them</button><span class="lnk">See the run</span></div></div>'
-       +'<table class="tb" style="margin-top:26px"><tbody>'
-       +'<tr><td>Last full run<span class="s2">2 September, 14:02 · six minutes</span></td><td class="st no" style="width:150px">23 of 24</td><td class="n" style="width:150px"><span class="lnk">Report</span></td></tr>'
-       +'<tr><td>Previous run<span class="s2">28 August · same failure</span></td><td class="st no">22 of 24</td><td class="n"><span class="lnk">Report</span></td></tr>'
-       +'</tbody></table>';
+       +[['dis','Disputes',nDis],['cert','Certification',nCert],['inc','Incidents',nInc]].map(function(v){ return '<button data-cs="'+v[0]+'" aria-pressed="'+(csub===v[0])+'">'+v[1]+'<span class="ct">'+v[2]+'</span></button>' }).join('')
+       +(isMT||isNF?'<div class="rt"><span class="lnk" data-x="tx">Open in their account</span></div>':'')+'</div>';
+     if(csub==='dis'){
+       if(isMT) h+='<p class="t13" style="margin-top:22px; color:var(--g550)">These are the partner\u2019s own records: the four nearest their deadline. Opening one takes you into their account.</p>'
+         +'<table class="tb" style="margin-top:12px"><tbody>'
+         +'<tr class="hot"><td>CB-20831<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td class="st wa" style="width:130px">Due tomorrow</td><td class="n" style="width:170px"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20829<span class="s2">Visa · reason 13.3 · not as described</span></td><td>Halcyon Home</td><td class="n">$389.00</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20826<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$512.40</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20819<span class="s2">Visa · reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st wa">Due tomorrow · waiting on merchant</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'</tbody></table>';
+       else if(isLive) h+='<div class="blank" style="margin-top:22px"><div class="t">No open disputes.</div><p>'+esc(p.n)+' closed its last case on 19 August. New ones appear here the morning the network raises them, with the representment deadline.</p></div>';
+       else h+='<div class="blank" style="margin-top:22px"><div class="t">Disputes start with live traffic.</div><p>'+esc(p.n)+' is not live yet, so there is nothing to dispute. Once the BIN activates this tab shows their open cases and deadlines, read only.</p></div>';
+     }
+     else if(csub==='cert' && !isNF){
+       h+= isLive ? '<div class="blank" style="margin-top:22px"><div class="t">Certified.</div><p>'+esc(p.n)+' passed certification before activation. A re-certification is only needed for a new message type or a new program shape.</p></div>'
+         : '<div class="blank" style="margin-top:22px"><div class="t">Not at certification yet.</div><p>Certification opens once contracting closes and the sandbox is connected. The suite is chosen from the configuration, so there is nothing to show until then.</p></div>';
+     }
+     else if(csub==='cert'){
+       var of=openFails(), tot=suiteTot('tot'), ps=suiteTot('pass'), nr=suiteTot('nr');
+       h+=(of.length
+         ? '<div class="note" style="margin-top:24px"><div class="k">Blocking go-live</div><p>'+(of.length===1?'One case is failing':of.length+' cases are failing')+' and the testing team will not open a window against a failing partial approval. '+esc(of[0].id)+': '+esc(of[0].n.toLowerCase())+'. '+ps+' of '+tot+' pass; '+nr+' have not been run.</p><div class="act"><button class="btn pri" data-fail="'+of[0].id+'">Open '+of[0].id+' with them</button><span class="lnk" data-x="pd-integr">See the board</span></div></div>'
+         : '<div class="note plain" style="margin-top:24px"><div class="k">Ready for the window</div><p>Every case that has run passes. '+nr+' have not been run yet; the testing team runs those inside the window itself.</p><div class="act"><span class="lnk" data-x="pd-integr">See the board</span></div></div>')
+        +'<table class="tb" style="margin-top:26px"><tbody>'
+        +SUITE.map(function(su){ return '<tr><td>'+esc(su.n)+'<span class="s2">'+su.tot+' cases</span></td><td class="st '+(su.fail?'no':su.nr?'wa':'ok')+'" style="width:190px">'+(su.fail?su.fail+' failing':su.nr?su.nr+' not run':'All pass')+'</td><td class="n mute" style="width:150px">'+su.pass+' of '+su.tot+'</td></tr>' }).join('')
+        +'</tbody></table>';
+     }
+     else if(!isLive) h+='<div class="blank" style="margin-top:22px"><div class="t">No incidents.</div><p>Incidents are recorded against live traffic. Nothing has happened to '+esc(p.n)+' yet because nothing is running.</p></div>';
      else h+='<table class="tb" style="margin-top:26px"><tbody>'
        +'<tr><td>Decline 51 spike<span class="s2">Tuesday 09:00–11:00 · Bayline Payments · +2.4 pts</span></td><td class="st wa" style="width:140px">Watching</td><td class="n" style="width:170px"><span class="lnk" data-x="tx">Open the hours</span></td></tr>'
        +'<tr><td>Settlement held<span class="s2">29 August · document expiry · released 30 August</span></td><td class="st ok">Resolved</td><td class="n"><span class="lnk">Open the cycle</span></td></tr>'
@@ -592,6 +610,8 @@
      $('#rpop').classList.remove('on');
      if(a.dataset.x==='theirs'){ acc='mt'; agentView=true; go('pa-panel'); toast('Meridian Trust’s own control panel. Read only, and they are not told you looked.'); return; }
      toast('Nothing here is wired up yet — this is the menu, not the action.'); }) });
+   $$('#record [data-fail]').forEach(function(b){ b.addEventListener('click',function(){ openFail(b.dataset.fail); }) });
+   $$('#record [data-x="pd-integr"]').forEach(function(a){ a.addEventListener('click',function(){ inTab='cert'; go('pd-integr'); }) });
    var rd=$('#rdo'); if(rd) rd.addEventListener('click',function(){ toast(A[rec].nextAct+' — sent.',function(){ toast('Cancelled.') }) });
    var ns=$('#nsave'); if(ns) ns.addEventListener('click',function(){
      var v=$('#nnote').value.trim(); if(!v){ toast('Write something first.'); return; }
@@ -600,8 +620,9 @@
    });
    drawNotes();
    $$('#record [data-x="tx"], #record [data-x="tx-disp"]').forEach(function(a){ a.addEventListener('click',function(){
-     setWs('ng'); go(a.dataset.x==='tx-disp'?'tx-disp':'tx-over');
-     toast('Switched to Northgate Financial’s own account.',function(){ setWs('cw'); go('pd-partner'); });
+     var nf=A[rec].n==='Northgate Financial';
+     acc=nf?'nf':'mt'; agentView=true; go(a.dataset.x==='tx-disp'?'tx-disp':nf?'pa-board':'pa-panel');
+     toast((nf?'Northgate Financial':'Meridian Trust')+'’s own account. Read only, and they are not told you looked.',function(){ agentView=false; go('pd-partner'); });
    }) });
  }
  var PROMISE={
@@ -745,11 +766,11 @@
 
  /* ══════════ TASKS ══════════ */
  var TASKS=[
-  ['Today',[
+  ['Your own tasks · today',[
     ['Pre-check Verity Spend’s sandbox endpoint','Verity Spend · before their first run','Normal',0,0],
     ['Book Stonecrop’s kick-off with Priya','Stonecrop Labs · handed to ops today','Normal',0,0],
     ['Log the Harbour Freight intro call','Harbour Freight Co · Thursday','Normal',1,0]]],
-  ['This week',[
+  ['Your own tasks · this week',[
     ['Quarterly review pack for Pemberton','Pemberton Bank · due Friday','Normal',0,0],
     ['Walk Stonecrop through webhook signing','Stonecrop Labs','Normal',0,0],
     ['Dormancy call with Dunmore Retail','Dunmore Retail · 230 days quiet','Low',0,0]]],
@@ -831,7 +852,7 @@
    var facts='<div class="facts" style="margin-top:32px"><div><div class="k">Volume, September</div><div class="v">$168.4M</div></div>'
     +'<div><div class="k">August</div><div class="v">$161.2M</div></div>'
     +'<div><div class="k">Change</div><div class="v st ok">+4.5%</div></div>'
-    +'<div><div class="k">Median to live</div><div class="v">34<small>days</small></div></div></div>';
+    +'<div><div class="k">Median to live</div><div class="v">78<small>days</small></div></div></div>';
    if(repView==='vol'){
      $('#reports').innerHTML=facts
       +'<div class="rep"><div class="wide inst"><div class="cap t13">Book volume, last twelve months · last year in grey</div>'
@@ -888,8 +909,8 @@
              note:'Every message as it crossed the wire. Filtering here does not change what we keep — thirteen months, whatever you look at.'},
   'tx-settle':{sel:'#sett', tabs:[['all','All cycles',null],['held','Held',/Held/],['ok','Settled',/Settled/]],
              note:'A held cycle keeps authorizing. Only the money stops, and only until the reason clears.'},
-  'tx-disp':{sel:'#dtable', tabs:[['all','All cases',null],['due','Due this week',/2 days|Thu/],['wait','Waiting on merchant',/Waiting/]],
-             note:'Deadlines are calendar days, not working days. A case due Thursday is due Thursday.'}
+  'tx-disp':{sel:'#dtable', tabs:[['all','All cases',null],['due','Due tomorrow',/Tomorrow/],['wait','Waiting on merchant',/Waiting/]],
+             note:'Deadlines are calendar days, not working days. A case due Friday is due Friday.'}
  };
  var txsub={};
  function drawTxSub(v){
@@ -922,7 +943,7 @@
   cw:{i:'GPN', n:'Partner desk', s:'Internal · 24 accounts', who:'Dara Whitfield',
       nav:[['pd-partners','Partners',String(A.length)],['pd-pipeline','Pipeline',String(A.filter(function(p){return p.cat==='enr'}).length)],['pd-tasks','Tasks',String(TASKS.reduce(function(a,g){return a+g[1].filter(function(t){return !t[3]}).length},0))],['pd-reports','Reports','']]},
   ng:{i:'NF', n:'Northgate Financial', s:'BIN 471288 · live', who:'Northgate Spend',
-      nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','142']]},
+      nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','9']]},
   bp:{i:'BP', n:'Bayline Payments', s:'BIN 465120 · live', who:'Bayline Payments',
       nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','38']]}
  };
@@ -954,7 +975,7 @@
  var curView='pd-partners';
  function repaint(n){
    if(PDRAW[n]){ PDRAW[n](); return; }
-   if(n==='pd-partners'){ paintNow(); paintScope(); paintTabs(); paintTable(); }
+   if(n==='pd-partners'){ paintNow(); wire(); paintScope(); paintTabs(); paintTable(); }
    if(n==='pd-partner') drawRecord();
    if(n==='pd-pipeline') drawPipe();
    if(n==='pd-tasks') drawTasks();
@@ -972,7 +993,7 @@
    $$('#nav a').forEach(function(a){ a.classList.toggle('on', a.dataset.go===n) });
    if(n==='pd-partner') $$('#nav a').forEach(function(a){ a.classList.toggle('on', a.dataset.go==='pd-partners') });
    window.scrollTo(0,0);
-   if(n==='pd-partners'){ paintScope(); paintTabs(); load(); }
+   if(n==='pd-partners'){ paintNow(); wire(); paintScope(); paintTabs(); load(); }
    if(n==='pd-partner') drawRecord();
    if(n==='pd-pipeline') drawPipe();
    if(n==='pd-tasks') drawTasks();

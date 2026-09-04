@@ -87,7 +87,7 @@
      hide(nowEl,false); insts.forEach(function(e){ hide(e,false) });
      var nt=sec.querySelector('.txnote'); if(nt) nt.remove();
      if(sub) sub.textContent = v==='tx-auth' ? 'Every message as it crossed the wire · last 7 days · 61,412 messages'
-       : v==='tx-settle' ? 'Fourteen cycles · net to fund, and where the rest went' : '142 open cases · representment deadlines in calendar days';
+       : v==='tx-settle' ? 'Fourteen cycles · net to fund, and where the rest went' : '9 open cases · representment deadlines in calendar days';
      if(fs && v==='tx-auth') fs.innerHTML='Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span>';
      if(foot && v==='tx-auth') foot.innerHTML='<span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span>';
    }
@@ -117,3 +117,36 @@
  }
  var _drawTxSub=drawTxSub;
  drawTxSub=function(v){ txEnvRows(v); _drawTxSub(v); txEnvLayer(v); };
+
+ /* filing the three that are ready is the one thing this screen is for */
+ (function(){
+   var sec=document.querySelector('[data-v="tx-disp"]'), now=sec.querySelector('.now'), tb=sec.querySelector('#dtable tbody');
+   var saved=null;
+   function paintFunnel(){
+     var c={}; [].forEach.call(tb.querySelectorAll('tr'),function(r){ var st=r.children[3].textContent.trim(); c[st]=(c[st]||0)+1; });
+     var order=['Chargeback received','Evidence gathered','Representment filed','Pre-arbitration','Waiting on merchant'];
+     $('#funnel').innerHTML=ptw(order.filter(function(k){return c[k]}).map(function(k){ return [k, c[k], false, null] }),function(n){return n+(n===1?' case':' cases')});
+   }
+   function wire(){
+     var c=$('#dsChase'); if(c) c.addEventListener('click',function(){ toast('Reminder sent to Bayline Cafe 02 with the receipt request and tomorrow\u2019s deadline.') });
+     var b=$('#dsRev'); if(b) b.addEventListener('click',fileThree);
+   }
+   function fileThree(){
+     saved={tb:tb.innerHTML, now:now.innerHTML, calm:now.classList.contains('calm')};
+     [].forEach.call(tb.querySelectorAll('tr'),function(r){
+       if(r.children[3].textContent==='Evidence gathered' && /Tomorrow/.test(r.children[4].textContent)){
+         r.classList.remove('hot'); r.children[3].textContent='Representment filed'; r.children[4].className='st ok'; r.children[4].textContent='Filed today';
+       }
+     });
+     tb.dataset.orig=tb.innerHTML;
+     now.classList.add('calm');
+     now.innerHTML='<div><div class="k">Filed</div><h2>Three representments <span>· Visa acknowledges inside the hour</span></h2><p class="why">Cordell Online twice and Halcyon Home went at 09:14. Bayline Cafe is still waiting on its receipt and lapses tomorrow at midnight; the five Mastercard cases have until the 24th.</p><div class="act"><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>'
+       +'<div><div class="sech" style="margin-top:0"><h2>Where the nine are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div>';
+     paintFunnel(); wire(); drawTxSub('tx-disp');
+     toast('Three representments filed. $2,141.40 in play.',function(){
+       tb.innerHTML=saved.tb; tb.dataset.orig=saved.tb; now.innerHTML=saved.now; if(!saved.calm) now.classList.remove('calm');
+       paintFunnel(); wire(); drawTxSub('tx-disp');
+     });
+   }
+   wire();
+ })();

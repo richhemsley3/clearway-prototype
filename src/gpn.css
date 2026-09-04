@@ -80,6 +80,7 @@ svg.i{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.5;
 .tb tr.sel td{background:var(--blue100); color:var(--navy)}
 .tb tr.sel .s2{color:var(--navy)}
 .tb tr.hot td:first-child{box-shadow:inset 3px 0 0 var(--sig)}
+.tb .nw{white-space:nowrap}
 .tb .s2{overflow-wrap:anywhere; display:block; font-size:13px; color:var(--g550); margin-top:2px}
 .tb td .st{white-space:nowrap}
 .tb td.st.ok{color:var(--good)} .tb td.st.wa{color:var(--warn)} .tb td.st.no{color:var(--bad)}

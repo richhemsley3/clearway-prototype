@@ -64,5 +64,6 @@
  /* disputes */
  $('#funnel').innerHTML=ptw(FN.map(function(f){ return [f[0], f[1], false, null] }),function(n){return n+' cases'});
 
+
  /* views */
 })();

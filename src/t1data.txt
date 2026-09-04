@@ -24,4 +24,4 @@
   ['a1f0-88c7','Vantage Hospitality','051 chip','$412.90','36 ms','Approved','s-ok',
    [['DE 2','Primary account number','4712 88•• •••• 7741'],['DE 4','Amount, transaction','41290'],['DE 22','POS entry mode','051 — chip contact'],['DE 38','Approval code','A41Y03'],['DE 39','Response code','00 — approved'],['DE 43','Acceptor name','VANTAGE RESORTS · DOVER DE']]]];
  var WF=[['Net to fund',8300420,'--ink'],['Interchange',121480,'--d1'],['Scheme fees',18240,'--d4']];
- var FN=[['Retrieval request',142],['Chargeback received',96],['Evidence gathered',61],['Representment filed',44],['Pre-arbitration',12],['Arbitration',3]];
+ var FN=[['Chargeback received',2],['Evidence gathered',3],['Representment filed',2],['Pre-arbitration',1],['Waiting on merchant',1]];

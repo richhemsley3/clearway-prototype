@@ -151,7 +151,7 @@
  var MODULE = [
   {k:'tx-auth',  n:'Authorizations', v:'61,412 messages', s:'last seven days', act:'2 declines flagged for review', hot:false},
   {k:'tx-settle',n:'Settlement',     v:'$96.7M',          s:'this month',      act:'Next cycle 4 September 06:00 · cut-off 17:00 today', hot:true},
-  {k:'tx-disp',  n:'Disputes',       v:'142 open',        s:'across all reason codes', act:'9 need a response by Friday', hot:true},
+  {k:'tx-disp',  n:'Disputes',       v:'9 open',          s:'four Visa, five Mastercard', act:'4 Visa cases lapse tomorrow', hot:true},
   {k:'dv-perf',  n:'API performance',v:'99.98%',          s:'availability, thirty days', act:'One endpoint above its latency budget', hot:false},
   {k:'pa-hub',   n:'Documentation hub', v:'4 documents',  s:'changed this month', act:'Dispute handling moved to v6.0', hot:false},
   {k:'pa-msgs',  n:'Messages',       v:'2 threads',       s:'awaiting your reply', act:'', hot:false}
@@ -173,40 +173,54 @@
  /* ── Threads. The reference is the object id, and the status says
        whose turn it is rather than where it sits in a state machine. ── */
  var THREAD = [
-  {a:'rf', id:'MSG-4488', t:'Second signature on the participation agreement', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'Yesterday at 10:05',
+  {a:'rf', id:'MSG-4488', about:'Participation agreement · AGR-2291', t:'Second signature on the participation agreement', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'Yesterday at 10:05',
    msgs:[['Dara Whitfield','Global Payment Network','2 September, 10:05','Elena signed on the 1st. We are waiting on Marcus. October integration slots close on the 12th, and after that the next window is November, so this is worth a nudge rather than a wait.'],
          ['Elena Ridge','Ridgeline','1 September, 09:20','Signed. Marcus is travelling until Thursday but he has it on his phone.']]},
 
-  {a:'rf', id:'MSG-4483', t:'Beneficial ownership: the address check', w:'GPN risk', r:'Global Payment Network', st:'you', last:'29 August',
+  {a:'rf', id:'MSG-4483', about:'Ownership declaration · UBO-118', t:'Beneficial ownership: the address check', w:'GPN risk', r:'Global Payment Network', st:'you', last:'29 August',
    msgs:[['GPN risk','Global Payment Network','29 August, 15:40','We sent the declaration back. The ownership side is fine — both owners matched. The address did not: the utility bill is dated 3 June and we need one issued inside the last thirty days. Anything from July or August will clear it.']]},
 
-  {a:'rf', id:'MSG-4479', t:'Introduction and what happens next', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'4 August',
+  {a:'rf', id:'MSG-4479', about:'Application · APP-7741', t:'Introduction and what happens next', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'4 August',
    msgs:[['Dara Whitfield','Global Payment Network','4 August, 11:00','Cascade Trust introduced us. Fleet fuel and prepaid, single geography — that is a straightforward shape and the usual path is about eleven weeks from here to live.']]},
 
-  {a:'mt', id:'MSG-3120', t:'Four Visa disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
+
+  {a:'rf', id:'MSG-4486', about:'Settlement · bank letter', t:'Bank letter: what it needs to say', w:'GPN operations', r:'Global Payment Network', st:'none', last:'30 August',
+   msgs:[['GPN operations','Global Payment Network','30 August, 14:10','A letter from Wells Fargo on their letterhead naming Ridgeline Freight LLC, the account ending 8823 and the routing number, signed by a branch officer, dated in the last thirty days. A screenshot of online banking does not work because it is not signed. Most branches turn this round while you wait.'],
+         ['Elena Ridge','Ridgeline','30 August, 11:52','What exactly does the bank letter need to say? Our branch has asked.']]},
+
+  {a:'rf', id:'MSG-4481', about:'Sandbox · keys', t:'Can we start in the sandbox before contracting closes?', w:'Dara Whitfield', r:'Global Payment Network', st:'done', last:'22 August',
+   msgs:[['Dara Whitfield','Global Payment Network','22 August, 16:05','Not before, but the afternoon it closes. Keys are issued to a named engineer, so the fastest thing you can do now is add one under People. The reference and the guides are open to anyone in the meantime.'],
+         ['Elena Ridge','Ridgeline','22 August, 15:20','Our developer would like to start looking at the API. Can she get sandbox keys before the agreement is signed?']]},
+
+  {a:'mt', id:'MSG-3120', about:'Disputes · 9 open', t:'Four Visa disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
    msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
 
-  {a:'mt', id:'MSG-3114', t:'Settlement cut-off moves to 16:30 in October', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
+  {a:'mt', id:'MSG-3114', about:'Settlement · daily cycle', t:'Settlement cut-off moves to 16:30 in October', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
    msgs:[['GPN operations','Global Payment Network','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
 
-  {a:'mt', id:'MSG-3090', t:'Evidence upload latency', w:'GPN engineering', r:'Global Payment Network', st:'done', last:'24 August',
+
+  {a:'mt', id:'MSG-3108', about:'Program · virtual cards', t:'Adding virtual cards to the Meridian program', w:'Sana Lindqvist', r:'Global Payment Network', st:'none', last:'26 August',
+   msgs:[['Sana Lindqvist','Global Payment Network','26 August, 13:40','Virtual issuance is a configuration change, not a new program: no new agreement, no new risk review. It does add a token service dependency, so engineering will want a week in the sandbox. I have put the form in your configuration page under Card program.'],
+         ['Lena Ostrom','Meridian Trust','26 August, 10:15','We would like to add virtual cards for new customers in Q4. What does that involve on your side?']]},
+
+  {a:'mt', id:'MSG-3090', about:'Incident · INC-2207', t:'Evidence upload latency', w:'GPN engineering', r:'Global Payment Network', st:'done', last:'24 August',
    msgs:[['GPN engineering','Global Payment Network','24 August, 10:12','Fixed and deployed. The 09:12 to 09:41 window on the 24th caught 1,840 of your requests. Evidence upload is a file path, not a message path, so nothing in authorization was affected.'],
          ['Lena Ostrom','Meridian Trust','24 August, 09:30','Evidence uploads are timing out. Anything on your side?']]},
 
-  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'Today at 08:40',
+  {a:'nf', id:'MSG-4471', about:'Certification · AUTH-14', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'Today at 08:40',
    msgs:[['Idris Vance','Northgate Financial','Today, 08:40','Ravi has a fix for AUTH-14 in review this morning. Can you hold the window until we have re-run it — Thursday at the latest?'],
          ['Dara Whitfield','Global Payment Network','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
          ['Idris Vance','Northgate','2 September, 09:04','Ravi thinks the partial approval is a one-line change on our side. Can we hold the window while he confirms?']]},
 
-  {a:'nf', id:'MSG-4468', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'1 September',
+  {a:'nf', id:'MSG-4468', about:'Ownership file · UBO-097', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'1 September',
    msgs:[['Dara Whitfield','Global Payment Network','1 September, 11:30','Halvard’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date. This is not a soft deadline, and it is the single thing most likely to move go live.'],
          ['Idris Vance','Northgate','29 August, 14:12','He has an appointment on the 8th. Is a receipt from the passport office enough to hold the file open?'],
          ['Dara Whitfield','Global Payment Network','29 August, 15:01','A receipt holds it for thirty days. Send it the day he has it.']]},
 
-  {a:'nf', id:'MSG-4459', t:'October release notes · dispute handling v6.0', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
+  {a:'nf', id:'MSG-4459', about:'Rules · v6.0', t:'October release notes · dispute handling v6.0', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
    msgs:[['GPN operations','Global Payment Network','28 August, 08:00','Dispute handling rules move to v6.0 on 1 September. Retrieval acknowledgement drops from 48 hours to 24. Nothing else in the release affects you.']]},
 
-  {a:'nf', id:'MSG-4402', t:'Fee schedule confirmation', w:'Priya Raman', r:'Global Payment Network', st:'done', last:'14 August',
+  {a:'nf', id:'MSG-4402', about:'Fee schedule · FEE-411', t:'Fee schedule confirmation', w:'Priya Raman', r:'Global Payment Network', st:'done', last:'14 August',
    msgs:[['Priya Raman','Global Payment Network','14 August, 10:22','Signed schedule attached, effective from activation.'],
          ['Idris Vance','Northgate','13 August, 17:45','Confirmed on our side.']]}
  ];
@@ -320,20 +334,31 @@
  /* ── Ridgeline's application, as they filled it in ── */
  var FORM = [
   {k:'entity', s:'The entity', st:'done', rows:[
-    ['Legal name','Ridgeline Freight LLC'],['Registered','Colorado, 2014 · EIN on file'],
-    ['Business address','2140 Riverbend Way, Grand Junction, CO 81505'],['Who signs','Marcus Ridge, chief executive · Elena Ridge, head of finance']]},
+    ['Legal name','Ridgeline Freight LLC'],['Trading as','Ridgeline Fleet'],['Entity type','Limited liability company, member-managed'],
+    ['Registered','Colorado, 2014 · EIN on file'],['Business address','2140 Riverbend Way, Grand Junction, CO 81505'],
+    ['Website','ridgelinefreight.com'],['What the business does','Regional freight haulage · 212 tractors across three depots'],
+    ['Industry code','4214 · Motor freight, local'],['Who signs','Marcus Ridge, chief executive · Elena Ridge, head of finance']]},
   {k:'people', s:'People', st:'done', rows:[
-    ['Beneficial owners','Marcus Ridge 62% · Elena Ridge 38%'],['Day-to-day contact','Elena Ridge · elena.ridge@ridgelinefreight.com'],
-    ['Engineering contact','Not yet named'],['Compliance contact','Elena Ridge, acting']]},
+    ['Beneficial owners','Marcus Ridge 62% · Elena Ridge 38%'],['Directors','Marcus Ridge · Elena Ridge · Tom Abara (non-executive)'],
+    ['Day-to-day contact','Elena Ridge · elena.ridge@ridgelinefreight.com · (970) 555-0142'],
+    ['Engineering contact','Not yet named'],['Compliance contact','Elena Ridge, acting'],['Finance contact','Elena Ridge'],
+    ['Who may talk to us','Elena Ridge, Marcus Ridge · anyone else needs to be added here first']]},
   {k:'program', s:'The program', st:'done', rows:[
-    ['What you want','Fleet fuel cards · restricted to fuel and maintenance'],['How many to start','About 140 cards across three depots'],
-    ['Form factor','Contactless plastic, with virtual for new drivers'],['Volume, first year','Under 1 million authorizations · $0.9M a month projected']]},
+    ['What you want','Fleet fuel cards · restricted to fuel and maintenance'],['Who carries them','Drivers, one card per tractor · depot managers hold a float card'],
+    ['How many to start','About 140 cards across three depots'],['Form factor','Contactless plastic, with virtual for new drivers'],
+    ['Where they will be used','United States · continental only, no cross-border to start'],
+    ['Spend controls you asked for','$600 a day per card · fuel and maintenance merchant codes only · no cash'],
+    ['Volume, first year','Under 1 million authorizations · $0.9M a month projected'],['Target go-live','Before the winter contract season · mid-November']]},
   {k:'bank', s:'Settlement', st:'now', rows:[
-    ['Settlement account','Wells Fargo •••• 8823 · Operating'],['Routing number','121000248'],
-    ['Proof of account','Bank letter — not yet received'],['Micro-deposits','Not started until the letter is in']]},
+    ['Settlement account','Wells Fargo •••• 8823 · Operating'],['Account holder','Ridgeline Freight LLC · matches the legal name'],
+    ['Routing number','121000248'],['Settlement rhythm','Daily, next business day · your choice, changeable until contracting closes'],
+    ['Reserve','None required at your projected volume'],['Proof of account','Bank letter — not yet received'],
+    ['Micro-deposits','Not started until the letter is in']]},
   {k:'docs', s:'Documents', st:'now', rows:[
-    ['Certificate of incorporation','Accepted 21 August'],['Audited accounts, two years','Accepted 21 August'],
-    ['Beneficial ownership declaration','Sent back — address check'],['PCI DSS attestation','Due 11 September']]}
+    ['Certificate of incorporation','Accepted 21 August'],['Operating agreement','Accepted 21 August'],
+    ['Audited accounts, two years','Accepted 21 August'],['Proof of address','Accepted 26 August · utility bill, July'],
+    ['Photo ID, each signatory','Accepted 26 August'],['Beneficial ownership declaration','Sent back — address check'],
+    ['PCI DSS attestation','Due 11 September'],['Bank letter','Not yet received · see Settlement']]}
  ];
 
  /* ── sandbox traffic: what certification and the nightly tests actually send ── */

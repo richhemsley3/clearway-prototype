@@ -55,7 +55,7 @@
     +'<div class="outline">'+FORM.map(function(s,i){
        return '<a data-f="'+s.k+'" class="'+(s.st==='done'?'done':s.st==='now'?'':'')+(s.k===cur.k?' cur':'')+'"><span class="n">'+(i+1)+'</span><span>'+esc(s.s)+'</span><span class="s">'+(s.st==='done'?'✓':'open')+'</span></a>' }).join('')
     +'<p class="t13" style="color:var(--g550); margin-top:22px; line-height:1.5">Nothing here needs filling in twice. When contracting closes, this becomes your configuration.</p></div>'
-    +'<div><div class="sech" style="margin-top:0"><h2>'+esc(cur.s)+'</h2><span class="t13">'+(cur.st==='done'?'complete':'two items open')+'</span><div class="rt"><span class="lnk" id="fmEdit">Change something</span></div></div>'
+    +'<div><div class="sech" style="margin-top:0"><h2>'+esc(cur.s)+'</h2><span class="t13">'+(function(){ var o=cur.rows.filter(function(r){return /not yet|not started|sent back|due /i.test(r[1])}).length; return o? o+' item'+(o>1?'s':'')+' open':'complete' })()+'</span><div class="rt"><span class="lnk" id="fmEdit">Change something</span></div></div>'
     +'<div class="rec" style="margin-top:14px">'+cur.rows.map(function(r){
         var open=/not yet|not started|sent back|due /i.test(r[1]);
         return '<div class="rr"><span class="l">'+esc(r[0])+'</span><span class="v'+(open?' st wa':'')+'" style="max-width:40ch">'+esc(r[1])+'</span></div>' }).join('')+'</div>'

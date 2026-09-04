@@ -26,7 +26,7 @@
    THREAD.forEach(function(t){
      if(t.st==='done') return;
      var last=t.msgs[0]; if(last[1]==='Global Payment Network') return;
-     m.push({t:'Reply to '+last[0].split(' ')[0]+' on '+t.t.charAt(0).toLowerCase()+t.t.slice(1), s:t.msgs[0][3].slice(0,90)+(t.msgs[0][3].length>90?'…':''), kind:'Reply', due:t.last, d:'wa', act:'Reply',
+     m.push({t:'Reply to '+last[0].split(' ')[0]+' on '+t.t.charAt(0).toLowerCase()+t.t.slice(1), s:ACC[t.a].n+' · '+t.last.toLowerCase()+' · “'+t.msgs[0][3].slice(0,70)+(t.msgs[0][3].length>70?'…':'')+'”', kind:'Reply', due:/^Today/.test(t.last)?'Today':'This week', d:'wa', act:'Reply',
        why:'“'+t.msgs[0][3]+'” — '+last[0]+', '+t.last.toLowerCase()+'.',
        go:function(){ agentMsgOpen=t.id; go('pd-msgs') }, run:function(){ agentMsgOpen=t.id; go('pd-msgs') }});
    });
@@ -82,8 +82,8 @@
    rows.forEach(function(t){
      var on=agentMsgOpen===t.id, aw=awaiting(t);
      h+='<tr data-t="'+t.id+'"'+(on?' class="sel"':'')+'><td>'+esc(t.t)+'<span class="s2">'+t.msgs.length+(t.msgs.length===1?' message':' messages')+' · '+esc(t.w)+'</span></td>'
-      +'<td class="opt mute">'+esc(ACC[t.a].n)+'</td><td class="opt2"><span class="key">'+t.id+'</span></td>'
-      +'<td><span class="st '+(t.st==='done'?'ok':aw?'wa':'nt')+'">'+(t.st==='done'?'Resolved':aw?'Awaiting your reply':'With '+ACC[t.a].n.split(' ')[0])+'</span></td><td class="n mute">'+esc(t.last)+'</td></tr>';
+      +'<td class="opt mute">'+esc(ACC[t.a].n)+'</td><td class="opt2 mute nw">'+esc(t.about||t.id)+'</td>'
+      +'<td><span class="st '+(t.st==='done'?'ok':aw?'wa':'nt')+'">'+(t.st==='done'?'Resolved':aw?'Awaiting your reply':'With '+ACC[t.a].n.split(' ')[0])+'</span></td><td class="n mute nw">'+esc(t.last)+'</td></tr>';
      if(on){
        h+='<tr class="expand"><td colspan="5"><div style="max-width:74ch">'
         +t.msgs.map(function(m){ var us=m[1]==='Global Payment Network';
@@ -97,7 +97,7 @@
    if($('#amSend')) $('#amSend').addEventListener('click',function(e){ e.stopPropagation();
      var t=all.filter(function(x){return x.id===agentMsgOpen})[0], v=$('#amRep').value.trim(); if(!v){ toast('Nothing to send yet.'); return; }
      t.msgs.unshift(['Dara Whitfield','Global Payment Network','Just now',v]); t.st='you'; t.last='Just now'; drawAgentMsgs(); refreshNav();
-     toast('Sent to '+ACC[t.a].who+'. It is on their screen against '+t.id+'.', function(){ t.msgs.shift(); drawAgentMsgs(); refreshNav(); }); });
+     toast('Sent to '+ACC[t.a].who+'. It is on their screen against '+(t.about||t.id).split(' · ')[0].toLowerCase()+'.', function(){ t.msgs.shift(); drawAgentMsgs(); refreshNav(); }); });
    if($('#amRes')) $('#amRes').addEventListener('click',function(e){ e.stopPropagation();
      var t=all.filter(function(x){return x.id===agentMsgOpen})[0], was=t.st; t.st='done'; drawAgentMsgs(); refreshNav();
      toast('Resolved. Either side can reopen it for seven days.', function(){ t.st=was; drawAgentMsgs(); refreshNav(); }); });

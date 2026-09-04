@@ -47,7 +47,7 @@
      pa3:[['pa-panel','Control panel',''],
           ['tx-auth','Authorizations',''],
           ['tx-settle','Settlement',''],
-          ['tx-disp','Disputes','142'],
+          ['tx-disp','Disputes','9'],
           ['pa-hub','Documentation',''],
           ['pa-msgs','Messages',String(unread('mt'))]],
      dev:[['dv-apis','API reference',''],
@@ -415,7 +415,7 @@
     +'<table class="tb" style="margin-top:12px"><tbody>'+INCID.map(function(r){
        return '<tr><td>'+esc(r[1])+'<span class="s2">'+esc(r[0])+'</span></td><td class="n mute">'+esc(r[3])+'</td><td class="n st ok">'+esc(r[4])+'</td></tr>' }).join('')
     +'</tbody></table><p class="t13" style="color:var(--g550); margin-top:14px">Both were ours. Neither touched the authorization path, so no payment was declined because of them.</p></div>'
-    +'<div class="note plain"><div class="k">Coming, and worth knowing about</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With 142 open, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
+    +'<div class="note plain"><div class="k">Coming, and worth knowing about</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With nine open and more arriving every week, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
    $('#cpAlerts').addEventListener('click',function(){ toast('Three categories: outages, disputes about to lapse, and settlement changes. All three are on for Lena.') });
    $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
    $('#cpHub').addEventListener('click',function(){ go('pa-hub') });
@@ -494,8 +494,8 @@
    rows.forEach(function(t){
      var on=msgOpen===t.id;
      h+='<tr data-t="'+t.id+'"'+(on?' class="sel"':'')+'><td>'+esc(t.t)+'<span class="s2">'+t.msgs.length+(t.msgs.length===1?' message':' messages')+'</span></td>'
-      +'<td class="opt2"><span class="key">'+t.id+'</span></td><td class="opt mute">'+esc(t.w)+'</td>'
-      +'<td><span class="st '+ST[t.st][0]+'">'+ST[t.st][1]+'</span></td><td class="n mute">'+esc(t.last)+'</td></tr>';
+      +'<td class="opt2 mute nw">'+esc(t.about||t.id)+'</td><td class="opt mute">'+esc(t.w)+'</td>'
+      +'<td><span class="st '+ST[t.st][0]+'">'+ST[t.st][1]+'</span></td><td class="n mute nw">'+esc(t.last)+'</td></tr>';
      if(on){
        h+='<tr class="expand"><td colspan="5"><div style="max-width:74ch">'
         +t.msgs.map(function(m){
@@ -509,7 +509,7 @@
      }
    });
    $('#msgBody').innerHTML=h+'</tbody></table>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">A thread is attached to the record it is about, so the reference here is that record’s own id. The status says whose turn it is rather than where the thread sits in a workflow.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">A thread is attached to the record it is about, so the About column is that record, not a ticket number. The status says whose turn it is rather than where the thread sits in a workflow.</p>';
    $$('#msgBody tr[data-t]').forEach(function(tr){ tr.addEventListener('click',function(){
      anchored($('#msgBody'), function(){ msgOpen = msgOpen===tr.dataset.t ? null : tr.dataset.t; drawMsgs(); }) }) });
    if($('#repSend')) $('#repSend').addEventListener('click',function(e){
@@ -933,7 +933,7 @@
      $('#pfBody').innerHTML='<div class="facts" style="margin-top:30px">'
       +[['Availability','99.98','%'],['Median','31','ms'],['p95','68','ms'],['Errors','0.02','%']].map(function(f){
         return '<div><div class="k">'+f[0]+'</div><div class="v">'+f[1]+'<small>'+f[2]+'</small></div></div>' }).join('')+'</div>'
-      +'<div class="inst" style="margin-top:38px"><div class="cap t13">Authorization latency, last twenty-four hours · p50 solid, p95 grey · the 09:00 spike is the evidence-upload incident</div>'
+      +'<div class="inst" style="margin-top:38px"><div class="cap t13">Authorization latency, last twenty-four hours · p50 solid, p95 grey · the 09:00 spike is your own load run</div>'
       +line([31,30,32,33,31,30,29,31,34,36,33,31],{w:cwidth(1160),h:230,min:20,max:120,prev:[62,60,64,68,66,63,61,66,74,110,80,68],fmt:function(n){return Math.round(n)+' ms'}})
       +'<div class="ax"><span>24 hours ago</span><span>12 hours</span><span>now</span></div></div>'
       +'<div class="sech" style="margin-top:44px"><h2>By endpoint</h2><span class="t13">budget is 400 ms at p95 on everything except file upload</span></div>'
@@ -983,7 +983,7 @@
  WS.pa1={i:'RF', n:'Ridgeline Freight', s:'Participant · applying', who:'Elena Ridge · head of finance', nav:navFor('pa1')};
  WS.pa2={i:'NF', n:'Northgate Financial', s:'Participant · boarding', who:'Idris Vance · program manager', nav:navFor('pa2')};
  WS.pa3={i:'MT', n:'Meridian Trust', s:'Participant · live', who:'Lena Ostrom · head of payments', nav:navFor('pa3')};
- WS.dev={i:'NF', n:'Northgate sandbox', s:'Developer · pre-production', who:'Ravi Kapoor · integration engineer', nav:navFor('dev')};
+ WS.dev={i:'NF', n:'Northgate sandbox', s:'Developer · sandbox', who:'Ravi Kapoor · integration engineer', nav:navFor('dev')};
  WS.cw.nav=navFor('cw');
  delete WS.ng; delete WS.bp;
 
@@ -995,7 +995,7 @@
   +'<a data-w="pa2"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate Financial<span>Approved · boarding</span></span></a>'
   +'<a data-w="pa3"><i>MT</i><span style="color:var(--g900); font-size:14.5px">Meridian Trust<span>Live · BIN 465088</span></span></a>'
   +'<h6>Developer</h6>'
-  +'<a data-w="dev"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate sandbox<span>Ravi Kapoor · pre-production</span></span></a>';
+  +'<a data-w="dev"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate sandbox<span>Ravi Kapoor · sandbox</span></span></a>';
  $$('#wsmenu a').forEach(function(a){ a.addEventListener('click',function(){
    $('#wsmenu').classList.remove('on'); setWs(a.dataset.w); }) });
 
