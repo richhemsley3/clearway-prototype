@@ -142,7 +142,7 @@
   <main class="mn">
     <!-- ═══ PARTNERS LIST ═══ -->
     <section class="view on" data-v="pd-partners">
-      <div class="ph"><div><h1>Partner desk</h1><p id="psub">24 accounts · $168.4M a month · 34 days median from introduction to live</p></div>
+      <div class="ph"><div><h1>Partner desk</h1><p id="psub">24 accounts · $168.4M a month · 78 days median from introduction to live</p></div>
         <div class="act"><button class="btn">Log a call</button><button class="btn">Add partner</button></div></div>
       <div class="segrow" id="psub2"></div>
       <div class="now" id="now"></div>
@@ -179,8 +179,8 @@
 
     <!-- ═══ TASKS ═══ -->
     <section class="view" data-v="pd-tasks">
-      <div class="ph"><div><h1>Tasks</h1><p id="tsub"></p></div>
-        <div class="act"><button class="btn" id="tclear">Clear completed</button><button class="btn">Add task</button></div></div>
+      <div class="ph"><div><h1>Today</h1><p id="tsub"></p></div>
+        <div class="act"><button class="btn" id="tclear">Clear completed</button><button class="btn">Add a task</button></div></div>
       <div class="segrow" id="tsub2"></div>
       <div class="now" id="tnow"></div>
       <div id="tasks" class="hold deep"></div>
@@ -220,14 +220,14 @@
  /* ── the six rich records, plus eighteen more so the list behaves like a real one ── */
  var MORE=[
   ['Halcyon Pay','HP','Program manager · issuing','Live','$14.2M','96.1%',88,'ok','Healthy','Dara Whitfield','Today'],
-  ['Ridgeline Freight','RF','Fleet · issuing','Enrolling · step 3 of 15','—','—',70,'nt','New','Dara Whitfield','Today'],
+  ['Ridgeline Freight','RF','Fleet · issuing','Contracting','—','—',70,'nt','New','Dara Whitfield','Today'],
   ['Kestrel Union','KU','Credit union · issuing','Live','$6.1M','95.4%',84,'ok','Healthy','Idris Vance','26 Aug'],
   ['Alder & Vane','AV','Acquirer','Live','$22.8M','93.8%',79,'ok','Healthy','Dara Whitfield','25 Aug'],
   ['Pemberton Bank','PB','Sponsor bank','Live','$31.4M','97.2%',91,'ok','Healthy','Sana Lindqvist','21 Aug'],
   ['Lockridge Mutual','LM','Issuer','Live','$9.7M','94.9%',81,'ok','Healthy','Idris Vance','19 Aug'],
-  ['Verity Spend','VS','Program manager · issuing','Certifying','—','—',66,'wa','Watch','Dara Whitfield','Today'],
+  ['Verity Spend','VS','Program manager · issuing','Risk review','—','—',66,'wa','Watch','Dara Whitfield','Today'],
   ['Orpington Retail','OR','Acquirer','Live','$4.4M','92.1%',72,'wa','Watch','Dara Whitfield','14 Aug'],
-  ['Stonecrop Labs','SL','Processor','Connecting','—','—',68,'nt','New','Ravi Kapoor','Yesterday'],
+  ['Stonecrop Labs','SL','Processor','Contracting','—','—',68,'nt','New','Ravi Kapoor','Yesterday'],
   ['Fennimore Group','FG','Acquirer','Live','$11.9M','95.8%',86,'ok','Healthy','Sana Lindqvist','12 Aug'],
   ['Bright Harbour','BH','Issuer','Live','$7.2M','96.4%',89,'ok','Healthy','Idris Vance','9 Aug'],
   ['Calloway Freight','CF','Fleet · issuing','Live','$3.8M','91.7%',64,'wa','Watch','Dara Whitfield','8 Aug'],
@@ -235,7 +235,7 @@
   ['Islay Payments','IP','Processor','Live','$5.5M','94.1%',77,'ok','Healthy','Ravi Kapoor','2 Aug'],
   ['Dunmore Retail','DR','Acquirer','Dormant','$0.0M','—',41,'no','Dormant','Dara Whitfield','14 Jan'],
   ['Thornbury Bank','TB','Issuer','Live','$13.1M','95.2%',83,'ok','Healthy','Idris Vance','29 Jul'],
-  ['Wrenfield Cards','WC','Program manager · issuing','Filing','—','—',69,'nt','New','Dara Whitfield','Yesterday'],
+  ['Wrenfield Cards','WC','Program manager · issuing','Risk review','—','—',69,'nt','New','Dara Whitfield','Yesterday'],
   ['Aveline Systems','AS','Processor','Live','$2.9M','93.3%',74,'ok','Healthy','Ravi Kapoor','24 Jul']
  ];
  var CAT=['enr','risk','live','enr','live','dor'];
@@ -245,7 +245,7 @@
  P.forEach(function(p,i){
    A.push({rich:i, n:p.n, i:p.i, t:p.t, stage:p.stage, vol:p.vol, apr:p.apr, health:p.health, hs:p.hs, hl:p.hl,
      own:OWN[i], last:LAST[i], cat:CAT[i], next:p.next, nextAct:p.nextAct, spark:p.spark,
-     st:['Program','Filing',null,'Filing',null,null][i]});
+     st:['Integration','Risk review',null,'Risk review',null,null][i]});
  });
  MORE.forEach(function(m){
    A.push({rich:-1, n:m[0], i:m[1], t:m[2], stage:m[3], vol:m[4], apr:m[5], health:m[6], hs:m[7], hl:m[8],
@@ -455,7 +455,7 @@
    seen=[i].concat(seen.filter(function(x){return x!==i})).slice(0,8);
    go('pd-partner'); }
  function stage(p){
-   var STG=['Introduced','Filing','Program','Connecting','Certifying','Live'];
+   var STG=['Introduced','Risk review','Contracting','Integration','Live'];
    var at=/Live/.test(p.stage)?5:/Certif/.test(p.stage)?4:/Connect/.test(p.stage)?3:/Program/.test(p.stage)?2:/Filing/.test(p.stage)?1:0;
    if(p.rich===0) at=2;
    return '<div class="stage">'+STG.map(function(s,i){ return '<span class="'+(i<at?'done':i===at?'cur':'')+'">'+s+'</span>' }).join('')+'</div>';
@@ -619,9 +619,10 @@
  }
 
  /* ══════════ PIPELINE ══════════ */
- var STG=['Introduced','Filing','Program','Connecting','Certifying','Live'];
+ var STG=['Introduced','Risk review','Contracting','Integration','Live'];
  var pipeView='flight';
  var stageOf=function(p){ return p.st && STG.indexOf(p.st)>-1 ? p.st : 'Introduced' };
+ var STGMED={'Introduced':4,'Risk review':9,'Contracting':6,'Integration':52,'Live':0};
  var daysIn=function(p){ return A.indexOf(p)===0?12:[4,6,3,9,5,2,11,7][A.indexOf(p)%8] };
  function paintPipeSub(){
    var inflight=A.filter(function(p){ return p.cat==='enr' });
@@ -649,7 +650,7 @@
    var all=A.filter(function(p){ return p.cat==='enr' });
    var counts=STG.map(function(st){ return all.filter(function(p){ return stageOf(p)===st }).length });
    $('#stages').innerHTML=STG.map(function(s,i){ var n=counts[i];
-     return '<div><div class="k">'+s+'</div><div class="v">'+n+'</div><div class="m">'+(n?Math.round(4+i*3)+' days median':'nobody here')+'</div><div class="bar"><i style="width:'+Math.min(100,n*45)+'%"></i></div></div>' }).join('');
+     return '<div><div class="k">'+s+'</div><div class="v">'+n+'</div><div class="m">'+(n?STGMED[s]+' days median':'nobody here')+'</div><div class="bar"><i style="width:'+Math.min(100,n*45)+'%"></i></div></div>' }).join('');
    var grouped = pipeView==='stage'||pipeView==='fore'||pipeView==='conv';
    $('#stages').style.display = grouped ? 'none' : '';
    $('#pipehd').style.display = grouped ? 'none' : '';
@@ -657,16 +658,16 @@
      $('#pipe').style.display='none';
      var host2=$('#pipegrp'); host2.style.display='';
      if(pipeView==='fore'){
-       var F=[['September','Verity Spend','Certifying','$1.8M','80%'],
-              ['October','Northgate Financial','Program','$8.4M','65%'],
-              ['October','Stonecrop Labs','Connecting','$2.2M','70%'],
-              ['November','Wrenfield Cards','Filing','$3.1M','40%'],
-              ['November','Vantage Hospitality','Filing','$2.0M','35%'],
-              ['December','Ridgeline Freight','Introduced','$0.9M','25%']];
-       host2.innerHTML='<div class="facts" style="margin-top:34px"><div><div class="k">Weighted pipeline</div><div class="v">$9.6M</div></div>'
+       var F=[['October','Northgate Financial','Integration','$8.4M','65%'],
+              ['November','Stonecrop Labs','Contracting · handed to ops today','$2.2M','55%'],
+              ['November','Ridgeline Freight','Contracting','$0.9M','40%'],
+              ['December','Vantage Hospitality','Risk review','$2.0M','30%'],
+              ['December','Wrenfield Cards','Risk review','$3.1M','30%'],
+              ['January','Verity Spend','Risk review · second look','$1.8M','20%']];
+       host2.innerHTML='<div class="facts" style="margin-top:34px"><div><div class="k">Weighted pipeline</div><div class="v">$8.9M</div></div>'
         +'<div><div class="k">Unweighted</div><div class="v">$18.4M</div></div>'
-        +'<div><div class="k">Expected live this quarter</div><div class="v">3<small>of 6</small></div></div>'
-        +'<div><div class="k">Median to live</div><div class="v">34<small>days</small></div></div></div>'
+        +'<div><div class="k">Live by year end</div><div class="v">5<small>of 6</small></div></div>'
+        +'<div><div class="k">Median to live</div><div class="v">78<small>days</small></div></div></div>'
         +'<div class="inst" style="margin-top:38px"><div class="cap t13">Projected monthly volume as each partner goes live · weighted by confidence</div>'
         +line([168,170,172,180,184,188],{w:cwidth(1160),h:220,min:160,max:195,fmt:function(n){return '$'+Math.round(n)+'M'}})
         +'<div class="ax"><span>Sep</span><span>Nov</span><span>Feb</span></div></div>'
@@ -674,15 +675,15 @@
         +'<table class="tb" style="margin-top:14px"><thead><tr><th>Expected</th><th>Partner</th><th>Stage now</th><th class="n">Monthly volume</th><th class="n">Confidence</th></tr></thead><tbody>'
         +F.map(function(r){ return '<tr><td style="width:150px">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="n st '+(parseInt(r[4])>60?'ok':parseInt(r[4])>34?'wa':'nt')+'">'+r[4]+'</td></tr>' }).join('')
         +'</tbody></table>'
-        +'<p class="t13" style="margin-top:20px; color:var(--g550); max-width:70ch">Confidence is set by the stage, not by the partner. Nobody at Filing has ever been more than 40% likely to go live inside a quarter, whatever they told us on the call.</p>';
+        +'<p class="t13" style="margin-top:20px; color:var(--g550); max-width:70ch">Confidence is set by the stage, not by the partner. Nobody at risk review has ever been more than 30% likely to go live inside a quarter, whatever they told us on the call.</p>';
      } else {
-       var C=[['Introduced → Filing',92],['Filing → Program',78],['Program → Connecting',85],['Connecting → Certifying',88],['Certifying → Live',71]];
+       var C=[['Introduced → Risk review',92],['Risk review → Contracting',78],['Contracting → Integration',85],['Integration → Live',74]];
        host2.innerHTML='<div class="sech" style="margin-top:34px"><h2>Stage to stage</h2><span class="t13">last twelve months · 31 partners</span></div>'
         +'<div style="margin-top:16px">'+ptw(C.map(function(c){ return [c[0], c[1], c[1]<75, c[1]+'%'] }),function(n){ return '' })+'</div>'
-        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where we lose people</div><p>Certifying to Live is the leak: seven in ten make it, and the three who do not are almost always a host team that ran out of time rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
+        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where we lose people</div><p>Integration to live is the leak: three in four make it, and the ones who do not are almost always a host team that ran out of time before certification rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
         +'<div><div class="sech" style="margin-top:0"><h2>Time in each stage</h2><span class="t13">median days</span></div>'
         +'<table class="tb" style="margin-top:14px"><tbody>'
-        +[['Introduced','4 days'],['Filing','9 days'],['Program','6 days'],['Connecting','5 days'],['Certifying','11 days']].map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n" style="width:140px">'+r[1]+'</td></tr>' }).join('')
+        +[['Introduced','4 days'],['Risk review','9 days'],['Contracting','6 days'],['Integration','52 days']].map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n" style="width:140px">'+r[1]+'</td></tr>' }).join('')
         +'</tbody></table></div></div>';
      }
      return;
@@ -695,15 +696,19 @@
      host.innerHTML=groups.map(function(g){
        var st=g[0], in_=g[1];
        return '<div class="grpsec"><div class="sech" style="margin-top:0"><h2>'+st+'</h2><span class="t13">'+in_.length+(in_.length===1?' partner':' partners')+'</span>'
-        +'<div class="rt"><span class="t13">'+(in_.length?Math.round(4+STG.indexOf(st)*3)+' days median':'')+'</span></div></div>'
+        +'<div class="rt"><span class="t13">'+(in_.length?STGMED[st]+' days median':'')+'</span></div></div>'
         +('<table class="tb" style="margin-top:10px"><tbody>'+in_.map(function(p){
             var idx=A.indexOf(p);
             return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+'</span></td>'
              +'<td style="width:150px">'+daysIn(p)+' days here</td><td class="n" style="width:150px">'+(p.vol==='—'?'$2.0M est':esc(p.vol))+'</td><td style="width:170px">'+esc(p.own)+'</td></tr>';
           }).join('')+'</tbody></table>')+'</div>';
      }).join('')
-     + '<p class="t13" style="margin-top:30px; color:var(--g550)">'+(6-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
-     $$('#pipegrp tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(){ openRecord(+tr.dataset.i) }) });
+     + '<p class="t13" style="margin-top:30px; color:var(--g550)">'+(5-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
+     $$('#pipegrp tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(){
+       var p=A[+tr.dataset.i];
+       if(p.n==='Ridgeline Freight'){ go('pd-onboard'); return; }
+       if(typeof DEALS!=='undefined'){ var d=DEALS.filter(function(x){return x.n===p.n})[0]; if(d && stageOf(p)!=='Integration'){ openDeal(d.k); return; } }
+       openRecord(+tr.dataset.i); }) });
      return;
    }
    $('#pipegrp').style.display='none'; $('#pipe').style.display='';
@@ -729,22 +734,25 @@
      drawPipe(); paintTabs();
      toast(A[i].n+' moved to '+a.dataset.to+'.',function(){ A[i].stage=was; A[i].cat='enr'; drawPipe(); paintTabs(); });
    }) });
-   $$('#pipe tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){ if(e.target.closest('.menu2')) return; openRecord(+tr.dataset.i); }) });
+   $$('#pipe tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){ if(e.target.closest('.menu2')) return;
+     var p=A[+tr.dataset.i];
+     if(p.n==='Ridgeline Freight'){ go('pd-onboard'); return; }
+     if(typeof DEALS!=='undefined'){ var d=DEALS.filter(function(x){return x.n===p.n})[0]; if(d && stageOf(p)!=='Integration'){ openDeal(d.k); return; } }
+     openRecord(+tr.dataset.i); }) });
  }
 
  /* ══════════ TASKS ══════════ */
  var TASKS=[
   ['Today',[
-    ['Chase Halvard Ruiz’s passport','Northgate Financial · blocks settlement after 12 Sep','High',0,1],
-    ['Reply to Idris on the collateral ceiling','Northgate Financial','High',0,0],
     ['Pre-check Verity Spend’s sandbox endpoint','Verity Spend · before their first run','Normal',0,0],
-    ['Confirm Ridgeline’s micro-deposits landed','Ridgeline Freight','Normal',1,0]]],
+    ['Book Stonecrop’s kick-off with Priya','Stonecrop Labs · handed to ops today','Normal',0,0],
+    ['Log the Harbour Freight intro call','Harbour Freight Co · Thursday','Normal',1,0]]],
   ['This week',[
     ['Quarterly review pack for Pemberton','Pemberton Bank · due Friday','Normal',0,0],
     ['Walk Stonecrop through webhook signing','Stonecrop Labs','Normal',0,0],
     ['Dormancy call with Dunmore Retail','Dunmore Retail · 230 days quiet','Low',0,0]]],
   ['Waiting on someone else',[
-    ['Cascade Trust collateral confirmation','Northgate Financial · chased twice','Normal',0,0],
+    ['Second-line opinion on Verity Spend’s adverse media hit','Verity Spend · queued a week','Normal',0,0],
     ['Legal on the Halcyon addendum','Halcyon Pay','Low',0,0]]]
  ];
  var taskView='mine';
@@ -979,6 +987,7 @@
 /*DEVJS*/
 /*CONFJS*/
 /*TXENV*/
+/*IAJS*/
  $('#pnlX').addEventListener('click',closePanel);
  $('#scrim').addEventListener('click',closePanel);
  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePanel() });

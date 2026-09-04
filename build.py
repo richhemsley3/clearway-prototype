@@ -45,6 +45,7 @@ def main():
                          ('/*DEVJS*/', 'devjs.txt'),
                          ('/*CONFJS*/', 'confjs.txt'),
                          ('/*TXENV*/', 'txenv.txt'),
+                         ('/*IAJS*/', 'iajs.txt'),
                          ('/*DATA*/', 't1data.txt')):
         if marker in s:
             s = s.replace(marker, read(part), 1)

@@ -193,8 +193,9 @@
    msgs:[['GPN engineering','Global Payment Network','24 August, 10:12','Fixed and deployed. The 09:12 to 09:41 window on the 24th caught 1,840 of your requests. Evidence upload is a file path, not a message path, so nothing in authorization was affected.'],
          ['Lena Ostrom','Meridian Trust','24 August, 09:30','Evidence uploads are timing out. Anything on your side?']]},
 
-  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'Yesterday at 16:20',
-   msgs:[['Dara Whitfield','Global Payment Network','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
+  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Global Payment Network', st:'none', last:'Today at 08:40',
+   msgs:[['Idris Vance','Northgate Financial','Today, 08:40','Ravi has a fix for AUTH-14 in review this morning. Can you hold the window until we have re-run it — Thursday at the latest?'],
+         ['Dara Whitfield','Global Payment Network','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
          ['Idris Vance','Northgate','2 September, 09:04','Ravi thinks the partial approval is a one-line change on our side. Can we hold the window while he confirms?']]},
 
   {a:'nf', id:'MSG-4468', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Global Payment Network', st:'you', last:'1 September',

@@ -282,7 +282,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 .psec .hd .lnk{margin-left:auto; font-size:14.5px}
 
 /* ---- stage summary strip (pipeline) ---- */
-.stages{margin-top:32px; background:var(--g025); border-radius:var(--r-surface); display:grid; grid-template-columns:repeat(6,1fr); overflow:hidden}
+.stages{margin-top:32px; background:var(--g025); border-radius:var(--r-surface); display:grid; grid-template-columns:repeat(5,1fr); overflow:hidden}
 .stages > div{padding:20px 22px 18px; border-left:1px solid var(--g150)}
 .stages > div:first-child{border-left:0}
 .stages .k{font-size:13px; color:var(--g550)}

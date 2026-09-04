@@ -1,0 +1,129 @@
+
+ /* ══════════════════════════════════════════════════════════════════
+    INFORMATION ARCHITECTURE — each persona lands on the thing they are
+    there to do, and the nav reads as their lifecycle.
+    ══════════════════════════════════════════════════════════════════ */
+
+ /* ── the agent's moves, read live from the spine ────────────────── */
+ function movesNow(){
+   var m=[];
+   var agr=QUEUE.filter(function(q){return q.k==='agr'})[0], risk=QUEUE.filter(function(q){return q.k==='risk'})[0];
+   if(agr.dstate!=='done') m.push({t:'Chase Marcus Ridge’s signature', s:'Ridgeline Freight · second of two · October slots close 12 September', kind:'Chase', due:'Today', d:'wa', act:'Chase the signature',
+     why:'Elena signed on 1 September. He has opened the pack twice. Nothing on Ridgeline moves until he signs, and the October integration slots close on the 12th.',
+     go:function(){ go('pd-onboard') }, run:function(){ signAgreement(); toast('Reminder sent to Marcus Ridge, copied to Elena. He signs.'); drawTasks(); }});
+   if(risk.dstate!=='done') m.push({t:'Chase second-line risk sign-off', s:'Ridgeline Freight · ours · day 6 against a 4-day median', kind:'Chase', due:'Today', d:'wa', act:'Chase risk',
+     why:'Second line has had it since 28 August, two days past the median. It is the last thing between Ridgeline and contracting close, and it is ours, which they can see.',
+     go:function(){ go('pd-onboard') }, run:function(){ clearRisk(); toast('Second line signed it off.'); drawTasks(); }});
+   if(!handed && agr.dstate==='done' && risk.dstate==='done') m.push({t:'Hand Ridgeline to operations', s:'Ridgeline Freight · contracting closed · nothing blocking', kind:'Move', due:'Today', d:'wa', act:'Hand to operations',
+     why:'Both signatures and the risk sign-off are in. Moving it today keeps the October slot and the original go-live date.',
+     go:function(){ go('pd-onboard') }, run:function(){ doHand(); drawTasks(); }});
+   m.push({t:'Chase Halvard Ruiz’s replacement passport', s:'Northgate Financial · expires 12 September · settlement pauses on the first cycle after', kind:'Chase', due:'12 Sep', d:'wa', act:'Chase the document',
+     why:'The passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be Northgate’s first cycle.',
+     go:function(){ openRecord(0) }, run:function(){ toast('Chase sent to Halvard Ruiz, copied to Idris Vance.'); }});
+   var f=suiteTot('fail');
+   if(f) m.push({t:f+(f===1?' certification case is':' certification cases are')+' failing', s:'Northgate Financial · the window opens 15 September · AUTH-14 decides it', kind:'Watch', due:'15 Sep', d:'nt', go:function(){ inTab='cert'; go('pd-integr') }});
+   m.push({t:'Tell Idris the mutual TLS certificate expires 21 September', s:'Northgate Financial · fifteen days before go live · nobody there has raised it', kind:'Tell', due:'This week', d:'nt', go:function(){ go('pd-integr') }});
+   THREAD.forEach(function(t){
+     if(t.st==='done') return;
+     var last=t.msgs[0]; if(last[1]==='Global Payment Network') return;
+     m.push({t:'Reply to '+last[0].split(' ')[0]+' on '+t.t.charAt(0).toLowerCase()+t.t.slice(1), s:t.msgs[0][3].slice(0,90)+(t.msgs[0][3].length>90?'…':''), kind:'Reply', due:t.last, d:'wa', act:'Reply',
+       why:'“'+t.msgs[0][3]+'” — '+last[0]+', '+t.last.toLowerCase()+'.',
+       go:function(){ agentMsgOpen=t.id; go('pd-msgs') }, run:function(){ agentMsgOpen=t.id; go('pd-msgs') }});
+   });
+   DEALS.forEach(function(d){ if(d.days>=9 && d.k!=='rf') m.push({t:d.next, s:d.n+' · '+d.days+' days in '+d.stage.toLowerCase()+' · '+d.note.toLowerCase(), kind:d.stage==='Risk due diligence'?'Chase':'Move', due:'This week', d:'nt', go:function(){ openDeal(d.k) }}); });
+   return m;
+ }
+ var _drawTasks=drawTasks;
+ drawTasks=function(){
+   _drawTasks();
+   if(taskView!=='mine') return;
+   var mv=movesNow(), host=$('#tasks');
+   var top=mv.filter(function(x){return x.d==='wa'})[0]||mv[0];
+   var openT=TASKS.reduce(function(a,g){return a+g[1].filter(function(x){return !x[3]}).length},0);
+   $('#tsub').textContent=mv.length+' moves read from the book · '+openT+' tasks of your own · '+mv.filter(function(x){return x.d==='wa'}).length+' with a date that bites this week';
+   if(top){
+     $('#tnow').className='now';
+     $('#tnow').innerHTML='<div><div class="k">Do this first</div><h2>'+esc(top.t)+'</h2><p class="why">'+esc(top.why||top.s)+'</p>'
+      +'<div class="act"><button class="btn pri" id="mvRun">'+esc(top.act||'Open')+'</button><span class="lnk" id="mvGo">Open the record</span></div>'
+      +'<div class="also"><span>Also today</span><span><b>'+mv.filter(function(x){return x.d==='wa'}).length+'</b> moves with a date on them</span><span><b>'+TASKS[0][1].filter(function(t){return !t[3]}).length+'</b> tasks</span></div></div>'
+      +'<div class="rec"><h4>Where today goes</h4>'
+      +'<div class="rr"><span class="l">Chases</span><span class="v">'+mv.filter(function(x){return x.kind==='Chase'}).length+'</span></div>'
+      +'<div class="rr"><span class="l">Replies owed</span><span class="v">'+mv.filter(function(x){return x.kind==='Reply'}).length+'</span></div>'
+      +'<div class="rr"><span class="l">Things to watch</span><span class="v">'+mv.filter(function(x){return x.kind==='Watch'||x.kind==='Tell'}).length+'</span></div>'
+      +'<div class="rr"><span class="l">Waiting on others</span><span class="v">'+TASKS[2][1].filter(function(t){return !t[3]}).length+'</span></div></div>';
+     $('#mvRun').addEventListener('click',function(){ if(top.run) top.run(); else top.go(); });
+     $('#mvGo').addEventListener('click',function(){ top.go() });
+   }
+   var h='<div class="sech" style="margin-top:34px"><h2>Your moves</h2><span class="t13">'+mv.length+' across the book · read from the accounts, not typed in</span></div>'
+    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Move</th><th class="opt2">Kind</th><th>When</th><th class="n"></th></tr></thead><tbody>'
+    +mv.map(function(x,i){ return '<tr data-mv="'+i+'"><td>'+esc(x.t)+'<span class="s2" style="max-width:64ch">'+esc(x.s)+'</span></td><td class="opt2 mute">'+x.kind+'</td><td class="st '+x.d+'">'+esc(x.due)+'</td><td class="n"><span class="lnk" data-run="'+i+'">'+esc(x.act||'Open')+'</span></td></tr>' }).join('')
+    +'</tbody></table>';
+   var sec=document.createElement('div'); sec.innerHTML=h;
+   host.insertBefore(sec, host.firstChild);
+   $$('#tasks tr[data-mv]').forEach(function(tr){ tr.addEventListener('click',function(e){
+     if(e.target.dataset.run!==undefined){ e.stopPropagation(); var x=mv[+e.target.dataset.run]; if(x.run) x.run(); else x.go(); return; }
+     mv[+tr.dataset.mv].go() }) });
+   var hd=host.querySelector('.sech:not(:first-child) h2'); /* the typed list follows the derived one */
+ };
+
+ /* ── the agent's messages: every thread, from our side ──────────── */
+ var agentMsgOpen=null, agentMsgF='all';
+ function drawAgentMsgs(){
+   var all=THREAD.slice();
+   var awaiting=function(t){ return t.st!=='done' && t.msgs[0][1]!=='Global Payment Network' };
+   var yours=all.filter(awaiting);
+   $('#amSub').textContent=all.length+' threads across three accounts · '+yours.length+' awaiting your reply · a thread is attached to the record it is about';
+   var K=[['all','All threads',all.length],['you','Awaiting your reply',yours.length],['theirs','With them',all.filter(function(t){return !awaiting(t)&&t.st!=='done'}).length],['done','Resolved',all.filter(function(t){return t.st==='done'}).length]];
+   $('#amSeg').innerHTML='<span class="seg">'+K.map(function(t){ return '<button data-m="'+t[0]+'" aria-pressed="'+(agentMsgF===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')+'</span>';
+   $$('#amSeg button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#amSeg'), function(){ agentMsgF=b.dataset.m; agentMsgOpen=null; drawAgentMsgs(); }) }) });
+   var rows=all.filter(function(t){ return agentMsgF==='all' || (agentMsgF==='you'&&awaiting(t)) || (agentMsgF==='theirs'&&!awaiting(t)&&t.st!=='done') || (agentMsgF==='done'&&t.st==='done') });
+   if(!rows.length){ $('#amBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">Nothing here.</div><p>Every thread is with the participant or closed.</p></div>'; return; }
+   var h='<table class="tb" style="margin-top:22px"><thead><tr><th>Thread</th><th class="opt">Account</th><th class="opt2">About</th><th>Status</th><th class="n">Last</th></tr></thead><tbody>';
+   rows.forEach(function(t){
+     var on=agentMsgOpen===t.id, aw=awaiting(t);
+     h+='<tr data-t="'+t.id+'"'+(on?' class="sel"':'')+'><td>'+esc(t.t)+'<span class="s2">'+t.msgs.length+(t.msgs.length===1?' message':' messages')+' · '+esc(t.w)+'</span></td>'
+      +'<td class="opt mute">'+esc(ACC[t.a].n)+'</td><td class="opt2"><span class="key">'+t.id+'</span></td>'
+      +'<td><span class="st '+(t.st==='done'?'ok':aw?'wa':'nt')+'">'+(t.st==='done'?'Resolved':aw?'Awaiting your reply':'With '+ACC[t.a].n.split(' ')[0])+'</span></td><td class="n mute">'+esc(t.last)+'</td></tr>';
+     if(on){
+       h+='<tr class="expand"><td colspan="5"><div style="max-width:74ch">'
+        +t.msgs.map(function(m){ var us=m[1]==='Global Payment Network';
+          return '<div style="padding:14px 0; border-bottom:1px solid var(--g100)"><div class="t13" style="color:var(--g550)">'+esc(m[0])+' · '+esc(m[1])+' · '+esc(m[2])+'</div><p style="font-size:15px; line-height:1.55; margin-top:6px'+(us?'':'; color:var(--g650)')+'">'+esc(m[3])+'</p></div>' }).join('')
+        +'<div class="field" style="margin-top:18px"><label>Reply<small>as Dara Whitfield</small></label><textarea class="in" rows="3" id="amRep" placeholder="Type a reply"></textarea></div>'
+        +'<div class="act" style="display:flex; gap:14px; align-items:center; margin-top:14px"><button class="btn pri" id="amSend">Send</button>'+(t.st==='done'?'':'<span class="lnk" id="amRes">Mark resolved</span>')+'</div></div></td></tr>';
+     }
+   });
+   $('#amBody').innerHTML=h+'</tbody></table>';
+   $$('#amBody tr[data-t]').forEach(function(tr){ tr.addEventListener('click',function(){ anchored($('#amBody'), function(){ agentMsgOpen=agentMsgOpen===tr.dataset.t?null:tr.dataset.t; drawAgentMsgs(); }) }) });
+   if($('#amSend')) $('#amSend').addEventListener('click',function(e){ e.stopPropagation();
+     var t=all.filter(function(x){return x.id===agentMsgOpen})[0], v=$('#amRep').value.trim(); if(!v){ toast('Nothing to send yet.'); return; }
+     t.msgs.unshift(['Dara Whitfield','Global Payment Network','Just now',v]); t.st='you'; t.last='Just now'; drawAgentMsgs(); refreshNav();
+     toast('Sent to '+ACC[t.a].who+'. It is on their screen against '+t.id+'.', function(){ t.msgs.shift(); drawAgentMsgs(); refreshNav(); }); });
+   if($('#amRes')) $('#amRes').addEventListener('click',function(e){ e.stopPropagation();
+     var t=all.filter(function(x){return x.id===agentMsgOpen})[0], was=t.st; t.st='done'; drawAgentMsgs(); refreshNav();
+     toast('Resolved. Either side can reopen it for seven days.', function(){ t.st=was; drawAgentMsgs(); refreshNav(); }); });
+ }
+ function agentUnread(){ return THREAD.filter(function(t){ return t.st!=='done' && t.msgs[0][1]!=='Global Payment Network' }).length }
+ ICON['pd-msgs']=ICON['pa-msgs'];
+ PDRAW['pd-msgs']=drawAgentMsgs;
+
+ /* ── the nav, in lifecycle order, with the home where the work is ── */
+ var _navFor=navFor;
+ navFor=function(k){
+   var t=_navFor(k);
+   if(k==='cw') return [
+     ['pd-tasks','Today',String(movesNow().length+TASKS.reduce(function(a,g){return a+g[1].filter(function(x){return !x[3]}).length},0))],
+     ['pd-partners','Partners',String(A.length)],
+     ['pd-pipeline','Pipeline',String(A.filter(function(p){return p.cat==='enr'}).length)],
+     ['pd-integr','Integration',String(handed?2:1)],
+     ['pd-msgs','Messages',String(agentUnread())],
+     ['pd-reports','Reports','']];
+   if(k==='dev') return [
+     ['dv-tool','Toolkit',String(suiteTot('fail'))],
+     ['dv-logs','Logs',''],
+     ['dv-apis','API reference',''],
+     ['dv-keys','Keys & webhooks','1'],
+     ['dv-perf','Performance',''],
+     ['pa-hub','Documentation','']];
+   return t;
+ };
+ WS.cw.nav=navFor('cw'); WS.dev.nav=navFor('dev');

@@ -64,9 +64,18 @@
       <div id="msgBody" class="hold"></div>
     </section>
 
+    <!-- ═══ AGENT · MESSAGES ═══ -->
+    <section class="view" data-v="pd-msgs">
+      <div class="ph"><div><h1>Messages</h1><p id="amSub"></p></div>
+        <div class="act"><button class="btn">New message</button></div></div>
+      <div class="segrow" id="amSeg"></div>
+      <div id="amBody" class="hold deep"></div>
+    </section>
+
     <!-- ═══ AGENT · MANAGED WORKFLOW ═══ -->
     <section class="view" data-v="pd-onboard">
-      <div class="ph"><div><h1>Onboarding</h1><p id="obSub"></p></div>
+      <div style="padding-top:30px"><span class="crumb2 lnk" data-go="pd-pipeline" style="font-size:13.5px">← Pipeline</span></div>
+      <div class="ph" style="padding-top:12px"><div><h1>Ridgeline Freight</h1><p id="obSub"></p></div>
         <div class="act"><button class="btn">Log a call</button><button class="btn">Open the file</button></div></div>
       <div class="now" id="obNow"></div>
       <div id="obBody"></div>
