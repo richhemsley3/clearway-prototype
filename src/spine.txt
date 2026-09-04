@@ -21,7 +21,7 @@
  /* ── Ridgeline's queue. Half of it is ours, and it says so. ── */
  var QUEUE = [
   {k:'agr', t:'Master participation agreement', kind:'Signature', who:'you', due:'Thursday 4 September', dstate:'now',
-   gates:'Contracting cannot close, and integration cannot be scheduled, until both signatures are in.',
+   gates:'The agreement is not in force, and integration cannot be scheduled, until both signatures are in.',
    state:'partial', note:'Issued 28 August. One of two signatures received.',
    sig:[['Elena Ridge','Head of finance','Signed 1 September at 09:14'],['Marcus Ridge','Chief executive','Not signed']]},
 
@@ -37,17 +37,27 @@
    gates:'Required before integration begins. Two of six acknowledged.', state:'open',
    note:'Dispute handling moved to v6.0 on 1 September, so it needs acknowledging again.', go:'pa-rules'},
 
+  {k:'team', t:'Project team', kind:'People', who:'you', due:'Before contracting closes', dstate:'soon',
+   gates:'Sandbox keys go to your integration lead the afternoon the agreement is in force. Two of four roles are named.', state:'open',
+   note:'Project manager, integration lead, security engineer, operations lead. Each is introduced to the person doing the same job on our side. One person can hold more than one role.'},
+
   {k:'ubo', t:'Beneficial ownership declaration', kind:'Document', who:'you', due:'Was due 29 August', dstate:'over',
    gates:'Risk sign-off is held until this clears.', state:'rejected',
    note:'Cleared the ownership check. Did not clear the address check: the utility bill is dated 3 June and we need one issued inside the last 30 days.'},
 
   {k:'risk', t:'Risk review sign-off', kind:'Review', who:'cw', due:'Thursday 4 September', dstate:'now',
-   gates:'The last thing between you and contracting close.', state:'open',
+   gates:'Approval to join is its outcome. The agreement cannot be signed off without it.', state:'open',
    note:'With our risk team since 28 August. Dara Whitfield is chasing it.'},
 
   {k:'bin', t:'BIN range allocation', kind:'Setup', who:'cw', due:'18 September', dstate:'soon',
    gates:'Needed before your engineers can point at anything real.', state:'open',
    note:'Requested from the network on 1 September. Twelve working days is normal.'},
+
+  {k:'nda', t:'Confidentiality agreement', kind:'Signature', who:'you', due:'', dstate:'done',
+   gates:'', state:'done', note:'Signed 6 August by Elena Ridge. Released the technical specification and the network rules to your team.'},
+
+  {k:'third', t:'Third parties with access to network material', kind:'Details', who:'you', due:'', dstate:'done',
+   gates:'', state:'done', note:'None declared, 6 August. Ridgeline runs its own host. If a processor or vendor is added later, they sign their own confidentiality agreement first.'},
 
   {k:'inc', t:'Certificate of incorporation', kind:'Document', who:'you', due:'', dstate:'done',
    gates:'', state:'done', note:'Accepted 21 August.'},
@@ -76,17 +86,21 @@
    detail:'BIN 471288 ranges, fee tables, settlement account and dispute routing, all set by GPN operations.',
    items:[['BIN ranges','done'],['Fee schedule','done'],['Settlement account','done'],['Dispute routing','done']]},
 
+  {k:'brand', t:'Card design and web address approved', own:'you', st:'done', d:'Approved 28 August',
+   detail:'Artwork against the brand and marks rules, and the domain your cardholders will see. Plastics have a six-week lead time, so this closes before certification, not after.',
+   items:[['Card artwork','done'],['Web address northgate.example','done'],['Plastics ordered','done']]},
+
   {k:'cert', t:'Testing and certification', own:'you', st:'now', d:'Window booked 15–19 September',
    detail:'Sixty-one cases were selected for your configuration. Forty-seven have passed, three are failing and eleven have not been run.',
    items:[['Sandbox connected','done'],['Test plan generated','done'],['Cases passing','now'],['Certification window','soon']]},
 
   {k:'prod', t:'Production readiness', own:'both', st:'soon', d:'Opens once certification passes',
-   detail:'Runbook, on-call rota for the first settlement cycle, and a dry run of the first file.',
-   items:[['Runbook filed','todo'],['On-call rota','todo'],['Settlement dry run','done']]},
+   detail:'Access for your operations and finance teams, daily balancing, dispute handling, the runbook and the on-call rota for the first settlement cycle.',
+   items:[['Operations and reporting access','todo'],['Daily balancing','todo'],['Dispute handling','todo'],['Runbook filed','todo'],['On-call rota','todo'],['Settlement dry run','done']]},
 
-  {k:'live', t:'Go live', own:'cw', st:'soon', d:'Target 6 October',
-   detail:'BIN activation at 06:00 on 6 October. Your first settlement cycle runs the following morning.',
-   items:[['BIN activation','todo'],['First settlement cycle','todo']]}
+  {k:'live', t:'Live and supported', own:'cw', st:'soon', d:'Target 6 October',
+   detail:'BIN activation at 06:00 on 6 October. Your first settlement cycle runs the following morning. After the first reconciliation, Priya hands you to the servicing desk: a named contact, a case inbox and a hotline replace the weekly checkpoint.',
+   items:[['BIN activation','todo'],['First settlement cycle','todo'],['Handover to ongoing support','todo']]}
  ];
 
  /* ── The certification suite. Generated from the configuration, so the
@@ -141,6 +155,9 @@
   ['Live webhook endpoint registered and answering','auto','done','Forty-seven deliveries in the last twenty-four hours, all 200.','you'],
   ['Mutual TLS certificate valid past go live','auto','fail','Your certificate expires 21 September, fifteen days before go live.','you'],
   ['IP allowlist matches your production egress','auto','done','Four of four ranges matched this morning.','you'],
+  ['Operations and reporting access set up','self','todo','Two people minimum, with entry and approval kept apart. None named yet.','you'],
+  ['Daily balancing agreed','self','todo','Who reconciles the 06:00 settlement report, and by when.','you'],
+  ['Dispute handling set up','self','todo','A dispute contact and a case inbox. Retrieval requests need an answer inside twenty-four hours from day one.','you'],
   ['Runbook and escalation path filed','self','todo','Who we call at 03:00 on the first settlement night.','you'],
   ['On-call rota for the first cycle','self','todo','Names and numbers for 6 to 10 October.','you'],
   ['First settlement cycle dry run','self','done','Ran 28 August against the pre-production file.','cw'],
@@ -338,11 +355,13 @@
     ['Registered','Colorado, 2014 · EIN on file'],['Business address','2140 Riverbend Way, Grand Junction, CO 81505'],
     ['Website','ridgelinefreight.com'],['What the business does','Regional freight haulage · 212 tractors across three depots'],
     ['Industry code','4214 · Motor freight, local'],['Who signs','Marcus Ridge, chief executive · Elena Ridge, head of finance']]},
-  {k:'people', s:'People', st:'done', rows:[
+  {k:'people', s:'People', st:'now', rows:[
     ['Beneficial owners','Marcus Ridge 62% · Elena Ridge 38%'],['Directors','Marcus Ridge · Elena Ridge · Tom Abara (non-executive)'],
-    ['Day-to-day contact','Elena Ridge · elena.ridge@ridgelinefreight.com · (970) 555-0142'],
-    ['Engineering contact','Not yet named'],['Compliance contact','Elena Ridge, acting'],['Finance contact','Elena Ridge'],
-    ['Who may talk to us','Elena Ridge, Marcus Ridge · anyone else needs to be added here first']]},
+    ['Project manager','Elena Ridge · works with Dara Whitfield, then Priya Raman'],
+    ['Integration lead','Not yet named · sandbox keys go to this person · works with Priya Raman'],
+    ['Security engineer','Not yet named · works with GPN security on certificates and allowlists'],
+    ['Operations lead','Marcus Ridge, acting · works with the servicing desk after go-live'],
+    ['Compliance contact','Elena Ridge, acting'],['Third parties with access','None declared · 6 August']]},
   {k:'program', s:'The program', st:'done', rows:[
     ['What you want','Fleet fuel cards · restricted to fuel and maintenance'],['Who carries them','Drivers, one card per tractor · depot managers hold a float card'],
     ['How many to start','About 140 cards across three depots'],['Form factor','Contactless plastic, with virtual for new drivers'],
@@ -351,7 +370,7 @@
     ['Volume, first year','Under 1 million authorizations · $0.9M a month projected'],['Target go-live','Before the winter contract season · mid-November']]},
   {k:'bank', s:'Settlement', st:'now', rows:[
     ['Settlement account','Wells Fargo •••• 8823 · Operating'],['Account holder','Ridgeline Freight LLC · matches the legal name'],
-    ['Routing number','121000248'],['Settlement rhythm','Daily, next business day · your choice, changeable until contracting closes'],
+    ['Routing number','121000248'],['Settlement rhythm','Daily, next business day · your choice, changeable until the agreement is in force'],
     ['Reserve','None required at your projected volume'],['Proof of account','Bank letter — not yet received'],
     ['Micro-deposits','Not started until the letter is in']]},
   {k:'docs', s:'Documents', st:'now', rows:[

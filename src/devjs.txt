@@ -54,7 +54,7 @@
     ['ol',['Decide. Your rules, your funds, your call — we do not second-guess an approve or a decline.',
            'Answer <b>approve</b>, <b>decline</b> with a code, or approve with an <b>approved_amount</b> lower than the request for a partial.',
            'Return inside 500 ms, measured from our socket write to your first byte.']],
-    ['callout','The one that bites','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
+    ['callout','The field that fails certification','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
     ['h2','The 500 millisecond budget','budget'],
     ['p','The budget is generous on purpose: our own half of the round trip is 29 ms at the median and 131 ms at p99, so the rest is yours. Spend it on your own risk checks, not on a cold cache.'],
     ['ul',['Keep a warm connection pool — we reuse the same mTLS session across authorizations.','Do not call a third party inline unless it is inside your budget on its worst day.','Return a decline rather than nothing. A decline is a correct answer; silence is not.']],

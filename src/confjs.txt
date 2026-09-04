@@ -31,7 +31,7 @@
    }).join('')
    +'<div class="txtwo" style="margin-top:44px">'
    +'<div class="note plain"><div class="k">What permanent means</div><p>Product type, BIN, protocol and currency are written into the range assignment at certification. Changing any of them after 19 September is a new BIN, a new certification and, for plastic, new cards in the post. Everything else changes with a message to your integration manager and takes effect on the next cycle.</p></div>'
-   +'<div class="note'+(internal?'':' plain')+'"><div class="k">'+(internal?'One thing unset, one thing expiring':'Before go live')+'</div><p>No failover endpoint is configured. It is optional before activation, but the first settlement night without one is the night you find out why it is recommended. And the mutual TLS certificate expires on 21 September.</p><div class="act"><span class="lnk" id="cfFail">Set the failover endpoint</span></div></div></div>';
+   +'<div class="note'+(internal?'':' plain')+'"><div class="k">'+(internal?'Unset and expiring':'Before go-live')+'</div><p>No failover endpoint is configured. It is optional before activation, but the first settlement night without one is the night you find out why it is recommended. And the mutual TLS certificate expires on 21 September.</p><div class="act"><span class="lnk" id="cfFail">Set the failover endpoint</span></div></div></div>';
    $$('#cfBody tr[data-s]').forEach(function(tr){ tr.addEventListener('click',function(){
      var s=CONFIG.filter(function(x){return x.s===tr.dataset.s})[0], r=s.rows[+tr.dataset.i];
      panel(r[0], s.s+' · set by '+(r[2]==='GPN'?'Global Payment Network':'Northgate')+(r[3]!=='—'?' on '+r[3]:''),
@@ -54,17 +54,17 @@
    $('#fmBody').innerHTML='<div class="cols2" style="grid-template-columns:240px minmax(0,1fr); margin-top:26px">'
     +'<div class="outline">'+FORM.map(function(s,i){
        return '<a data-f="'+s.k+'" class="'+(s.st==='done'?'done':s.st==='now'?'':'')+(s.k===cur.k?' cur':'')+'"><span class="n">'+(i+1)+'</span><span>'+esc(s.s)+'</span><span class="s">'+(s.st==='done'?'✓':'open')+'</span></a>' }).join('')
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; line-height:1.5">Nothing here needs filling in twice. When contracting closes, this becomes your configuration.</p></div>'
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; line-height:1.5">Nothing here needs filling in twice. Once the agreement is in force, this becomes your configuration.</p></div>'
     +'<div><div class="sech" style="margin-top:0"><h2>'+esc(cur.s)+'</h2><span class="t13">'+(function(){ var o=cur.rows.filter(function(r){return /not yet|not started|sent back|due /i.test(r[1])}).length; return o? o+' item'+(o>1?'s':'')+' open':'complete' })()+'</span><div class="rt"><span class="lnk" id="fmEdit">Change something</span></div></div>'
     +'<div class="rec" style="margin-top:14px">'+cur.rows.map(function(r){
         var open=/not yet|not started|sent back|due /i.test(r[1]);
         return '<div class="rr"><span class="l">'+esc(r[0])+'</span><span class="v'+(open?' st wa':'')+'" style="max-width:40ch">'+esc(r[1])+'</span></div>' }).join('')+'</div>'
     +(cur.k==='bank'?'<div class="note plain" style="margin-top:26px"><div class="k">Why the letter comes first</div><p>We verify the account with two micro-deposits, and we will not send money — even cents — to an account we have not seen named on bank letterhead. The letter unlocks the deposits; the deposits unlock settlement.</p><div class="act"><span class="lnk" id="fmBank">Send the bank letter</span></div></div>':'')
-    +(cur.k==='people'?'<div class="note plain" style="margin-top:26px"><div class="k">Name an engineer</div><p>Sandbox keys are issued to a named engineer the afternoon contracting closes. Without a name here, that afternoon is lost.</p><div class="act"><span class="lnk" id="fmEng">Add an engineering contact</span></div></div>':'')
+    +(cur.k==='people'?'<div class="note plain" style="margin-top:26px"><div class="k">Two roles still to name</div><p>Sandbox keys are issued to the integration lead the afternoon the agreement is in force. Each role is introduced to its counterpart on our side, so the first checkpoint has the right people on both ends.</p><div class="act"><span class="lnk" id="fmEng">Name a role</span></div></div>':'')
     +(cur.k==='docs'?'<div class="act" style="margin-top:22px; display:flex; gap:18px"><span class="lnk" id="fmUbo">Replace the ownership declaration</span><span class="lnk" id="fmPci">Send the PCI attestation</span></div><p class="t13" style="color:var(--g550); margin-top:16px">Both are on your application queue with their dates. This page is the record; that page is the work.</p>':'')
     +'</div></div>';
    $$('#fmBody [data-f]').forEach(function(a){ a.addEventListener('click',function(){ anchored($('#fmBody'), function(){ formSec=a.dataset.f; drawForm(); }) }) });
-   $('#fmEdit').addEventListener('click',function(){ toast('Sections stay editable until contracting closes. After that, changes go through Dara.') });
+   $('#fmEdit').addEventListener('click',function(){ toast('Sections stay editable until the agreement is in force. After that, changes go through Dara.') });
    if($('#fmEng')) $('#fmEng').addEventListener('click',function(){ toast('Field opened. A name and an email is all we need.') });
    if($('#fmBank')) $('#fmBank').addEventListener('click',function(){ openQ('bank') });
    if($('#fmUbo')) $('#fmUbo').addEventListener('click',function(){ openQ('ubo') });

@@ -1,10 +1,10 @@
 
     <!-- ═══ PARTICIPANT · APPLYING ═══ -->
     <section class="view" data-v="pa-apply">
-      <div class="ph"><div><h1 id="paTitle">Your application</h1><p id="paSub"></p></div>
+      <div class="ph"><div><h1 id="paTitle">Approval to join</h1><p id="paSub"></p></div>
         <div class="act"><button class="btn" id="paForm">What you told us</button></div></div>
       <div class="now" id="paNow"></div>
-      <div class="sech"><h2>Where you are</h2><span class="t13" id="paStageSub"></span></div>
+      <div class="sech"><h2>From introduction to live</h2><span class="t13" id="paStageSub"></span></div>
       <div style="margin-top:16px" id="paStage"></div>
       <div class="segrow" id="paSeg"></div>
       <div id="paQueue" class="hold"></div>
@@ -19,7 +19,7 @@
 
     <!-- ═══ PARTICIPANT · BOARDING ═══ -->
     <section class="view" data-v="pa-board">
-      <div class="ph"><div><h1>Your integration</h1><p id="paBoardSub"></p></div>
+      <div class="ph"><div><h1>Ready to serve</h1><p id="paBoardSub"></p></div>
         <div class="act"><button class="btn">Export the plan</button></div></div>
       <div class="now" id="paBoardNow"></div>
       <div id="paBoard"></div>
