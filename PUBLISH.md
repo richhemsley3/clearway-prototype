@@ -12,12 +12,16 @@ Everything is committed — several commits on `main`. Nothing to stage.
 
 ## Push
 
-From inside this folder:
+The remote already has an older push plus a few clean-up commits made through the GitHub website
+(the landing page and the reference builds were deleted there). This folder's history is the one to
+keep, so replace the remote's `main` with it:
 
 ```sh
-git remote add origin https://github.com/richhemsley3/clearway-prototype.git
-git push -u origin main
+git remote add origin https://github.com/richhemsley3/clearway-prototype.git   # skip if already set
+git push --force -u origin main
 ```
+
+Pages redeploys from `docs/` on the next push, a minute or two later.
 
 ## Turn on Pages
 
