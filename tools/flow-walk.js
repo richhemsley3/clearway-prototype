@@ -5,7 +5,13 @@ const {chromium}=require('playwright');const fs=require('fs');
  await p.setContent('<meta charset="utf-8">'+fs.readFileSync(require('path').join(__dirname,'..','docs','app.html'),'utf8'));
  await p.waitForTimeout(500);
  const ws=async k=>{await p.evaluate(k=>{document.querySelectorAll('#wsmenu a').forEach(a=>{if(a.dataset.w===k)a.click()})},k);await p.waitForTimeout(520)};
- const nav=async v=>{await p.evaluate(v=>{const a=[...document.querySelectorAll('#nav a')].find(x=>x.dataset.go===v); if(a) a.click(); else go(v);},v);await p.waitForTimeout(600)};
+ const nav=async v=>{
+   const hit=await p.evaluate(v=>{const a=[...document.querySelectorAll('#nav a')].find(x=>x.dataset.go===v); if(a){a.click(); return true;} return false;},v);
+   if(!hit && v==='pd-onboard'){ // Pipeline's record: reached through the Ridgeline row
+     await p.evaluate(()=>{const a=[...document.querySelectorAll('#nav a')].find(x=>x.dataset.go==='pd-pipeline'); a&&a.click();}); await p.waitForTimeout(600);
+     await p.evaluate(()=>{const r=[...document.querySelectorAll('#pipe tr[data-i]')].find(t=>/Ridgeline/.test(t.textContent)); r&&r.click();});
+   }
+   await p.waitForTimeout(600)};
  const clk=async s=>{await p.evaluate(s=>{const e=document.querySelector(s); if(e)e.click(); else console.log('MISSING '+s);},s);await p.waitForTimeout(700)};
  const shot=async n=>{await p.screenshot({path:'/tmp/f_'+n+'.png'})};
  const navtxt=async()=>await p.evaluate(()=>[...document.querySelectorAll('#nav a')].map(a=>a.textContent.trim()).join(' | '));
