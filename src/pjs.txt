@@ -357,15 +357,16 @@
    var LB={done:'Done', now:'In progress', soon:'Not started'};
    var pass=suiteTot('pass'), fail=suiteTot('fail'), tot=suiteTot('tot');
    var done=MILE.filter(function(m){return m.st==='done'}).length;
-   return '<div class="sech"><h2>Milestones</h2><span class="t13">'+done+' of five done · next is certification</span>'
+   var nxt=(MILE.filter(function(m){return m.st!=='done'})[0]||{}).t||'go live';
+   return '<div class="sech"><h2>Milestones</h2><span class="t13">'+done+' of five done · next is '+esc(nxt.toLowerCase())+'</span>'
     +'<div class="rt"><span class="t13">target go live 6 October</span></div></div><div class="ms">'
     +MILE.map(function(m){
       var own = m.own==='you' ? (internal?'Northgate':'You') : m.own==='cw' ? 'GPN' : 'Both';
-      var detail = m.k==='cert'
+      var detail = m.k==='cert' && m.items[0][1]==='done'
         ? (internal?'Sixty-one cases selected for Northgate’s configuration. ':'Sixty-one cases were selected for your configuration. ')
           +pass+' have passed'+(fail?', '+fail+(fail===1?' is failing':' are failing'):' and none are failing')+' and '+(tot-pass-fail)+' have not been run.'
         : m.detail;
-      var items = m.k==='cert' ? [['Sandbox connected','done'],['Test plan generated','done'],['Cases passing',fail?'now':'done'],['Certification window',fail?'soon':'now']] : m.items;
+      var items = m.k==='cert' && m.items[0][1]==='done' ? [['Sandbox connected','done'],['Test plan generated','done'],['Cases passing',fail?'now':'done'],['Certification window',fail?'soon':'now']] : m.items;
       return '<div class="m is-'+m.st+'"><div class="dot"></div>'
        +'<div><h4>'+esc(m.t)+'</h4><p>'+esc(detail)+'</p>'
        +(items?'<div class="sub">'+items.map(function(i){
