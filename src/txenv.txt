@@ -1,0 +1,119 @@
+
+ /* ══════════════════════════════════════════════════════════════════
+    REPORTING FOR EVERY PARTICIPANT — the same three views carry a
+    sandbox and a production side. Northgate sees the traffic Ravi's
+    certification runs produce; Meridian sees the money.
+    ══════════════════════════════════════════════════════════════════ */
+ var txEnv={nf:'sand', mt:'live'};
+ var TXV=[['tx-auth','Authorizations'],['tx-settle','Settlement'],['tx-disp','Disputes']];
+
+ function sandRows(v){
+   var a=acc;
+   if(v==='tx-auth'){
+     return (SANDMSG[a]||[]).map(function(m,i){
+       var res=m[5], cls='ok';
+       if(res==='AUTH-14') res = casePassed('AUTH-14') ? 'Approved 10 · partial' : 'Declined 51';
+       cls=/Approved/.test(res)?'ok':/Declined|Referral/.test(res)?'no':/Stand-in/.test(res)?'wa':'nt';
+       var ms=parseInt(m[4]);
+       return '<tr data-sb="'+i+'"><td>'+m[0]+(m[5]==='AUTH-14'?'<span class="s2">certification case AUTH-14</span>':'')+'</td><td>'+esc(m[1])+'</td><td class="mute opt2">'+esc(m[2])+'</td><td class="n">'+m[3]+'</td>'
+        +'<td class="opt"><span class="lat"><i><b style="width:'+Math.min(100,ms/60*100).toFixed(0)+'%"></b></i>'+m[4]+'</span></td><td class="st '+cls+'">'+esc(res)+'</td></tr>';
+     }).join('');
+   }
+   if(v==='tx-settle'){
+     return (SANDSET[a]||[]).map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="st ok">'+r[4]+'</td></tr>' }).join('');
+   }
+   return (SANDDISP[a]||[]).map(function(r){ return '<tr><td>'+r[0]+'<span class="s2">'+esc(r[3])+'</span></td><td>'+esc(r[1])+'</td><td class="n">'+r[2]+'</td><td class="st wa">'+esc(r[4])+'</td><td class="st no">'+esc(r[5])+'</td></tr>' }).join('');
+ }
+
+ function txEnvLayer(v){
+   var cfg=TXSUB[v]; if(!cfg) return;
+   var sec=document.querySelector('[data-v="'+v+'"]'), host=sec.querySelector('.txsub'); if(!host) return;
+   var hasSand = acc==='nf'||acc==='mt', env = hasSand ? (txEnv[acc]||'live') : 'live';
+   var tb=sec.querySelector(cfg.sel+' tbody')||sec.querySelector(cfg.sel);
+   if(tb && !tb.dataset.orig) tb.dataset.orig=tb.innerHTML;
+
+   /* the three views are three data sets for a boarding participant, so they get tabs */
+   var strip=sec.querySelector('.txtabs');
+   if(acc==='nf'){
+     if(!strip){ strip=document.createElement('div'); strip.className='tabstrip txtabs'; var ph=sec.querySelector('.ph'); ph.parentNode.insertBefore(strip, ph.nextSibling); }
+     strip.innerHTML=TXV.map(function(t){ return '<button data-tx="'+t[0]+'" aria-pressed="'+(t[0]===v)+'">'+t[1]+'</button>' }).join('');
+     $$('.txtabs button').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.tx) }) });
+   } else if(strip) strip.remove();
+
+   /* the environment control sits with the slice control */
+   var rt=host.querySelector('.rt'); if(!rt){ rt=document.createElement('div'); rt.className='rt'; host.appendChild(rt); }
+   rt.innerHTML = hasSand
+     ? '<span class="env"><button data-te="sand" aria-pressed="'+(env==='sand')+'">Sandbox</button><button data-te="live" class="live" aria-pressed="'+(env==='live')+'">Production</button></span>'
+     : '';
+   $$('[data-v="'+v+'"] [data-te]').forEach(function(b){ b.addEventListener('click',function(){
+     anchored(host, function(){ txEnv[acc]=b.dataset.te; drawTxSub(v); }) }) });
+
+   var sub=sec.querySelector('.ph p'), foot=sec.querySelector('.tfoot'), fs=sec.querySelector('.fsbar');
+   var nowEl=sec.querySelector('.now'), insts=sec.querySelectorAll('.txtwo, .inst, .sech');
+   var hide=function(el,on){ if(el) el.style.display=on?'none':''; };
+
+   var segEl=host.querySelector('.seg'), noteP=host.nextElementSibling&&host.nextElementSibling.tagName==='P'?host.nextElementSibling:null;
+   var nt0=sec.querySelector('.txnote');
+   if(env==='live' && acc==='nf'){
+     tb.innerHTML='';
+     hide(segEl,true); hide(noteP,true); if(nt0) nt0.remove();
+     hide(nowEl,true); insts.forEach(function(e){ hide(e,true) }); hide(foot,true); hide(fs,true);
+     var bl=sec.querySelector('.txblank'); if(!bl){ bl=document.createElement('div'); bl.className='blank txblank'; bl.style.marginTop='26px'; tb.closest('table').parentNode.insertBefore(bl, tb.closest('table')); }
+     bl.innerHTML='<div class="t">Production is not open yet.</div><p>BIN 471288 activates at 06:00 on 6 October. From that morning this page fills with live traffic, and the sandbox side stays where it is for regression runs.</p><div class="act"><span class="lnk" id="txBack">Back to the sandbox</span></div>';
+     tb.closest('table').style.display='none';
+     $('#txBack').addEventListener('click',function(){ txEnv[acc]='sand'; drawTxSub(v); });
+     if(sub) sub.textContent='Nothing yet · activation 6 October';
+     return;
+   }
+   var bl2=sec.querySelector('.txblank'); if(bl2) bl2.remove();
+   hide(segEl,false); hide(noteP,false);
+   tb.closest('table').style.display='';
+   hide(foot,false); hide(fs,false);
+
+   if(env==='sand'){
+     hide(nowEl,true); insts.forEach(function(e){ hide(e,true) });
+     var n=tb.querySelectorAll('tr').length;
+     if(sub) sub.textContent = v==='tx-auth' ? 'Sandbox · '+n+' messages from '+(acc==='nf'?'the certification suite, last run 2 September':'the nightly integration test')
+       : v==='tx-settle' ? 'Sandbox · '+(acc==='nf'?'one dry run, 28 August':'nightly cycles, synthetic money')
+       : 'Sandbox · '+(n?n+' case raised by the certification suite':'nothing raised');
+     if(fs) fs.innerHTML='Showing <b>sandbox traffic</b> from <b>'+(acc==='nf'?'the certification suite':'the nightly test')+'</b>, newest first';
+     if(foot) foot.innerHTML='<span>1–'+n+' of '+n+'</span>';
+     if(!n){ tb.innerHTML='<tr><td colspan="6" style="color:var(--g550); padding:26px 16px">Nothing in the sandbox for this view yet.</td></tr>'; }
+     if(v==='tx-auth' && acc==='nf'){
+       var note=sec.querySelector('.txnote'); if(!note){ note=document.createElement('div'); note.className='note plain txnote'; tb.closest('table').parentNode.appendChild(note); }
+       note.innerHTML='<div class="k">These are the same messages Ravi sees in the toolkit</div><p>Every certification case lands here as a message, with the ISO fields it carried. '+(casePassed('AUTH-14')?'AUTH-14 now answers with a partial approval, which is the answer the pump needs.':'c41f-0014 is AUTH-14: the suite asked for 6,800 against a balance of 4,200 and your host declined instead of approving the lower amount.')+'</p>';
+     }
+   } else {
+     hide(nowEl,false); insts.forEach(function(e){ hide(e,false) });
+     var nt=sec.querySelector('.txnote'); if(nt) nt.remove();
+     if(sub) sub.textContent = v==='tx-auth' ? 'Every message as it crossed the wire · last 7 days · 61,412 messages'
+       : v==='tx-settle' ? 'Fourteen cycles · net to fund, and where the rest went' : '142 open cases · representment deadlines in calendar days';
+     if(fs && v==='tx-auth') fs.innerHTML='Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span>';
+     if(foot && v==='tx-auth') foot.innerHTML='<span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span>';
+   }
+   /* the slice buttons filter whatever rows are in the table now */
+   var cur=txsub[v]||'all', t=cfg.tabs.filter(function(x){return x[0]===cur})[0];
+   [].forEach.call(tb.querySelectorAll('tr'),function(r){ r.style.display=(!t||!t[2]||t[2].test(r.textContent))?'':'none'; });
+   var expandable=tb.querySelectorAll('tr[data-sb]');
+   [].forEach.call(expandable,function(r){ r.addEventListener('click',function(){
+     var i=+r.dataset.sb, m=SANDMSG[acc][i], nx=r.nextElementSibling;
+     if(nx && nx.classList.contains('expand')){ nx.remove(); return; }
+     var ex=document.createElement('tr'); ex.className='expand';
+     ex.innerHTML='<td colspan="6"><div class="kv" style="grid-template-columns:200px 1fr 200px 1fr">'+m[6].map(function(f){ return '<span class="k">'+f[0]+' · '+esc(f[1])+'</span><span>'+esc(f[2])+'</span>' }).join('')+'</div>'
+       +(m[5]==='AUTH-14'?'<div style="margin-top:16px"><span class="lnk" id="sbCase">Open AUTH-14 in the toolkit</span></div>':'')+'</td>';
+     r.parentNode.insertBefore(ex, r.nextSibling);
+     if($('#sbCase')) $('#sbCase').addEventListener('click',function(e){ e.stopPropagation(); openFail('AUTH-14'); });
+   }) });
+ }
+ function txEnvRows(v){
+   var cfg=TXSUB[v]; if(!cfg) return;
+   var sec=document.querySelector('[data-v="'+v+'"]');
+   var tb=sec.querySelector(cfg.sel+' tbody')||sec.querySelector(cfg.sel); if(!tb) return;
+   if(!tb.dataset.orig) tb.dataset.orig=tb.innerHTML;
+   var hasSand = acc==='nf'||acc==='mt', env = hasSand ? (txEnv[acc]||'live') : 'live';
+   if(env==='live' && acc==='nf') tb.innerHTML='';
+   else if(env==='sand') tb.innerHTML=sandRows(v);
+   else tb.innerHTML=tb.dataset.orig;
+ }
+ var _drawTxSub=drawTxSub;
+ drawTxSub=function(v){ txEnvRows(v); _drawTxSub(v); txEnvLayer(v); };

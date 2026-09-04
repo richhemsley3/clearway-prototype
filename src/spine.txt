@@ -286,3 +286,84 @@
    note:'First call booked Thursday', next:'Hold the call',
    detail:'Introduced by Cascade Trust on Tuesday. Small book, single depot, but they run three fuel cards today and want one.'}
  ];
+
+ /* ── Northgate's business configuration: what is set, by whom, and what is now permanent ── */
+ var CONFIG = [
+  {s:'Program', rows:[
+    ['Program name','Northgate Spend — Commercial Debit','Northgate','14 Aug','open','Cardholders see this on their statement.'],
+    ['Product type','Debit','Northgate','14 Aug','locked','Written into the BIN range at certification. Changing it means a new BIN and new plastic.'],
+    ['BIN','471288 · 4712 8800 0000 0000 to 4712 8899 9999 9999','GPN','14 Aug','locked','A hundred million numbers, Luhn-checked. The last one percent is held back for test cards.'],
+    ['Form factors','Virtual · Contactless plastic','Northgate','14 Aug','open','Metal can be added later without re-certifying, because the BIN already carries it.'],
+    ['Volume tier','1 to 10 million authorizations a year','Northgate','14 Aug','open','Sets collateral and support tier. An estimate, reviewed at ninety days.']]},
+  {s:'Connectivity', rows:[
+    ['Protocol','JSON over HTTPS','Northgate','3 Aug','locked','ISO 8583 fields kept by name. About 3 ms at p99 over the socket option.'],
+    ['Authorization endpoint','https://auth.northgate.example/gpn/v1','Northgate','3 Aug','open','We hold the connection open and expect an answer inside 500 ms.'],
+    ['Mutual TLS','CN=northgate-sandbox · expires 21 Sep','Northgate','3 Aug','open','Fifteen days before go live. Renew before certification, not after.'],
+    ['IP allowlist','203.0.113.16/28 · 198.51.100.0/29','Northgate','3 Aug','open','Four of four ranges matched at 09:41 today.'],
+    ['Failover endpoint','Not set','Northgate','—','open','Optional before go live. Strongly recommended before your first settlement night.']]},
+  {s:'Settlement', rows:[
+    ['Settlement account','First Meridian Bank •••• 4471 · Operating','Northgate','14 Aug','open','Verified by two micro-deposits on 16 August.'],
+    ['Currency','USD, single currency','GPN','14 Aug','locked','A second currency is a second settlement account and a second cycle.'],
+    ['Cycle','06:00 daily · cut-off 17:00','GPN','14 Aug','open','Moves to 16:30 on 1 October across the network.'],
+    ['Collateral','$180,000 · held from first cycle','GPN','14 Aug','open','Two days of projected volume at the tier. Reviewed at ninety days.']]},
+  {s:'Fees', rows:[
+    ['Interchange schedule','Commercial debit, fuel · v2026.2','GPN','14 Aug','open','Effective from activation. Signed by Idris Vance, 13 August.'],
+    ['Network fee','$0.021 per authorization','GPN','14 Aug','open','Fixed for twelve months from activation.'],
+    ['Dispute fee','$15 per chargeback, refunded on a win','GPN','14 Aug','open','']]},
+  {s:'Disputes', rows:[
+    ['Retrieval routing','disputes@northgate.example · webhook','Northgate','14 Aug','open','Retrieval requests must be acknowledged inside 24 hours from 1 September.'],
+    ['Evidence contact','Sana Okafor · Northgate','Northgate','14 Aug','open','Named person, not a mailbox. Issuers ring.'],
+    ['Auto-accept threshold','Under $25','Northgate','14 Aug','open','Disputes below this are accepted without review. Fees still apply.']]}
+ ];
+
+ /* ── Ridgeline's application, as they filled it in ── */
+ var FORM = [
+  {k:'entity', s:'The entity', st:'done', rows:[
+    ['Legal name','Ridgeline Freight LLC'],['Registered','Colorado, 2014 · EIN on file'],
+    ['Business address','2140 Riverbend Way, Grand Junction, CO 81505'],['Who signs','Marcus Ridge, chief executive · Elena Ridge, head of finance']]},
+  {k:'people', s:'People', st:'done', rows:[
+    ['Beneficial owners','Marcus Ridge 62% · Elena Ridge 38%'],['Day-to-day contact','Elena Ridge · elena.ridge@ridgelinefreight.com'],
+    ['Engineering contact','Not yet named'],['Compliance contact','Elena Ridge, acting']]},
+  {k:'program', s:'The program', st:'done', rows:[
+    ['What you want','Fleet fuel cards · restricted to fuel and maintenance'],['How many to start','About 140 cards across three depots'],
+    ['Form factor','Contactless plastic, with virtual for new drivers'],['Volume, first year','Under 1 million authorizations · $0.9M a month projected']]},
+  {k:'bank', s:'Settlement', st:'now', rows:[
+    ['Settlement account','Wells Fargo •••• 8823 · Operating'],['Routing number','121000248'],
+    ['Proof of account','Bank letter — not yet received'],['Micro-deposits','Not started until the letter is in']]},
+  {k:'docs', s:'Documents', st:'now', rows:[
+    ['Certificate of incorporation','Accepted 21 August'],['Audited accounts, two years','Accepted 21 August'],
+    ['Beneficial ownership declaration','Sent back — address check'],['PCI DSS attestation','Due 11 September']]}
+ ];
+
+ /* ── sandbox traffic: what certification and the nightly tests actually send ── */
+ var SANDMSG = {
+  nf:[
+   ['c41f-0014','Certification suite','071 contactless','$68.00','131 ms','AUTH-14',
+     [['DE 2','Primary account number','4917 61•• •••• 0049'],['DE 3','Processing code','00 00 00'],['DE 4','Amount, transaction','6800'],['DE 22','POS entry mode','071 — contactless chip'],['DE 39','Response code','51 — insufficient funds'],['DE 54','Additional amounts','available 4200']]],
+   ['c41f-0013','Certification suite','051 chip','$42.00','41 ms','Approved',
+     [['DE 2','Primary account number','4917 61•• •••• 0031'],['DE 4','Amount, transaction','4200'],['DE 39','Response code','00 — approved']]],
+   ['c41f-0012','Certification suite','051 chip','−$42.00','36 ms','Reversed',
+     [['MTI','Message type','0400 — reversal'],['DE 39','Response code','00 — approved'],['DE 90','Original data elements','0100 · c41f-0013']]],
+   ['c41f-0011','Certification suite','901 e-commerce','$76.00','39 ms','Referral 01',
+     [['DE 2','Primary account number','4917 61•• •••• 0072'],['DE 39','Response code','01 — refer to issuer']]],
+   ['c41f-0010','Certification suite','071 contactless','$18.75','33 ms','Declined 05',
+     [['DE 2','Primary account number','4917 61•• •••• 0064'],['DE 39','Response code','05 — do not honour']]],
+   ['c41f-0009','Certification suite','071 contactless','$412.90','512 ms','Stand-in',
+     [['DE 39','Response code','00 — approved, stand-in'],['DE 48','Additional data','host timeout at 500 ms']]],
+   ['c41f-0008','Certification suite','051 chip','$248.10','31 ms','Approved',
+     [['DE 39','Response code','00 — approved']]]
+  ],
+  mt:[
+   ['s7a2-1190','Nightly integration test','051 chip','$12.00','29 ms','Approved',[['DE 39','Response code','00 — approved']]],
+   ['s7a2-1189','Nightly integration test','071 contactless','$12.00','27 ms','Declined 51',[['DE 39','Response code','51 — insufficient funds']]],
+   ['s7a2-1188','Nightly integration test','051 chip','−$12.00','30 ms','Reversed',[['MTI','Message type','0400 — reversal']]]
+  ]
+ };
+ var SANDSET = {
+  nf:[['28 Aug · dry run','$4,120.00','$61.80','$4,058.20','Settled','s-ok']],
+  mt:[['3 Sep · nightly','$36.00','$0.52','$35.48','Settled','s-ok'],['2 Sep · nightly','$36.00','$0.52','$35.48','Settled','s-ok']]
+ };
+ var SANDDISP = {
+  nf:[['rtv_88c3','Certification suite','$42.00','Retrieval · DISP-03','Waiting on you','31 hours']],
+  mt:[]
+ };

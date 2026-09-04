@@ -1,0 +1,466 @@
+
+ /* ══════════════════════════════════════════════════════════════════
+    DEVELOPER TOOLING — the reference, logs, keys and webhooks, and the guides,
+    ported from the public developer site into Ravi's workspace.
+    ══════════════════════════════════════════════════════════════════ */
+ var GUIDES={
+  ov:{crumb:['Guides','Get started'],t:'Overview',deck:'What Global Payment Network is, in the order you will meet it.',
+   body:[['h2','The shape of it','shape'],
+    ['p','Global Payment Network is a card network with an HTTP front door. Cards are issued on a BIN we assign to you; when one is presented, we reach your endpoint and you decide. At 21:00 UTC we settle the day. Everything else — reversals, partials, stand-in, disputes — is a variation on those three moments.'],
+    ['h2','What you build','build'],
+    ['p','One endpoint, and as much of the rest as you want. The only component you must write is the authorization handler. Card creation, settlement pulls and dispute filing are ordinary REST calls you can make from anywhere.'],
+    ['ul',['An HTTPS endpoint that answers an authorization inside 500 ms.','A store mapping our card tokens to your own accounts.','A daily job, or a webhook consumer, for the settlement file.']],
+    ['h2','What you never build','never'],
+    ['p','No socket, no leased line, no MTI framing, no PAN storage. Your PCI scope does not move because the primary account number is never in your systems.']],
+   prev:['Products','ov'],next:['Quickstart','qs']},
+  qs:{crumb:['Guides','Get started'],t:'Quickstart',deck:'Three calls, about twenty minutes, entirely in the sandbox.',
+   body:[['h2','Before you start','before'],
+    ['p','You need a sandbox key, which arrives with the mutual NDA and takes about two minutes. Nothing here can move money: the key is scoped to a test BIN on our test range.'],
+    ['h2','Create a card','card'],
+    ['code','curl https://api.gpn.dev/v3/cards \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: card-000418" \\\n  -d bin=471288 \\\n  -d cardholder="H RUIZ" \\\n  -d limits[per_txn]=250000'],
+    ['h2','Answer an authorization','answer'],
+    ['p','Point us at any endpoint you control — a tunnel is fine in sandbox — and we will POST the authorization there. Reply approve inside 500 ms.'],
+    ['h2','Pull the cycle','cycle'],
+    ['p','After the 21:00 UTC cut-off the settlement file is available. In sandbox you can push the clock forward rather than wait for tomorrow.'],
+    ['code','curl https://api.gpn.dev/v3/sandbox/clock \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -d advance_to=cutoff']],
+   prev:['Overview','ov'],next:['Authentication','auth']},
+  auth:{crumb:['Guides','Get started'],t:'Authentication',deck:'One secret, sent as HTTP basic auth, scoped to one environment.',
+   body:[['h2','Keys','keys'],
+    ['p','A key is a string beginning <b>sk_sandbox_</b> or <b>sk_live_</b>. Send it as the basic-auth username with an empty password. There is no separate publishable key: nothing about this API is safe to run in a browser.'],
+    ['code','curl https://api.gpn.dev/v3/cards/card_1466 \\\n  -u sk_sandbox_4f2c…c91e:'],
+    ['h2','Scope','scope'],
+    ['p','A key belongs to exactly one environment and one set of programs. A sandbox key cannot reach a live BIN, which is why the sandbox is safe to hand to a contractor.'],
+    ['h2','Rotation','rot'],
+    ['p','Create the new key, deploy it, then revoke the old one — both work at once, so there is no window where authorizations fail. We nag at ninety days and never rotate a key for you.'],
+    ['callout','Do not share one key','Issue a key per service. When something leaks you want to revoke one thing, not stop the whole estate.']],
+   prev:['Quickstart','qs'],next:['Idempotency and retries','idem']},
+  idem:{crumb:['Guides','Get started'],t:'Idempotency and retries',deck:'How to retry safely when you cannot tell whether we got it.',
+   body:[['h2','The key','key'],
+    ['p','Send <b>Idempotency-Key</b> on every write. We store the result for twenty-four hours, so a retry after a timeout returns the original response rather than issuing a second card or a second reversal.'],
+    ['h2','What counts as the same request','same'],
+    ['p','Same key and same body returns the stored response. Same key and a <b>different</b> body is a mistake on your side and we answer 409 rather than guess which one you meant.'],
+    ['h2','When to retry','when'],
+    ['ol',['Retry on a timeout, a 5xx, or a connection failure — never on a 4xx, which will fail identically and count against your rate limit.',
+           'Back off exponentially from 100 ms with full jitter, five attempts.',
+           'Reuse the same idempotency key across the retries of one logical operation, and change it for the next one.']],
+    ['callout','Declines are not errors','A 51 is the issuer working properly. Log declines separately from failures, alert on the ratio rather than the count, and never retry a decline automatically.']],
+   prev:['Authentication','auth'],next:['Answering the tap','tap']},
+  tap:{crumb:['Guides','Authorization'],t:'Answering the tap',deck:'The one endpoint you write yourself, and the 500 ms you have to answer it in.',
+   body:[['h2','What arrives','arrives'],
+    ['p','When a card is presented, the terminal reaches us and we reach you. We POST a JSON body to the endpoint you registered, over mutual TLS, and hold the connection open. Every ISO 8583 data element you would expect is there, kept by name rather than by position — <b>amount</b> is DE 4, <b>entry_mode</b> is DE 22, <b>acceptor</b> is DE 43.'],
+    ['code','POST https://auth.yourhost.example/gpn/v1\nContent-Type: application/json\n\n{\n  "id": "auth_8f2c41e",\n  "amount": 4820,\n  "currency": "usd",\n  "card": "card_1466",\n  "acceptor": "BAYLINE FUEL 14",\n  "entry_mode": "071",\n  "partial_approval": true\n}'],
+    ['h2','What you send back','back'],
+    ['p','Answer with a decision and, if you are approving less than was asked for, the amount you actually approved. Anything you return that is not a decision we ignore, so you can echo your own correlation ids safely.'],
+    ['ol',['Decide. Your rules, your funds, your call — we do not second-guess an approve or a decline.',
+           'Answer <b>approve</b>, <b>decline</b> with a code, or approve with an <b>approved_amount</b> lower than the request for a partial.',
+           'Return inside 500 ms, measured from our socket write to your first byte.']],
+    ['callout','The one that bites','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
+    ['h2','The 500 millisecond budget','budget'],
+    ['p','The budget is generous on purpose: our own half of the round trip is 29 ms at the median and 131 ms at p99, so the rest is yours. Spend it on your own risk checks, not on a cold cache.'],
+    ['ul',['Keep a warm connection pool — we reuse the same mTLS session across authorizations.','Do not call a third party inline unless it is inside your budget on its worst day.','Return a decline rather than nothing. A decline is a correct answer; silence is not.']],
+    ['h2','When you do not answer','none'],
+    ['p','Past 500 ms we stand in on your behalf using the limits you configured, and send an advice message telling you what we did and which rule fired.'],
+    ['h2','Testing it','test'],
+    ['tbl',[['4712 8800 0000 0002','Approves in full','200 · approve'],['4712 8800 0000 0051','Declines, insufficient funds','200 · decline 51'],['4712 8800 0000 0010','Partial approval — case 14','200 · approve 10'],['4712 8800 0000 0500','Never answers, forces stand-in','advice']]]],
+   prev:['Idempotency and retries','idem'],next:['Partial approvals','partial']},
+  partial:{crumb:['Guides','Authorization'],t:'Partial approvals',deck:'Approving less than was asked for, and the field everyone gets wrong.',
+   body:[['h2','When they happen','when'],
+    ['p','A terminal that sets <b>partial_approval</b> is telling you it can take less than the full amount — fuel pumps and prepaid top-ups mostly. If you cannot fund the whole request you may approve part of it rather than decline outright.'],
+    ['h2','What to return','ret'],
+    ['p','Return <b>code 10</b> and set <b>approved_amount</b> to the figure you are standing behind. The terminal collects that amount and asks the cardholder for the rest another way.'],
+    ['code','{\n  "decision": "approve",\n  "approved_amount": 2500,   // what you approved\n  "code": "10"\n}'],
+    ['callout','Certification case 14','The failure is always the same: code 10 is right, and then DE 4 carries 4820 — the amount we asked for — instead of 2500. Echo the approved figure.'],
+    ['h2','Clearing and reversal','clear'],
+    ['p','Clearing arrives for the approved amount, not the requested one. A reversal against a partial can only release what is actually held.']],
+   prev:['Answering the tap','tap'],next:['Reversals','rev']},
+  rev:{crumb:['Guides','Authorization'],t:'Reversals',deck:'Releasing a hold before it clears.',
+   body:[['h2','Why reverse','why'],
+    ['p','A hold you no longer need is money the cardholder cannot spend. Reverse it and the funds free immediately rather than ageing out after a week.'],
+    ['h2','Full and partial','fp'],
+    ['p','Omit the amount to release the whole hold. Pass an amount to release part of it — useful when the final basket is smaller than the pre-authorization.'],
+    ['code','curl https://api.gpn.dev/v3/authorizations/auth_71ab/reverse \\\n  -u sk_sandbox_4f2c…c91e: \\\n  -H "Idempotency-Key: rev-71ab-1" \\\n  -d reason=cardholder'],
+    ['h2','Too late','late'],
+    ['p','Once an authorization has cleared there is nothing to reverse and we answer 409. From that point the instrument is a refund or a dispute, not a reversal.']],
+   prev:['Partial approvals','partial'],next:['Stand-in','si']},
+  si:{crumb:['Guides','Authorization'],t:'Stand-in',deck:'What we do when you do not answer, and how to make sure it stays rare.',
+   body:[['h2','The trigger','trig'],
+    ['p','Past 500 ms, or on a connection we cannot open, we decide on your behalf using the limits on the card and the program. You are told inside seconds, not at the end of the day.'],
+    ['h2','The advice message','adv'],
+    ['p','Every stand-in produces an <b>authorization.advice</b> event carrying the decision we took and the rule that produced it, so your ledger can catch up without reconciliation guesswork.'],
+    ['h2','Keeping it rare','rare'],
+    ['ul',['Alert on the stand-in rate, not just on errors — it is the earliest sign your handler is degrading.','A host that leans on stand-in fails certification case 19.','Stand-in limits are yours to set. Setting them conservatively is not the same as setting them low.']]],
+   prev:['Reversals','rev'],next:['Settlement','set']},
+  set:{crumb:['Guides','Money'],t:'Settlement',deck:'One cycle a day, and the four numbers on it.',
+   body:[['h2','The cycle','cyc'],
+    ['p','We cut at 21:00 UTC. Everything cleared since the last cut is in one cycle: gross, interchange, scheme fees, and the net figure that moves.'],
+    ['tbl',[['Gross','Everything that cleared','$8,440,140'],['Interchange','What the scheme took','$121,480'],['Scheme fees','Assessments and network charges','$18,240'],['Net to fund','What actually moves','$8,300,420']]],
+    ['h2','Getting it','get'],
+    ['p','Pull <b>GET /v3/settlements</b>, or subscribe to <b>settlement.closed</b> and never poll. The file is also available as CSV for people who would rather open it in a spreadsheet than parse it.'],
+    ['h2','Holds','hold'],
+    ['p','A cycle can be held — an expiring document, a collateral shortfall — and it will say which. Authorizations keep flowing while a cycle is held; only the money stops.']],
+   prev:['Stand-in','si'],next:['Disputes','dis']},
+  dis:{crumb:['Guides','Money'],t:'Disputes',deck:'Retrieval through to arbitration, with the deadline on every case.',
+   body:[['h2','The stages','stage'],
+    ['p','A case moves through retrieval request, chargeback, representment, pre-arbitration and arbitration. Each stage has a calendar-day deadline, and the deadline is on every object we return, so you never have to compute it.'],
+    ['h2','Representment','rep'],
+    ['p','File your evidence before the deadline and the case goes back to the acquirer. Nine times in ten the evidence you need is the authorization itself, which is why the dispute object links to it.'],
+    ['callout','Deadlines are calendar days','Not working days, and not extended by a holiday. A case due Thursday is due Thursday.']],
+   prev:['Settlement','set'],next:['Certification','cert']},
+  cert:{crumb:['Guides','Going live'],t:'Certification',deck:'Twenty-four cases. Run them as often as you like, before anyone signs.',
+   body:[['h2','How it runs','run'],
+    ['p','We fire all twenty-four at your sandbox endpoint in one go, about six minutes. Batch your fixes: patching mid-suite restarts the run.'],
+    ['h2','What is checked','what'],
+    ['tbl',[['1–4','Card issuing and lookup','4 cases'],['5–16','Authorization, declines, reversals, partials','12 cases'],['17–19','Settlement and stand-in reconciliation','3 cases'],['20–21','Webhook signature and retry','2 cases'],['22–23','Disputes','2 cases'],['24','Go-live checklist','1 case']]],
+    ['h2','Where hosts fail','fail'],
+    ['p','Case 14, roughly a third of first runs: the partial approval echo. Case 19 next, for hosts that answer slowly enough to lean on stand-in.'],
+    ['callout','You can fail as often as you like','Nobody is watching your sandbox runs, and the count is not held against you. Only the passing run matters.']],
+   prev:['Disputes','dis'],next:['Production checklist','live']},
+  live:{crumb:['Guides','Going live'],t:'Production checklist',deck:'What we check before we cut production keys, and what you should check yourself.',
+   body:[['h2','Ours','ours'],
+    ['ol',['Twenty-four of twenty-four certification cases passing on one run.','Two key holders, not one. A single production key is an audit finding.','A verified settlement account, and collateral confirmed by your sponsor.','A signed program agreement covering the roles you are certifying for.']],
+    ['h2','Yours','yours'],
+    ['ul',['Alerting on stand-in rate and on your own p99, not only on 5xx.','A runbook for the day your endpoint is down — which is the day stand-in earns its keep.','Webhook signature verification in production, not just in the tests.','A second engineer who has actually deployed the handler.']],
+    ['callout','Ten working days, or three to four weeks','Teams who have written a host before are through in about ten working days. Teams who have not take three to four weeks, and your named engineer sits with them for it.']],
+   prev:['Certification','cert'],next:['Overview','ov']}
+ };
+
+ var RES=[
+  ['Cards',[['cards.create','Create a card'],['cards.get','Retrieve a card'],['cards.update','Update a card'],['cards.del','Close a card']]],
+  ['Authorizations',[['auth.list','List authorizations'],['auth.get','Retrieve an authorization'],['auth.rev','Reverse an authorization']]],
+  ['Programs',[['prog.get','Retrieve a program'],['prog.limits','Set program limits']]],
+  ['Settlement',[['set.list','List cycles'],['set.file','Download a cycle file']]],
+  ['Disputes',[['dis.list','List disputes'],['dis.rep','File a representment']]],
+  ['Webhooks',[['wh.create','Add an endpoint'],['wh.test','Send a test event']]]
+ ];
+ var GRP={cards:'Cards',auth:'Authorizations',prog:'Programs',set:'Settlement',dis:'Disputes',wh:'Webhooks'};
+ var EP={
+  'cards.create':{m:'POST',p:'/v3/cards',t:'Create a card',sdk:['cards','create'],
+   d:'Issues a virtual PAN on one of your BINs and returns a <b>token</b>. The PAN is held by Global Payment Network and revealed to the cardholder through the hosted view, so it never crosses your systems and your PCI scope stays where it is.',
+   meta:['idempotent','returns in 40 ms','60/min in sandbox'],
+   ex:{'bin':'471288','cardholder':'H RUIZ','limits.per_txn':250000,'limits.per_day':1000000},
+   params:[['bin','string','required','One of your program BINs. Maps to the first six digits of DE 2.',null],
+    ['cardholder','string','required','Name as it should print, 2–26 characters. Your side of DE 43.',null],
+    ['form_factor','enum','','<b>virtual</b> or <b>physical</b>. Physical starts a fulfilment order with the bureau.',null],
+    ['limits','object','','Ceilings applied before the authorization reaches you.',
+     [['limits.per_txn','integer','','Ceiling per authorization, minor units. Inherits the program limit when absent.'],
+      ['limits.per_day','integer','','Rolling 24-hour ceiling, minor units.'],
+      ['limits.mcc_allow','array','','Merchant categories to permit. Everything else declines with 57.']]],
+    ['metadata','object','','Up to twenty keys echoed back on every authorization. Strings only.',null]],
+   errs:[['400','bin_not_yours','The BIN is not on a program this key can issue against.'],
+    ['409','idempotency_conflict','Same key, different body inside the 24-hour window. Send a new key.'],
+    ['422','limit_above_program','A card limit is higher than the program allows. Raise the program limit first.'],
+    ['429','rate_limited','Sixty creates a minute in sandbox. Retry-After tells you when.']],
+   resp:'{\n  "token": "card_1466",\n  "last4": "9265",\n  "state": "active",\n  "form_factor": "virtual",\n  "limits": { "per_txn": 250000, "per_day": 1000000 },\n  "created": "2026-09-03T09:39:57Z"\n}'},
+  'cards.get':{m:'GET',p:'/v3/cards/{token}',t:'Retrieve a card',sdk:['cards','retrieve'],
+   d:'Returns the current state of a card: limits, form factor, and the last four digits. Cacheable for sixty seconds; the state field is the only part that changes often.',
+   meta:['cacheable','returns in 24 ms'],ex:{},
+   params:[['token','string','required','The card token returned at creation. Path parameter.',null],
+    ['expand','array','','Add <b>program</b> to inline the program object rather than its id.',null]],
+   errs:[['404','not_found','No card with that token on a program this key can see.']],
+   resp:'{\n  "token": "card_1466",\n  "last4": "9265",\n  "state": "active",\n  "program": "prog_471288",\n  "limits": { "per_txn": 250000, "per_day": 1000000 }\n}'},
+  'cards.update':{m:'PUT',p:'/v3/cards/{token}',t:'Update a card',sdk:['cards','update'],
+   d:'Changes limits, state or metadata on an existing card. Send only what changes — anything you omit is left alone. Suspending a card takes effect on the next authorization, not retrospectively.',
+   meta:['idempotent','audited'],ex:{'state':'suspended','limits.per_day':500000},
+   params:[['state','enum','','<b>active</b> or <b>suspended</b>. A suspended card declines with 62 and can be reactivated.',null],
+    ['limits','object','','Same shape as at creation. Replaces the limits object wholesale.',null],
+    ['metadata','object','','Merged into the existing metadata rather than replacing it.',null]],
+   errs:[['409','card_closed','A closed card cannot be updated. Closure is permanent.'],
+    ['422','limit_above_program','A card limit is higher than the program allows.']],
+   resp:'{\n  "token": "card_1466",\n  "state": "suspended",\n  "limits": { "per_txn": 250000, "per_day": 500000 },\n  "updated": "2026-09-03T11:04:22Z"\n}'},
+  'cards.del':{m:'DELETE',p:'/v3/cards/{token}',t:'Close a card',sdk:['cards','close'],
+   d:'Closes a card permanently. Authorizations decline with 41 from the moment this returns. Holds that already exist still clear, so closure does not strand money in flight.',
+   meta:['irreversible','confirm'],ex:{},
+   params:[['token','string','required','The card token. Path parameter.',null],
+    ['reason','enum','','<b>lost</b>, <b>stolen</b>, <b>expired</b> or <b>cardholder</b>. Appears in reporting and on disputes.',null]],
+   errs:[['409','already_closed','The card is already closed. This is not an error you need to handle.']],
+   resp:'{\n  "token": "card_1466",\n  "state": "closed",\n  "reason": "stolen",\n  "closed": "2026-09-03T11:12:40Z"\n}'},
+  'auth.list':{m:'GET',p:'/v3/authorizations',t:'List authorizations',sdk:['authorizations','list'],
+   d:'Every message as it crossed the wire, newest first, queryable for thirteen months. This is the same data behind Transaction reporting, so a support conversation and a script see the same rows.',
+   meta:['paginated','13-month window'],ex:{},
+   params:[['card','string','','Filter to one card token.',null],
+    ['result','enum','','<b>approved</b>, <b>declined</b>, <b>reversed</b> or <b>stood_in</b>.',null],
+    ['created','object','','Range filter: <b>created[gte]</b> and <b>created[lt]</b>, RFC 3339.',null],
+    ['limit','integer','','1 to 100, default 25.',null],
+    ['cursor','string','','From the previous page’s <b>next_cursor</b>.',null]],
+   errs:[['400','window_too_wide','Ranges are capped at 31 days. Page instead.']],
+   resp:'{\n  "data": [\n    {\n      "id": "auth_8f2c41e",\n      "amount": 4820,\n      "approved_amount": 2500,\n      "code": "10",\n      "latency_ms": 31\n    }\n  ],\n  "next_cursor": "cur_9f13"\n}'},
+  'auth.get':{m:'GET',p:'/v3/authorizations/{id}',t:'Retrieve an authorization',sdk:['authorizations','retrieve'],
+   d:'One authorization with every data element we sent you and every field you answered with, side by side. This is the object to attach to a dispute or paste into a support thread.',
+   meta:['cacheable'],ex:{},
+   params:[['id','string','required','Authorization id. Path parameter.',null],
+    ['expand','array','','Add <b>iso</b> to include the raw data elements by number as well as by name.',null]],
+   errs:[['404','not_found','No authorization with that id on a program this key can see.']],
+   resp:'{\n  "id": "auth_8f2c41e",\n  "amount": 4820,\n  "approved_amount": 2500,\n  "code": "10",\n  "entry_mode": "071",\n  "acceptor": "BAYLINE FUEL 14",\n  "latency_ms": 31,\n  "stood_in": false\n}'},
+  'auth.rev':{m:'POST',p:'/v3/authorizations/{id}/reverse',t:'Reverse an authorization',sdk:['authorizations','reverse'],
+   d:'Releases a hold before it clears. Sends MTI 0400 to the acquirer and settles nothing. A full reversal is the default; pass an amount for a partial reversal.',
+   meta:['idempotent','returns in 36 ms'],ex:{reason:'cardholder'},
+   params:[['amount','integer','','Minor units to release. Omit to reverse the whole hold.',null],
+    ['reason','enum','','<b>cardholder</b>, <b>merchant</b>, <b>timeout</b> or <b>duplicate</b>. Appears on the settlement file.',null]],
+   errs:[['404','not_found','No authorization with that id on a program this key can see.'],
+    ['409','already_cleared','The authorization has already cleared. File a dispute instead.'],
+    ['422','amount_above_hold','The amount is larger than the hold that remains.']],
+   resp:'{\n  "id": "auth_71ab",\n  "state": "reversed",\n  "reversed_amount": 4820,\n  "mti": "0400",\n  "reversed_at": "2026-09-03T10:39:12Z"\n}'},
+  'prog.get':{m:'GET',p:'/v3/programs/{bin}',t:'Retrieve a program',sdk:['programs','retrieve'],
+   d:'The program behind a BIN: product type, card range, settlement account, collateral basis and the roles you are certified for. Everything here was fixed at certification and most of it cannot change without a new BIN.',
+   meta:['cacheable'],ex:{},
+   params:[['bin','string','required','Six digits. Path parameter.',null]],
+   errs:[['404','not_found','No program on that BIN for this key.']],
+   resp:'{\n  "bin": "471288",\n  "product": "commercial_debit",\n  "range": "4712880000000000-4712889999999999",\n  "roles": ["issuing", "program_management"],\n  "settlement": { "currency": "usd", "cutoff": "21:00Z" }\n}'},
+  'prog.limits':{m:'PUT',p:'/v3/programs/{bin}/limits',t:'Set program limits',sdk:['programs','setLimits'],
+   d:'The ceiling every card on the BIN inherits, and the rules we apply when we stand in for you. Audited: every change records who made it and when.',
+   meta:['idempotent','audited'],ex:{'per_txn':500000,'per_day':2000000,'standin':'approve_under_limit'},
+   params:[['per_txn','integer','required','Program ceiling per authorization, minor units. No card may exceed it.',null],
+    ['per_day','integer','required','Rolling 24-hour program ceiling, minor units.',null],
+    ['standin','enum','','What we do past 500 ms: <b>approve_under_limit</b>, <b>decline_all</b>, or <b>approve_all</b>.',null],
+    ['mcc_block','array','','Merchant categories to decline at the program level, before the card rules run.',null]],
+   errs:[['403','not_permitted','This key cannot change program limits. Ask an admin.'],
+    ['422','below_card_limit','A card on this BIN has a higher limit. Lower it first.']],
+   resp:'{\n  "bin": "471288",\n  "per_txn": 500000,\n  "per_day": 2000000,\n  "standin": "approve_under_limit",\n  "updated_by": "mira@northgate.example"\n}'},
+  'set.list':{m:'GET',p:'/v3/settlements',t:'List cycles',sdk:['settlements','list'],
+   d:'One row per daily cycle: gross, interchange, scheme fees and the net that moved. A held cycle says so and says why.',
+   meta:['paginated'],ex:{},
+   params:[['cycle','string','','A single date, YYYY-MM-DD, instead of a page.',null],
+    ['state','enum','','<b>settled</b>, <b>held</b> or <b>pending</b>.',null],
+    ['limit','integer','','1 to 100, default 25.',null]],
+   errs:[['404','no_cycle','No cycle on that date. Weekends still produce a cycle; holidays may not.']],
+   resp:'{\n  "data": [\n    {\n      "cycle": "2026-09-02",\n      "gross": 8440140,\n      "interchange": 121480,\n      "scheme_fees": 18240,\n      "net": 8300420,\n      "state": "settled"\n    }\n  ]\n}'},
+  'set.file':{m:'GET',p:'/v3/settlements/{cycle}/file',t:'Download a cycle file',sdk:['settlements','file'],
+   d:'The full transaction-level file behind a cycle, as JSON lines or CSV. Large cycles are gzipped; the link is signed and expires in an hour.',
+   meta:['signed link','expires in 1 h'],ex:{},
+   params:[['cycle','string','required','YYYY-MM-DD. Path parameter.',null],
+    ['format','enum','','<b>jsonl</b> (default) or <b>csv</b>.',null]],
+   errs:[['404','no_cycle','No cycle on that date.'],['409','cycle_open','The cycle has not cut yet. Wait for 21:00 UTC, or advance the sandbox clock.']],
+   resp:'{\n  "cycle": "2026-09-02",\n  "format": "jsonl",\n  "rows": 41208,\n  "bytes": 9140233,\n  "url": "https://files.gpn.dev/s/2026-09-02.jsonl.gz?sig=…",\n  "expires": "2026-09-03T12:04:00Z"\n}'},
+  'dis.list':{m:'GET',p:'/v3/disputes',t:'List disputes',sdk:['disputes','list'],
+   d:'Open cases with the stage each one is at and the representment deadline in calendar days. The authorization is linked, because it is the evidence you will need.',
+   meta:['paginated'],ex:{},
+   params:[['stage','enum','','<b>retrieval</b>, <b>chargeback</b>, <b>representment</b>, <b>pre_arbitration</b> or <b>arbitration</b>.',null],
+    ['due_before','string','','RFC 3339. The filter to build your work queue on.',null],
+    ['limit','integer','','1 to 100, default 25.',null]],
+   errs:[['400','bad_stage','Unknown stage. The five above are the whole list.']],
+   resp:'{\n  "data": [\n    {\n      "id": "cb_20831",\n      "authorization": "auth_8f2c41e",\n      "reason": "10.4",\n      "amount": 124000,\n      "stage": "representment",\n      "due": "2026-09-05"\n    }\n  ]\n}'},
+  'dis.rep':{m:'POST',p:'/v3/disputes/{id}/representment',t:'File a representment',sdk:['disputes','represent'],
+   d:'Sends your evidence back to the acquirer before the deadline. Evidence is uploaded first and referenced here by id, so a retry never re-uploads a 40 MB PDF.',
+   meta:['idempotent'],ex:{evidence:'ev_9f21c',note:'AVS and CVV both matched'},
+   params:[['evidence','string','required','Evidence bundle id from the upload endpoint.',null],
+    ['note','string','','Up to 500 characters, read by a human at the acquirer.',null]],
+   errs:[['409','past_deadline','The representment deadline has passed. The case moves to pre-arbitration.'],
+    ['422','evidence_empty','The bundle has no documents in it.']],
+   resp:'{\n  "id": "cb_20831",\n  "stage": "representment",\n  "filed": "2026-09-03T11:40:02Z",\n  "decision_expected_by": "2026-10-03"\n}'},
+  'wh.create':{m:'POST',p:'/v3/webhooks',t:'Add an endpoint',sdk:['webhooks','create'],
+   d:'Registers a URL to receive events. Every delivery is signed with <b>GPN-Signature</b> over the raw body; verify first, parse second, and keep a five-minute replay window.',
+   meta:['idempotent'],ex:{'url':'https://hooks.northgate.dev/gpn','events':'authorization.*'},
+   params:[['url','string','required','HTTPS only. We will not deliver to a plain HTTP endpoint, even in sandbox.',null],
+    ['events','array','required','Event names or prefixes: <b>authorization.*</b>, <b>settlement.closed</b>, <b>dispute.*</b>.',null],
+    ['description','string','','For your own benefit on the keys screen.',null]],
+   errs:[['422','not_https','The URL must be HTTPS.'],['422','unreachable','We could not complete a TLS handshake with that host.']],
+   resp:'{\n  "id": "wh_3f81",\n  "url": "https://hooks.northgate.dev/gpn",\n  "events": ["authorization.*"],\n  "secret": "whsec_…d8a1",\n  "state": "delivering"\n}'},
+  'wh.test':{m:'POST',p:'/v3/webhooks/test',t:'Send a test event',sdk:['webhooks','test'],
+   d:'Fires a synthetic event at one of your endpoints so you can prove signature verification works before a real authorization depends on it.',
+   meta:['sandbox and live'],ex:{webhook:'wh_3f81',event:'authorization.created'},
+   params:[['webhook','string','required','The endpoint id to deliver to.',null],
+    ['event','string','','Which event to synthesise. Defaults to <b>authorization.created</b>.',null]],
+   errs:[['404','not_found','No webhook with that id.'],['409','endpoint_failing','That endpoint is currently marked failing. Fix it, then retest.']],
+   resp:'{\n  "delivered": true,\n  "status": 200,\n  "attempts": 1,\n  "latency_ms": 78\n}'}
+ };
+
+ var PV={token:'card_1466',id:'auth_71ab',bin:'471288',cycle:'2026-09-02'};
+ function subst(p){ return p.replace(/\{(\w+)\}/g,function(m,k){ return PV[k]||m }) }
+ function nest(ex){ var t={}; Object.keys(ex||{}).forEach(function(k){
+   var parts=k.split('.'), n=t; parts.forEach(function(p,i){ if(i===parts.length-1) n[p]=ex[k]; else n=n[p]=n[p]||{} }); }); return t }
+ var lit=function(v){ return typeof v==='string'?JSON.stringify(v):v };
+ var camel=function(k){ return k.split('_').map(function(w,i){ return i?w.charAt(0).toUpperCase()+w.slice(1):w }).join('') };
+ var pascal=function(k){ var c=camel(k); return c.charAt(0).toUpperCase()+c.slice(1) };
+ function render(t,ind,style){
+   return Object.keys(t).map(function(k){
+     var v=t[k], pad=new Array(ind+1).join(' ');
+     if(v && typeof v==='object'){
+       if(style==='js')  return pad+JSON.stringify(k)+': {\n'+render(v,ind+2,style)+'\n'+pad+'}';
+       if(style==='py')  return pad+k+'={\n'+Object.keys(v).map(function(x){return pad+'  '+JSON.stringify(x)+': '+lit(v[x])}).join(',\n')+'\n'+pad+'}';
+       return pad+pascal(k)+': &gpn.'+pascal(k)+'{\n'+Object.keys(v).map(function(x){return pad+'  '+pascal(x)+': '+lit(v[x])}).join(',\n')+'\n'+pad+'}';
+     }
+     if(style==='js') return pad+JSON.stringify(k)+': '+lit(v);
+     if(style==='py') return pad+k+'='+lit(v);
+     return pad+pascal(k)+': '+lit(v);
+   }).join(',\n');
+ }
+ function mkcode(e,l){
+   var path=subst(e.p), ks=Object.keys(e.ex||{}), t=nest(e.ex);
+   var pk=(e.p.match(/\{(\w+)\}/)||[])[1], pathArg=pk?'"'+PV[pk]+'"':'';
+   if(l==='curl'){
+     var s='curl https://a41f-sandbox.gpn-api.net'+path+' \\\n  -u gpn_sand_a41f…9d2c:';
+     if(e.m!=='GET'&&e.m!=='POST') s+=' \\\n  -X '+e.m;
+     if(/idempotent/.test(e.meta.join(' '))&&e.m!=='GET') s+=' \\\n  -H "Idempotency-Key: '+e.sdk[1].toLowerCase()+'-000418"';
+     ks.forEach(function(k){ var v=e.ex[k], f=k.replace(/\.(\w+)/g,'[$1]');
+       s+=' \\\n  -d '+f+'='+(typeof v==='string'&&/[^\w.@:\/*-]/.test(v)?'"'+v+'"':v); });
+     return s;
+   }
+   if(l==='node') return 'const client = require("@gpn/sdk")(process.env.GPN_KEY);\n\nconst res = await client.'+e.sdk[0]+'.'+e.sdk[1]+'('
+     +[pathArg, ks.length?'{\n'+render(t,2,'js')+'\n}':''].filter(Boolean).join(', ')+');';
+   if(l==='python'){
+     var pyfn=e.sdk[1].replace(/([A-Z])/g,function(m){return '_'+m.toLowerCase()});
+     return 'import gpn\nclient = gpn.Client(os.environ["GPN_KEY"])\n\nres = client.'+e.sdk[0]+'.'+pyfn+'('
+       +(pathArg?pathArg+(ks.length?',':''):'')+(ks.length?'\n'+render(t,2,'py')+'\n':'')+')';
+   }
+   return 'client := gpn.New(os.Getenv("GPN_KEY"))\n\nres, err := client.'+pascal(e.sdk[0])+'.'+pascal(e.sdk[1])+'(ctx'
+     +(pathArg?', '+pathArg:'')+(ks.length?', &gpn.'+pascal(e.sdk[1])+'Params{\n'+render(t,2,'go')+'\n}':'')+')';
+ }
+
+ /* ── API reference ──────────────────────────────────────────────── */
+ var rcur='cards.create', lang='curl', pOpen={};
+ var GUIDE_ORDER=Object.keys(GUIDES);
+ function drawApis(){
+   var e=EP[rcur], flat=[]; RES.forEach(function(g){ g[1].forEach(function(x){ flat.push(x) }) });
+   var i=flat.map(function(x){return x[0]}).indexOf(rcur);
+   var pv=flat[(i-1+flat.length)%flat.length], nx=flat[(i+1)%flat.length];
+   var article='<div class="crumb"><b>API reference</b><span>/</span><b>'+esc(GRP[rcur.split('.')[0]])+'</b><span>/</span><span>'+esc(e.t)+'</span></div>'
+    +'<h2 class="t">'+esc(e.t)+'</h2>'
+    +'<div class="ep"><span class="key">'+e.m+' '+esc(e.p)+'</span><span class="t13" style="color:var(--g550)">'+e.meta.join(' · ')+'</span></div>'
+    +'<p class="desc">'+e.d+'</p>'
+    +'<h3>Parameters</h3><div>'+e.params.map(function(p){
+       var s='<div class="param"><span class="nm">'+esc(p[0])+'</span><span class="ty">'+esc(p[1])+'</span>'+(p[2]?'<span class="rq">'+esc(p[2])+'</span>':'')+'<p>'+p[3]+'</p>';
+       if(p[4]){ var on=pOpen[p[0]];
+         s+='<div class="more" data-k="'+p[0]+'">'+(on?'−':'+')+' '+(on?'Hide':'Show')+' child attributes</div>';
+         if(on) s+='<div class="kids">'+p[4].map(function(c){ return '<div class="param"><span class="nm">'+esc(c[0])+'</span><span class="ty">'+esc(c[1])+'</span>'+(c[2]?'<span class="rq">'+esc(c[2])+'</span>':'')+'<p>'+c[3]+'</p></div>' }).join('')+'</div>'; }
+       return s+'</div>'; }).join('')+'</div>'
+    +'<h3>Errors</h3><div>'+e.errs.map(function(x){ return '<div class="param"><span class="nm">'+x[0]+' '+esc(x[1])+'</span><p>'+esc(x[2])+'</p></div>' }).join('')+'</div>'
+    +'<div class="pager"><a data-r="'+pv[0]+'"><div class="k">Previous</div><div class="t">'+esc(pv[1])+'</div></a><a class="nx" data-r="'+nx[0]+'"><div class="k">Next</div><div class="t">'+esc(nx[1])+'</div></a></div>';
+   var code='<div class="side"><div class="langs">'+['curl','node','python','go'].map(function(l){
+       return '<button data-l="'+l+'" aria-pressed="'+(l===lang)+'">'+(l==='curl'?'cURL':l==='node'?'Node':l==='python'?'Python':'Go')+'</button>' }).join('')+'</div>'
+    +'<div class="cpn"><div class="bar">Request<span class="rt"><span class="lnk" id="rfCopy">Copy</span></span></div><div class="bd">'+esc(mkcode(e,lang))+'</div></div>'
+    +'<div class="cpn"><div class="bar">Response<span class="rt"><span class="st ok">200</span></span></div><div class="bd">'+esc(e.resp)+'</div></div>'
+    +'<div class="rec" style="margin-top:6px"><div class="rr"><span class="l">Sandbox host</span><span class="v"><span class="key">a41f-sandbox.gpn-api.net</span></span></div>'
+    +'<div class="rr"><span class="l">Certification cases</span><span class="v">'+casesFor(rcur)+'</span></div>'
+    +'<div class="rr"><span class="l">Last called by you</span><span class="v">'+lastCall(rcur)+'</span></div></div>'
+    +'<div class="act" style="margin-top:18px"><span class="lnk" id="rfTry">Try it in the toolkit</span><span class="lnk" id="rfLog" style="margin-left:18px">See your calls</span></div></div>';
+   $('#apiBody').innerHTML='<div class="rf"><div class="rail">'+RES.map(function(g){
+       return '<h5>'+esc(g[0])+'</h5>'+g[1].map(function(x){ return '<a data-r="'+x[0]+'"'+(x[0]===rcur?' class="on"':'')+'>'+esc(x[1])+'<span class="cv">'+EP[x[0]].m+'</span></a>' }).join('') }).join('')
+    +'</div><div><div class="body"><div>'+article+'</div>'+code+'</div></div></div>';
+   $$('#apiBody [data-r]').forEach(function(a){ a.addEventListener('click',function(){ rcur=a.dataset.r; pOpen={}; anchored($('#apiBody'), drawApis); }) });
+   $$('#apiBody .langs button').forEach(function(b){ b.addEventListener('click',function(){ lang=b.dataset.l; anchored($('#apiBody'), drawApis); }) });
+   $$('#apiBody .more').forEach(function(m){ m.addEventListener('click',function(){ pOpen[m.dataset.k]=!pOpen[m.dataset.k]; anchored($('#apiBody'), drawApis); }) });
+   $('#rfCopy').addEventListener('click',function(){ toast('Copied the '+(lang==='curl'?'cURL':lang)+' sample.') });
+   $('#rfTry').addEventListener('click',function(){ go('dv-tool') });
+   if($('#apiMd')) $('#apiMd').onclick=function(){ toast('The whole reference, as one Markdown file, for pasting into a model.') };
+   $('#rfLog').addEventListener('click',function(){ logF=rcur.split('.')[0]; go('dv-logs') });
+ }
+ function casesFor(k){ var g=k.split('.')[0]; return {cards:'6 of your 61',auth:'24 of your 61',prog:'2 of your 61',set:'9 of your 61',dis:'8 of your 61',wh:'3 of your 61'}[g]||'—' }
+ function lastCall(k){ var m={'cards.create':'10:39:57 today','cards.get':'10:40:52 today','auth.rev':'10:39:12 today','set.list':'10:38:40 today','prog.limits':'10:37:03 today','wh.test':'10:40:31 today'}; return m[k]||'Not yet' }
+
+ /* ── request log ────────────────────────────────────────────────── */
+ var REQ=[
+  ['10:41:08','POST','/v3/authorizations','Idempotency key reused, original returned',200,41,'req_8f2c41e','auth'],
+  ['10:41:08','POST','/v3/authorizations','Partial approval echoed the requested amount · AUTH-14',422,131,'req_8f2c3d0','auth'],
+  ['10:40:52','GET','/v3/cards/card_1466','',200,24,'req_8f2c2b7','cards'],
+  ['10:40:31','POST','/v3/webhooks/test','Delivered after two retries',202,78,'req_8f2c19a','wh'],
+  ['10:39:57','POST','/v3/cards','',201,44,'req_8f2c0e2','cards'],
+  ['10:39:12','POST','/v3/authorizations/auth_71ab/reverse','',200,36,'req_8f2bf90','auth'],
+  ['10:38:40','GET','/v3/settlements?cycle=2026-09-02','Paginated, 3 of 3',200,61,'req_8f2be55','set'],
+  ['10:37:03','PUT','/v3/programs/471288/limits','Audited · Mira Adeyemi',200,52,'req_8f2bd11','prog'],
+  ['10:35:20','POST','/v3/tokens','Suspend accepted, state unchanged · TOK-07',202,39,'req_8f2bb02','cards'],
+  ['10:34:11','POST','/v3/disputes/dsp_88c3/evidence','4.1 MB, three files',201,1240,'req_8f2ba71','dis'],
+  ['10:31:56','GET','/v3/authorizations?since=10:00',  'Paginated, 1 of 2',200,58,'req_8f2b9c0','auth'],
+  ['10:30:02','POST','/v3/authorizations','',200,29,'req_8f2b8e4','auth']
+ ];
+ var logF='all', logOpen=null;
+ function latBar(ms,max){ return '<span class="lat"><i><b style="width:'+Math.min(100,Math.round(ms/(max||150)*100))+'%"></b></i>'+ms+' ms</span>' }
+ function drawLogs(){
+   var K=[['all','Everything',REQ.length]].concat(RES.map(function(g){ var k=g[1][0][0].split('.')[0]; return [k,g[0],REQ.filter(function(r){return r[7]===k}).length] }).filter(function(x){return x[2]}));
+   $('#lgSeg').innerHTML='<span class="seg">'+K.map(function(t){ return '<button data-l="'+t[0]+'" aria-pressed="'+(logF===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')
+    +'</span><div class="rt"><span class="t13" style="color:var(--g550)">Sandbox · last 24 hours · newest first</span></div>';
+   $$('#lgSeg button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#lgSeg'), function(){ logF=b.dataset.l; logOpen=null; drawLogs(); }) }) });
+   var rows=REQ.filter(function(r){ return logF==='all'||r[7]===logF });
+   var bad=REQ.filter(function(r){return r[4]>=400}).length, slow=REQ.filter(function(r){return r[5]>400}).length;
+   $('#lgSub').textContent='8,214 requests in 24 hours · 99.1% answered 2xx · '+bad+' worth looking at';
+   var h='<div class="facts" style="margin-top:26px">'
+    +[['Requests','8,214',''],['Answered 2xx','99.1','%'],['4xx','0.7','%'],['p95 latency','68','ms']].map(function(f){ return '<div><div class="k">'+f[0]+'</div><div class="v">'+f[1]+'<small>'+f[2]+'</small></div></div>' }).join('')+'</div>'
+    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>';
+   rows.forEach(function(r){
+     var st=r[4]<300?(r[4]===202?'wa':'ok'):'no', on=logOpen===r[6];
+     h+='<tr data-id="'+r[6]+'"'+(on?' class="sel"':'')+'><td style="width:96px" class="mute">'+r[0]+'</td>'
+      +'<td><span class="key" style="background:none; padding:0">'+r[1]+' '+esc(r[2])+'</span>'+(r[3]?'<span class="s2">'+esc(r[3])+'</span>':'')+'</td>'
+      +'<td class="st '+st+'">'+r[4]+'</td><td class="opt">'+latBar(r[5],400)+'</td><td class="n opt2"><span class="key">'+r[6]+'</span></td></tr>';
+     if(on) h+='<tr class="expand"><td colspan="5"><div class="cols2">'
+      +'<div><div class="t13" style="color:var(--g550)">Request</div><div class="code" style="margin-top:8px">'+esc(r[1]+' '+r[2]+'\nHost: a41f-sandbox.gpn-api.net\nAuthorization: Bearer gpn_sand_a41f…9d2c\nIdempotency-Key: '+r[6].replace('req_','ik_')+(r[1]==='POST'&&/authorizations$/.test(r[2])?'\n\n{\n  "amount": 6800,\n  "currency": "USD",\n  "partialApproval": true\n}':''))+'</div></div>'
+      +'<div><div class="t13" style="color:var(--g550)">Response · '+r[4]+' · '+r[5]+' ms</div><div class="code" style="margin-top:8px">'+esc(r[4]===422?'{\n  "error": "partial_approval_echo",\n  "message": "approvedAmount must be lower on a partial",\n  "case": "AUTH-14"\n}':r[4]===202?'{\n  "accepted": true,\n  "state": "PENDING"\n}':'{\n  "id": "'+r[6].replace('req_','obj_')+'",\n  "ok": true\n}')+'</div>'
+      +'<div class="act" style="margin-top:12px; display:flex; gap:16px"><span class="lnk" data-rr="'+r[6]+'">Replay</span>'+(r[4]===422?'<span class="lnk" data-case="AUTH-14">Open AUTH-14</span>':'')+'</div></div></div></td></tr>';
+   });
+   $('#lgBody').innerHTML=h+'</tbody></table>'
+    +'<div class="tfoot"><span>1–'+rows.length+' of '+(logF==='all'?'8,214':rows.length)+'</span><span>·</span><span class="lnk">Older</span></div>'
+    +'<p class="t13" style="color:var(--g550); margin-top:18px; max-width:80ch">Every call to the sandbox, with the answer we gave and how long it took. A 422 here is the same failure certification will find, so this is the cheaper place to find it first.</p>';
+   $$('#lgBody tr[data-id]').forEach(function(tr){ tr.addEventListener('click',function(){ anchored($('#lgBody'), function(){ logOpen=logOpen===tr.dataset.id?null:tr.dataset.id; drawLogs(); }) }) });
+   $$('#lgBody [data-rr]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); toast('Replayed '+a.dataset.rr+' against the sandbox. Same answer.'); }) });
+   $$('#lgBody [data-case]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); openFail(a.dataset.case); }) });
+ }
+
+ /* ── keys and webhooks ──────────────────────────────────────────── */
+ var KEYS=[
+  ['Host, authorization service','Answers the tap · Tomas Reyes','gpn_sand_a41f…9d2c','12 Aug','2 minutes ago',true],
+  ['Card issuing, back office','Creates and closes cards · Mira Adeyemi','gpn_sand_9a17…20bd','14 Aug','Yesterday',true],
+  ['Reporting, read only','Settlement pulls · nightly job','gpn_sand_c03e…7f44','20 Aug','21:04 yesterday',true],
+  ['Local testing','Revoked 28 Aug','gpn_sand_11b8…e2a0','12 Aug','27 Aug',false]
+ ];
+ var HOOKS=[
+  {u:'https://hooks.northgate.dev/gpn', s:'Production host · added 14 Aug', ev:'authorization.*, card.*', ok:99.8, st:'ok', lab:'Delivering'},
+  {u:'https://staging.northgate.dev/gpn', s:'Staging · 412 failures since 06:10, TLS certificate expired', ev:'settlement.*', ok:31, st:'no', lab:'Failing'}
+ ];
+ var keyEnv='sand';
+ function drawKeys(){
+   $('#kySub').textContent='Sandbox keys issue instantly and show in full. A production key is shown once, on activation day, and never again.';
+   $('#kyEnv').innerHTML='<span class="env"><button data-e="sand" aria-pressed="'+(keyEnv==='sand')+'">Sandbox</button><button data-e="live" class="live" aria-pressed="'+(keyEnv==='live')+'">Production</button></span>'
+    +'<div class="rt"><span class="lnk" id="kyNew">Create a key</span></div>';
+   $$('#kyEnv button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#kyEnv'), function(){ keyEnv=b.dataset.e; drawKeys(); }) }) });
+   $('#kyNew').addEventListener('click',function(){ toast(keyEnv==='sand'?'New sandbox key issued to Ravi Kapoor. It is on the list.':'Production keys are issued at activation, not before.') });
+   if(keyEnv==='live'){
+     $('#kyBody').innerHTML='<div class="blank" style="margin-top:26px"><div class="t">Production keys exist, and they are inert.</div><p>Two were generated on 29 August against BIN 471288. They start working at 06:00 on 6 October, and each will be shown to you exactly once, on that morning. Until then there is nothing to reveal.</p><div class="act"><span class="lnk" id="kyBack">Back to sandbox</span></div></div>';
+     $('#kyBack').addEventListener('click',function(){ keyEnv='sand'; drawKeys(); }); return;
+   }
+   var live=KEYS.filter(function(k){return k[5]}).length;
+   $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">'+live+' active · one revoked</span><div class="rt"><span class="lnk" id="kyRot">Rotate all</span></div></div>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +KEYS.map(function(k){ var d=k[5]?'':' style="color:var(--g400)"';
+      return '<tr'+d+'><td'+d+'>'+esc(k[0])+'<span class="s2">'+esc(k[1])+'</span></td><td><span class="key"'+d+'>'+k[2]+'</span></td><td class="opt2 mute">'+k[3]+'</td><td class="opt mute">'+k[4]+'</td><td class="n">'+(k[5]?'<span class="lnk" data-rev="'+k[2]+'">Reveal</span>':'')+'</td></tr>' }).join('')
+    +'</tbody></table>'
+    +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span><div class="rt"><span class="lnk" id="whAdd">Add an endpoint</span><span class="lnk" id="whTest">Send a test event</span></div></div>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="opt">Events</th><th>Delivered, 24h</th><th>State</th><th class="n"></th></tr></thead><tbody>'
+    +HOOKS.map(function(w){ return '<tr'+(w.st==='no'?' class="hot"':'')+'><td><span class="key" style="background:none; padding:0">'+esc(w.u)+'</span><span class="s2">'+esc(w.s)+'</span></td><td class="opt mute">'+esc(w.ev)+'</td>'
+      +'<td><span class="lat"><i><b style="width:'+w.ok+'%"></b></i>'+w.ok+'%</span></td><td class="st '+w.st+'">'+w.lab+'</td>'
+      +'<td class="n">'+(w.st==='no'?'<span class="lnk" data-retry="1">Retry the 412</span>':'<span class="lnk" data-deliv="1">Recent deliveries</span>')+'</td></tr>' }).join('')
+    +'</tbody></table>'
+    +'<div class="rec" style="margin-top:26px; max-width:640px"><div class="rr"><span class="l">Signing secret</span><span class="v"><span class="key">whsec_…d8a1</span> <span class="lnk" style="margin-left:12px" id="whReveal">Reveal</span></span></div>'
+    +'<div class="rr"><span class="l">Retry schedule</span><span class="v">1 min, 5, 30, 2 h, 12 h, then we stop</span></div>'
+    +'<div class="rr"><span class="l">Replay window</span><span class="v">Five minutes on the timestamp header</span></div></div>'
+    +'<div class="note" style="margin-top:30px"><div class="k">The staging endpoint has been failing since 06:10</div><p>Its TLS certificate expired overnight. 412 settlement events are queued against it and will be dropped after twelve hours. Nothing in production is affected, but it is the same certificate authority as your production host — which expires on 21 September.</p><div class="act"><span class="lnk" id="whPerf">See connectivity</span></div></div>';
+   $('#kyRot').addEventListener('click',function(){ toast('Rotation started. Old keys keep working for seven days.') });
+   $$('#kyBody [data-rev]').forEach(function(a){ a.addEventListener('click',function(){ toast('Sandbox keys show in full. Copied.') }) });
+   $('#whAdd').addEventListener('click',function(){ toast('Endpoint form opened. We send a signed ping before we save it.') });
+   $('#whTest').addEventListener('click',function(){ toast('authorization.created sent to the production host. 200 in 78 ms.') });
+   $$('#kyBody [data-retry]').forEach(function(a){ a.addEventListener('click',function(){ toast('Retrying 412 deliveries. They will fail until the certificate is replaced.') }) });
+   $$('#kyBody [data-deliv]').forEach(function(a){ a.addEventListener('click',function(){ logF='wh'; go('dv-logs') }) });
+   $('#whReveal').addEventListener('click',function(){ toast('Shown once. Rotate it if this was not you.') });
+   $('#whPerf').addEventListener('click',function(){ pfTab='conn'; go('dv-perf') });
+ }
+
+ /* ── guides, read inside the documentation hub ──────────────────── */
+ function guideBody(g){
+   return '<div class="gd">'+g.body.map(function(b){
+     if(b[0]==='h2') return '<h2>'+esc(b[1])+'</h2>';
+     if(b[0]==='p') return '<p>'+b[1]+'</p>';
+     if(b[0]==='ul') return '<ul>'+b[1].map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>';
+     if(b[0]==='ol') return '<ol>'+b[1].map(function(x){return '<li>'+x+'</li>'}).join('')+'</ol>';
+     if(b[0]==='code') return '<div class="code">'+esc(b[1].replace(/https:\/\/api\.gpn\.dev/g,'https://a41f-sandbox.gpn-api.net').replace(/sk_sandbox_4f2c…c91e/g,'gpn_sand_a41f…9d2c'))+'</div>';
+     if(b[0]==='note') return '<div class="note plain"><p>'+b[1]+'</p></div>';
+     return '';
+   }).join('')+'</div>';
+ }
+ function openGuide(k){
+   var g=GUIDES[k]; if(!g) return;
+   var i=GUIDE_ORDER.indexOf(k), nx=GUIDE_ORDER[(i+1)%GUIDE_ORDER.length];
+   panel(g.t, g.crumb.join(' · ')+' · '+(i+1)+' of '+GUIDE_ORDER.length,
+     '<p style="font-size:16px; color:var(--g650); line-height:1.5">'+esc(g.deck)+'</p>'+guideBody(g),
+     'Next: '+GUIDES[nx].t, function(){ openGuide(nx) }, 'go');
+ }
+
+ ICON['dv-logs']='<path d="M4 6h16"/><path d="M4 11h11"/><path d="M4 16h13"/><circle cx="19" cy="16" r="1.5"/>';
+ ICON['dv-keys']='<circle cx="8" cy="12" r="4"/><path d="M12 12h9"/><path d="M18 12v3"/><path d="M15 12v2"/>';
+ PDRAW['dv-logs']=drawLogs; PDRAW['dv-keys']=drawKeys;

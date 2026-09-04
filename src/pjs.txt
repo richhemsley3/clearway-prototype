@@ -35,9 +35,12 @@
          ['pd-tasks','Tasks',String(TASKS.reduce(function(a,g){return a+g[1].filter(function(x){return !x[3]}).length},0))],
          ['pd-reports','Reports','']],
      pa1:[['pa-apply','Your application',String(qOpen().length)],
+          ['pa-form','Your details',''],
           ['pa-rules','Network rules',String(polTodo('rf'))],
           ['pa-msgs','Messages',String(unread('rf'))]],
      pa2:[['pa-board','Your integration',''],
+          ['pa-config','Configuration',''],
+          ['tx-auth','Reporting',''],
           ['pa-rules','Network rules',String(polTodo('nf'))],
           ['pa-hub','Documentation',''],
           ['pa-msgs','Messages',String(unread('nf'))]],
@@ -47,8 +50,10 @@
           ['tx-disp','Disputes','142'],
           ['pa-hub','Documentation',''],
           ['pa-msgs','Messages',String(unread('mt'))]],
-     dev:[['dv-apis','APIs',''],
+     dev:[['dv-apis','API reference',''],
           ['dv-tool','Toolkit',String(suiteTot('fail'))],
+          ['dv-logs','Logs',''],
+          ['dv-keys','Keys & webhooks','1'],
           ['dv-perf','Performance',''],
           ['pa-hub','Documentation','']]
    };
@@ -157,6 +162,7 @@
    $$('#paSeg button').forEach(function(b){ b.addEventListener('click',function(){
      anchored($('#paSeg'), function(){ qScope=b.dataset.q; drawApply(); }) }) });
    $('#paDl').addEventListener('click',function(){ toast('Nine files and the signed pack, zipped, to elena.ridge@ridgelinefreight.com.') });
+   if($('#paForm')) $('#paForm').onclick=function(){ go('pa-form') };
 
    var rows=QUEUE.filter(function(q){
      if(qScope==='all') return q.dstate!=='done';
@@ -293,11 +299,12 @@
  }
 
  /* ── a side panel, for the one record that does not deserve a page ── */
- function panel(title, meta, body, action, fn){
+ function panel(title, meta, body, action, fn, style){
    $('#pnlT').textContent=title; $('#pnlM').textContent=meta;
    $('#pnlB').innerHTML='<div style="padding-top:24px">'+body+'</div>';
+   $('#pnlB').scrollTop=0;
    $('#pnlF').innerHTML='<button class="btn" id="pnlX2">Close</button>'
-     +(action?'<button class="btn pri" id="pnlGo">'+esc(action)+'</button>':'');
+     +(action?'<button class="btn '+(style||'pri')+'" id="pnlGo">'+esc(action)+'</button>':'');
    $('#pnl').classList.add('on'); $('#scrim').classList.add('on');
    $('#pnlX2').addEventListener('click',closePanel);
    if($('#pnlGo')) $('#pnlGo').addEventListener('click',function(){ closePanel(); if(fn) fn(); else toast(action+'.'); });
@@ -342,6 +349,7 @@
     +'</tbody></table>'
     +'<p class="t13" style="color:var(--g550); margin-top:16px">Activation is not reversible on the day. If certification slips past the 19th, the next window is the 29th and go live moves to late October.</p></div></div>';
    $('#bdPass').addEventListener('click',function(){ toast('Upload opened for the passport receipt.') });
+   $$('#paBoard [data-cfg]').forEach(function(a){ a.addEventListener('click',function(){ go('pa-config') }) });
  }
 
  function milestones(internal){
@@ -362,6 +370,7 @@
        +(items?'<div class="sub">'+items.map(function(i){
            return '<span><span class="st '+(i[1]==='done'?'ok':i[1]==='now'?'wa':'nt')+'">'+(i[1]==='done'?'✓':i[1]==='now'?'·':'○')+'</span> '+esc(i[0])+'</span>' }).join('')+'</div>':'')
        +(internal&&m.own!=='cw'?'<div class="sub" style="margin-top:8px"><span>Chased by <b>Priya Raman</b>, weekly</span></div>':'')
+       +(m.k==='conf'?'<div class="sub" style="margin-top:8px"><span class="lnk" data-cfg="1">'+(internal?'Open the configuration':'See your configuration')+'</span></div>':'')
        +'</div>'
        +'<div class="own">'+esc(own)+'<br><span class="st '+(m.st==='done'?'ok':m.st==='now'?'wa':'nt')+'">'+LB[m.st]+'</span></div>'
        +'<div class="when">'+esc(m.d)+'</div></div>';
@@ -414,27 +423,47 @@
 
  /* ── DOCUMENTATION HUB ──────────────────────────────────────────── */
  var hubF='all';
+ function hubRows(){
+   var rows=DOCS.map(function(d){ return {n:d[0], v:d[1], when:d[2], kind:d[3], what:d[4], guide:null} });
+   if(typeof GUIDES!=='undefined') Object.keys(GUIDES).forEach(function(k){
+     var g=GUIDES[k];
+     rows.push({n:g.t, v:'2026.3', when:k==='ov'||k==='qs'?'22 August 2026':'1 August 2026', kind:'Guide', what:g.deck, guide:k});
+   });
+   return rows;
+ }
  function drawHub(){
+   var all=hubRows();
    var kinds=['Policy','Guide','Specification','Reference','Notes'];
-   var K=[['all','Everything',DOCS.length]].concat(kinds.map(function(k){
-     return [k, k==='Notes'?'Release notes':k+'s', DOCS.filter(function(d){return d[3]===k}).length];
+   var K=[['all','Everything',all.length]].concat(kinds.map(function(k){
+     return [k, k==='Notes'?'Release notes':k==='Policy'?'Policies':k+'s', all.filter(function(d){return d.kind===k}).length];
    }).filter(function(x){ return x[2] }));
    $('#hubSeg').innerHTML='<span class="seg">'+K.map(function(t){
      return '<button data-h="'+t[0]+'" aria-pressed="'+(hubF===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')
     +'</span><div class="rt"><span class="lnk" id="hubSub">Email me when one changes</span></div>';
    $$('#hubSeg button').forEach(function(b){ b.addEventListener('click',function(){
      anchored($('#hubSeg'), function(){ hubF=b.dataset.h; drawHub(); }) }) });
-   $('#hubSub').addEventListener('click',function(){ toast('You will get one email a month, and one within the hour when a policy changes.') });
-   var rows=DOCS.filter(function(d){ return hubF==='all'||d[3]===hubF });
+   $('#hubSub').addEventListener('click',function(){ toast('One email a month, and one within the hour when a policy changes.') });
+   var rows=all.filter(function(d){ return hubF==='all'||d.kind===hubF });
    var changed=DOCS.filter(function(d){ return d[4].indexOf('No change')!==0 }).length;
-   $('#hubBody').innerHTML='<table class="tb" style="margin-top:22px"><thead><tr><th>Document</th><th class="opt2">Version</th><th>Changed</th><th class="opt">What changed</th><th class="n"></th></tr></thead><tbody>'
-    +rows.map(function(d){
-      var hot=d[4].indexOf('No change')!==0;
-      return '<tr><td>'+esc(d[0])+'<span class="s2">'+esc(d[3])+'</span></td><td class="opt2 mute">'+esc(d[1])+'</td>'
-       +'<td>'+esc(d[2])+'</td><td class="opt'+(hot?'':' mute')+'" style="max-width:36ch">'+esc(d[4])+'</td>'
-       +'<td class="n"><span class="lnk">Open</span></td></tr>' }).join('')
+   $('#hubBody').innerHTML='<table class="tb" style="margin-top:22px"><thead><tr><th>Document</th><th class="opt2">Version</th><th>Changed</th><th class="opt">'+(hubF==='Guide'?'What it covers':'What changed')+'</th><th class="n"></th></tr></thead><tbody>'
+    +rows.map(function(d,i){
+      var hot=!d.guide && d.what.indexOf('No change')!==0;
+      return '<tr data-i="'+i+'"><td>'+esc(d.n)+'<span class="s2">'+esc(d.kind)+'</span></td><td class="opt2 mute">'+esc(d.v)+'</td>'
+       +'<td>'+esc(d.when)+'</td><td class="opt'+(hot||d.guide?'':' mute')+'" style="max-width:38ch">'+esc(d.what)+'</td>'
+       +'<td class="n"><span class="lnk">'+(d.guide?'Read':'Open')+'</span></td></tr>' }).join('')
     +'</tbody></table>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">'+changed+' of the '+DOCS.length+' moved this month. The two that carry an obligation — participation rules and dispute handling — sit in the same list as the ones you build against, because from where you are standing there is no difference between a rule you must follow and a spec you must match.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">'
+    +(hubF==='Guide'
+      ? all.filter(function(d){return d.kind==='Guide'}).length+' guides, in the order an integration meets them: what the network is, the first call, the authorization handler, then settlement, disputes and going live. Each one opens here and reads in about four minutes.'
+      : changed+' of the '+DOCS.length+' policy and reference documents moved this month. A document you are held to and a document you build against sit in the same list, because from where you are standing there is no difference.')+'</p>';
+   $$('#hubBody tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(){
+     var d=rows[+tr.dataset.i];
+     if(d.guide){ openGuide(d.guide); return; }
+     panel(d.n, d.kind+' · '+d.v+' · changed '+d.when,
+       '<p style="font-size:15px; color:var(--g650); line-height:1.6">'+esc(d.what)+'.</p>'
+       +'<p style="font-size:15px; color:var(--g650); line-height:1.6; margin-top:14px">In the working product this pane is the document itself. '+(d.kind==='Policy'?'Policies open at the redline so the change is the first thing you see.':'Specifications open at the changed clause.')+'</p>',
+       'Download');
+   }) });
  }
 
  /* ── MESSAGES ───────────────────────────────────────────────────── */
@@ -694,7 +723,9 @@
       +'<p class="t13" style="color:var(--g550); margin-top:26px; max-width:80ch">'
       +(fail?'Everything left depends on certification passing, and certification depends on one response code. The two milestones after it have not been scheduled because there is no point scheduling them yet.'
             :'Certification is clear, so production readiness opens and the two unfiled items become the critical path. Neither takes long; both have been open for a week.')
-      +'</p>'; return;
+      +'</p>';
+     $$('#inBody [data-cfg]').forEach(function(a){ a.addEventListener('click',function(){ go('pa-config') }) });
+     return;
    }
 
    if(inTab==='cert'){
@@ -743,35 +774,6 @@
      +'<p style="font-size:15px; color:var(--g650); line-height:1.6">'+esc(f.passed?f.after:f.why)+'</p>'
      +'<div class="code" style="margin-top:22px">'+esc(f.passed?f.jsonOk:f.json)+'</div>',
      f.passed?null:'Re-run this case', function(){ rerun(id) });
- }
-
- /* ── DEVELOPER · APIS ───────────────────────────────────────────── */
- var apiOpen='auth';
- function drawApis(){
-   var a=APIS.filter(function(x){return x.k===apiOpen})[0];
-   var eps=APIS.reduce(function(n,p){return n+p.ep},0);
-   $('#apiBody').innerHTML='<div class="sech"><h2>Products</h2><span class="t13">'+APIS.length+' products · '+eps+' endpoints · all live in your sandbox today</span></div>'
-    +'<table class="tb" style="margin-top:16px"><thead><tr><th>Product</th><th class="opt2">Version</th><th>Status</th><th class="opt">Authentication</th><th class="n">Endpoints</th></tr></thead><tbody>'
-    +APIS.map(function(p){
-      return '<tr data-a="'+p.k+'"'+(p.k===apiOpen?' class="sel"':'')+'><td>'+esc(p.n)+'<span class="s2" style="max-width:62ch">'+esc(p.d)+'</span></td>'
-       +'<td class="opt2 mute">'+p.v+'</td><td><span class="st '+(p.st==='GA'?'ok':'wa')+'">'+p.st+'</span></td>'
-       +'<td class="opt mute">'+esc(p.auth)+'</td><td class="n">'+p.ep+'</td></tr>' }).join('')
-    +'</tbody></table>'
-    +'<div class="sech" style="margin-top:44px"><h2>'+esc(a.n)+'</h2><span class="t13">'+a.v+' · '+a.ep+' endpoints · '+a.st+'</span>'
-    +'<div class="rt"><span class="lnk" id="apiTry">Try it in the sandbox</span></div></div>'
-    +'<div class="cols2" style="margin-top:18px">'
-    +'<div><div class="code">'+esc(a.sample+'\nHost: a41f-sandbox.gpn-api.net\nAuthorization: Bearer {token}\nIdempotency-Key: 9f2c-4471-a41f\n\n'+a.body)+'</div>'
-    +'<p class="t13" style="color:var(--g550); margin-top:14px">The same request in sandbox and in production. Only the host and the key change, and both carry the environment in the string.</p></div>'
-    +'<div class="rec"><h4>Before you build against it</h4>'
-    +'<div class="rr"><span class="l">Idempotency</span><span class="v">Required on every write</span></div>'
-    +'<div class="rr"><span class="l">Timeout we hold you to</span><span class="v">2,000 ms</span></div>'
-    +'<div class="rr"><span class="l">Rate limit</span><span class="v">'+esc(a.rate)+'</span></div>'
-    +'<div class="rr"><span class="l">Breaking changes</span><span class="v">'+(a.st==='Beta'?'30 days’ notice':'90 days’ notice')+'</span></div>'
-    +'<div class="rr"><span class="l">Certification cases</span><span class="v">'+a.cases+' of your 61</span></div>'
-    +'<div class="rr"><span class="l">Gotcha</span><span class="v" style="max-width:26ch">'+esc(a.gotcha)+'</span></div></div></div>';
-   $$('#apiBody tr[data-a]').forEach(function(tr){ tr.addEventListener('click',function(){
-     anchored($('#apiBody'), function(){ apiOpen=tr.dataset.a; drawApis(); }) }) });
-   $('#apiTry').addEventListener('click',function(){ go('dv-tool') });
  }
 
  /* ── DEVELOPER · TOOLKIT ────────────────────────────────────────── */

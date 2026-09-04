@@ -2,7 +2,7 @@
     <!-- ═══ PARTICIPANT · APPLYING ═══ -->
     <section class="view" data-v="pa-apply">
       <div class="ph"><div><h1 id="paTitle">Your application</h1><p id="paSub"></p></div>
-        <div class="act"><button class="btn">Download the pack</button></div></div>
+        <div class="act"><button class="btn" id="paForm">What you told us</button></div></div>
       <div class="now" id="paNow"></div>
       <div class="sech"><h2>Where you are</h2><span class="t13" id="paStageSub"></span></div>
       <div style="margin-top:16px" id="paStage"></div>
@@ -23,6 +23,21 @@
         <div class="act"><button class="btn">Export the plan</button></div></div>
       <div class="now" id="paBoardNow"></div>
       <div id="paBoard"></div>
+    </section>
+
+    <!-- ═══ CONFIGURATION ═══ -->
+    <section class="view" data-v="pa-config">
+      <div class="ph"><div><h1>Configuration</h1><p id="cfSub"></p></div>
+        <div class="act"><button class="btn">Download as PDF</button></div></div>
+      <div class="segrow" id="cfSeg"></div>
+      <div id="cfBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ PARTICIPANT · APPLICATION FORM ═══ -->
+    <section class="view" data-v="pa-form">
+      <div class="ph"><div><h1>Your details</h1><p id="fmSub"></p></div>
+        <div class="act"><button class="btn">Download the pack</button></div></div>
+      <div id="fmBody"></div>
     </section>
 
     <!-- ═══ PARTICIPANT · CONTROL PANEL ═══ -->
@@ -69,9 +84,24 @@
 
     <!-- ═══ DEVELOPER · APIS ═══ -->
     <section class="view" data-v="dv-apis">
-      <div class="ph"><div><h1>APIs</h1><p>Six products, twenty-seven endpoints. Everything here is addressable in your sandbox today.</p></div>
-        <div class="act"><button class="btn">Full reference</button></div></div>
+      <div class="ph"><div><h1>API reference</h1><p>Sixteen endpoints across six resources. Every sample below is written against your sandbox, with your host and your key.</p></div>
+        <div class="act"><button class="btn" id="apiMd">Copy as Markdown</button></div></div>
       <div id="apiBody"></div>
+    </section>
+
+    <!-- ═══ DEVELOPER · LOGS ═══ -->
+    <section class="view" data-v="dv-logs">
+      <div class="ph"><div><h1>Logs</h1><p id="lgSub"></p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <div class="segrow" id="lgSeg"></div>
+      <div id="lgBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ DEVELOPER · KEYS AND WEBHOOKS ═══ -->
+    <section class="view" data-v="dv-keys">
+      <div class="ph"><div><h1>Keys and webhooks</h1><p id="kySub"></p></div></div>
+      <div class="segrow" id="kyEnv"></div>
+      <div id="kyBody" class="hold"></div>
     </section>
 
     <!-- ═══ DEVELOPER · TOOLKIT ═══ -->
