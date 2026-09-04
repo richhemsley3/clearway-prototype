@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Partner Desk System · Clearway prototype</title>
+<style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&display=swap');
+:root{
+  --white:#FFFFFF; --g025:#FAF8F5; --g050:#F4F1EB; --g100:#EBE6DD; --g150:#E0DCD3; --g200:#D0CBC3; --g400:#948E85; --g550:#6B6760; --g650:#54514D; --g900:#1C1A17;
+  --navy:#013D5B; --blue100:#D9EBED; --blue050:#EBF4F5;
+  --sig:#FF6000;
+  --good:#62800B; --warn:#8A7515; --bad:#BF5547;
+  --ui:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0; background:#E9E5DE; color:var(--g900); font-family:var(--ui); font-size:15px; line-height:1.45; font-weight:400; -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums}
+h1,h2,h3,h4,p{margin:0; font-weight:400}
+button{font-family:inherit; font-size:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; text-align:left}
+svg.i{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; flex:none}
+
+/* ---- presentation chrome (not part of the design) ---- */
+.pres{max-width:1320px; margin:0 auto; padding:40px 24px 80px}
+.cap{display:flex; align-items:baseline; gap:16px; margin:56px 0 14px; color:var(--g650); font-size:14px}
+.cap:first-child{margin-top:0}
+.cap b{font-weight:400; color:var(--g900); font-size:18px}
+.board{background:var(--white); border-radius:12px; overflow:hidden}
+
+/* =========================================================
+   the system
+   ========================================================= */
+.app{display:flex; min-height:920px}
+.sb{width:224px; flex:none; background:var(--g050); padding:24px 12px 18px; display:flex; flex-direction:column}
+.sb .brand{display:flex; align-items:center; gap:10px; padding:0 12px 26px; font-size:17px; letter-spacing:-.02em}
+.sb .brand i{width:22px; height:22px; border-radius:6px; background:var(--navy); display:grid; place-items:center; color:#fff}
+.sb nav{display:flex; flex-direction:column; gap:2px}
+.sb nav a{display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; font-size:15px; color:var(--g650)}
+.sb nav a.on{background:var(--blue100); color:var(--navy)}
+.sb nav a .ct{margin-left:auto; font-size:13px; color:var(--g550)}
+.sb nav a.on .ct{color:var(--navy)}
+.sb .foot{margin-top:auto; padding:9px 12px; font-size:14px; color:var(--g650)}
+.mn{flex:1; min-width:0; padding:0 48px 56px}
+
+.ph{padding:44px 0 0; display:flex; align-items:flex-end; gap:24px}
+.ph h1{font-size:40px; letter-spacing:-.025em; line-height:1.05}
+.ph p{font-size:15px; color:var(--g550); margin-top:8px}
+.ph .act{margin-left:auto; display:flex; gap:10px; padding-bottom:6px}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:14.5px; padding:10px 16px; border-radius:8px; border:1px solid var(--g200); color:var(--g900); background:#fff; line-height:1.2; white-space:nowrap}
+.btn.pri{background:var(--sig); border-color:var(--sig); color:#fff}
+.lnk{color:var(--navy); font-size:14.5px}
+
+/* the first thing */
+.now{margin-top:32px; background:var(--g025); border-radius:12px; padding:32px 36px 32px 36px; display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:48px; position:relative}
+.now::before{content:""; position:absolute; left:0; top:36px; bottom:36px; width:3px; background:var(--sig); border-radius:0 2px 2px 0}
+.now .k{font-size:13px; color:var(--g550)}
+.now h2{font-size:28px; letter-spacing:-.02em; margin-top:6px; line-height:1.15}
+.now h2 span{color:var(--g550)}
+.now p.why{font-size:16px; color:var(--g650); margin-top:14px; max-width:560px; line-height:1.5}
+.now .act{display:flex; align-items:center; gap:18px; margin-top:24px}
+.now .also{margin-top:26px; padding-top:18px; border-top:1px solid var(--g150); font-size:14px; color:var(--g550); display:flex; gap:28px}
+.now .also > span:first-child{white-space:nowrap}
+.now .also b{font-weight:400; color:var(--g900)}
+.inst .hd{display:flex; align-items:baseline; justify-content:space-between; font-size:13px; color:var(--g550)}
+.inst .hd b{font-weight:400; font-size:26px; color:var(--g900); letter-spacing:-.02em}
+.inst .hd b small{font-size:13px; color:var(--g550); letter-spacing:0; margin-left:4px}
+.inst svg{display:block; width:100%; height:150px; margin-top:8px; overflow:visible}
+.inst .ax{display:flex; justify-content:space-between; font-size:12.5px; color:var(--g400); margin-top:6px}
+
+/* everything else */
+.sec{margin-top:44px; display:flex; align-items:baseline; gap:28px}
+.sec h2{font-size:22px; letter-spacing:-.015em}
+.sec .tabs{display:flex; gap:22px; margin-left:8px}
+.sec .tabs button{font-size:15px; color:var(--g550); display:flex; gap:6px; align-items:baseline}
+.sec .tabs button span{font-size:13px; color:var(--g400)}
+.sec .tabs button[aria-pressed="true"]{color:var(--g900)}
+.sec .tabs button[aria-pressed="true"] span{color:var(--g550)}
+.sec .rt{margin-left:auto; display:flex; gap:20px}
+.tb{width:100%; border-collapse:collapse; font-size:15px; margin-top:14px}
+.tb th{text-align:left; font-size:13px; color:var(--g550); padding:10px 16px 12px; border-bottom:1px solid var(--g150); white-space:nowrap}
+.tb td{padding:14px 16px; border-bottom:1px solid var(--g100); vertical-align:middle; height:64px}
+.tb th:first-child,.tb td:first-child{padding-left:16px}
+.tb .n{text-align:right}
+.tb tr.hot td:first-child{box-shadow:inset 3px 0 0 var(--sig)}
+.tb tr.hov td{background:var(--g050)}
+.tb tr.sel td{background:var(--blue100); color:var(--navy)}
+.tb .p{display:flex; align-items:center; gap:14px}
+.tb .p i{width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-size:12px; font-style:normal; flex:none; background:var(--g100); color:var(--g650)}
+.tb .s2{display:block; font-size:13px; color:var(--g550); margin-top:2px}
+.tb td .st{white-space:nowrap}
+.st.ok{color:var(--good)} .st.wa{color:var(--warn)} .st.no{color:var(--bad)} .st.nt{color:var(--g550)}
+.tfoot{display:flex; gap:14px; padding:14px 16px 0; font-size:13.5px; color:var(--g550); justify-content:flex-end}
+
+/* slide-over */
+.scrim{position:absolute; inset:0; background:rgba(28,26,23,.28)}
+.panel{position:absolute; top:0; right:0; bottom:0; width:680px; background:#fff; box-shadow:-8px 0 40px rgba(28,26,23,.12); display:flex; flex-direction:column}
+.panel .top{padding:24px 40px 0; display:flex; align-items:center; font-size:14px; color:var(--g550)}
+.panel .top .x{margin-left:auto; color:var(--g650)}
+.panel .ttl{padding:22px 40px 0}
+.panel .ttl h2{font-size:34px; letter-spacing:-.02em; line-height:1.1}
+.panel .meta{font-size:14px; color:var(--g550); margin-top:8px; display:flex; gap:8px; flex-wrap:wrap}
+.panel .ptabs{display:flex; gap:26px; padding:24px 40px 0; border-bottom:1px solid var(--g150)}
+.panel .ptabs button{padding:0 0 12px; font-size:15px; color:var(--g550); border-bottom:2px solid transparent; margin-bottom:-1px}
+.panel .ptabs button[aria-pressed="true"]{color:var(--g900); border-bottom-color:var(--g900)}
+.panel .body{flex:1; overflow:hidden; padding:0 40px}
+.facts{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding:28px 0 0}
+.facts .k{font-size:13px; color:var(--g550)}
+.facts .v{font-size:24px; letter-spacing:-.015em; margin-top:2px}
+.facts .v small{font-size:13px; color:var(--g550); letter-spacing:0; margin-left:4px}
+.stage{display:flex; gap:3px; margin-top:24px}
+.stage span{flex:1; background:var(--g050); color:var(--g400); font-size:13px; padding:8px 12px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; clip-path:polygon(0 0,calc(100% - 9px) 0,100% 50%,calc(100% - 9px) 100%,0 100%,9px 50%)}
+.stage span:first-child{clip-path:polygon(0 0,calc(100% - 9px) 0,100% 50%,calc(100% - 9px) 100%,0 100%); border-radius:6px 0 0 6px}
+.stage span:last-child{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,9px 50%); border-radius:0 6px 6px 0}
+.stage span.done{background:var(--g100); color:var(--g650)}
+.stage span.cur{background:var(--blue100); color:var(--navy)}
+.note{background:var(--g025); border-radius:12px; padding:20px 22px; margin-top:26px; position:relative}
+.note::before{content:""; position:absolute; left:0; top:20px; bottom:20px; width:3px; background:var(--sig); border-radius:0 2px 2px 0}
+.note .k{font-size:13px; color:var(--g550)}
+.note p{font-size:15.5px; line-height:1.5; margin-top:6px; max-width:560px}
+.note .act{display:flex; gap:16px; align-items:center; margin-top:16px}
+.psec{margin-top:30px}
+.psec .hd{display:flex; align-items:baseline; gap:14px; padding-bottom:12px; border-bottom:1px solid var(--g150)}
+.psec .hd h3{font-size:22px; letter-spacing:-.015em}
+.psec .hd .ct{font-size:14px; color:var(--g550)}
+.psec .hd .lnk{margin-left:auto}
+.row{display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; padding:14px 0; border-bottom:1px solid var(--g100)}
+.row .d{font-size:13px; color:var(--g550); margin-top:2px}
+.panel .pfoot{border-top:1px solid var(--g150); padding:16px 40px; display:flex; gap:10px; justify-content:flex-end}
+
+/* component sheet */
+.sheet{padding:48px 56px 56px; display:grid; grid-template-columns:1fr 1fr; gap:40px 64px}
+.sheet .item h4{font-size:13px; color:var(--g550); margin-bottom:14px}
+.sheet .item p{font-size:13.5px; color:var(--g650); margin-top:12px; line-height:1.5}
+.scale div{display:flex; align-items:baseline; gap:18px; padding:6px 0}
+.scale div small{width:96px; flex:none; font-size:12.5px; color:var(--g400)}
+.sw{display:flex; gap:10px; flex-wrap:wrap}
+.sw div{width:96px}
+.sw i{display:block; height:44px; border-radius:8px}
+.sw small{display:block; font-size:12px; color:var(--g550); margin-top:6px; line-height:1.3}
+.rowdemo{border-radius:12px; overflow:hidden}
+.rowdemo .tb{margin:0}
+.btns{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.field{display:flex; align-items:center; gap:10px; border:1px solid var(--g200); border-radius:8px; padding:10px 14px; font-size:14.5px; color:var(--g550); width:320px}
+.field.focus{border-color:var(--navy); box-shadow:0 0 0 3px rgba(1,61,91,.12)}
+.chip{display:inline-flex; align-items:center; gap:6px; font-size:13.5px; padding:6px 12px; border-radius:999px; background:var(--g050); color:var(--g650)}
+.chip.on{background:var(--blue100); color:var(--navy)}
+</style>
+
+<div class="pres">
+
+  <!-- ================= 1. PARTNERS ================= -->
+  <div class="cap"><b>Partners</b> the screen. First thing: the partner that needs Dara. Then everything else.</div>
+  <div class="board"><div class="app">
+    <aside class="sb">
+      <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</div>
+      <nav>
+        <a class="on"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M17.5 13.5a6.5 6.5 0 0 1 4 6.5"/></svg>Partners<span class="ct">24</span></a>
+        <a><svg class="i" viewBox="0 0 24 24"><path d="M3 6h5l3 6-3 6H3"/><path d="M10 6h5l3 6-3 6h-5"/></svg>Pipeline<span class="ct">9</span></a>
+        <a><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12l3 3 5-6"/></svg>Tasks<span class="ct">9</span></a>
+        <a><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/></svg>Reports</a>
+      </nav>
+      <div class="foot">Dara Whitfield</div>
+    </aside>
+    <main class="mn">
+      <div class="ph"><div><h1>Partner desk</h1><p>24 accounts · $168.4M a month · 34 days median from introduction to live</p></div>
+        <div class="act"><button class="btn">Log a call</button><button class="btn">Add partner</button></div></div>
+
+      <div class="now">
+        <div>
+          <div class="k">Needs you today</div>
+          <h2>Northgate Financial <span>· enrolling, step 10 of 15</span></h2>
+          <p class="why">Halvard Ruiz's passport expires on 12 September. Without a replacement, settlement pauses on the first cycle after that date, and authorizations don't. Case 14 is the only other thing between them and live.</p>
+          <div class="act"><button class="btn pri">Chase the document</button><span class="lnk">Open Northgate</span><span class="lnk">Snooze a week</span></div>
+          <div class="also"><span>Also today</span><span><b>Bayline</b> decline 51 spike, escalated</span><span><b>Vantage</b> six days without movement</span></div>
+        </div>
+        <div class="inst">
+          <div class="hd"><span>Relationship health, 14 days</span><b>74<small>/ 100 · watch</small></b></div>
+          <svg viewBox="0 0 380 150" preserveAspectRatio="none">
+            <g stroke="#E0DCD3" stroke-width="1" stroke-dasharray="2 4"><line x1="40" x2="380" y1="10" y2="10"/><line x1="40" x2="380" y1="50" y2="50"/><line x1="40" x2="380" y1="90" y2="90"/><line x1="40" x2="380" y1="130" y2="130"/></g>
+            <g font-size="11" fill="#948E85" font-family="inherit"><text x="0" y="14">90</text><text x="0" y="54">80</text><text x="0" y="94">70</text><text x="0" y="134">60</text></g>
+            <path d="M40.0 118 L60.8 130 L81.6 110 L102.4 98 L123.2 104 L144.0 90 L164.8 96 L185.6 84 L206.4 78 L227.2 86 L248.0 76 L268.8 66 L289.6 70 L310.4 74" fill="none" stroke="#013D5B" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+            <circle cx="310.4" cy="74" r="4" fill="#013D5B"/>
+            <text x="322" y="78" font-size="12" fill="#1C1A17" font-family="inherit">74</text>
+          </svg>
+          <div class="ax" style="padding-left:40px"><span>20 Aug</span><span>27 Aug</span><span>3 Sep</span></div>
+        </div>
+      </div>
+
+      <div class="sec"><h2>Accounts</h2>
+        <div class="tabs"><button aria-pressed="true">All <span>24</span></button><button>Enrolling <span>6</span></button><button>Live <span>15</span></button><button>At risk <span>3</span></button><button>Dormant <span>1</span></button></div>
+        <div class="rt"><span class="lnk">Filter</span><span class="lnk">Sort: attention</span><span class="lnk">Export</span></div></div>
+      <table class="tb"><thead><tr><th>Partner</th><th>Health</th><th class="n">Monthly volume</th><th class="n">Approval</th><th>Last contact</th><th>Needs</th></tr></thead><tbody>
+        <tr class="hot"><td><span class="p"><i>NF</i><span>Northgate Financial<span class="s2">Program manager · issuing · step 10 of 15</span></span></span></td><td>74<span class="s2 st wa">Watch</span></td><td class="n">$8.4M<span class="s2">projected</span></td><td class="n">94.2%</td><td>Today</td><td>Owner document expiring<span class="s2 st wa">9 days</span></td></tr>
+        <tr><td><span class="p"><i>BP</i><span>Bayline Payments<span class="s2">Acquirer · live 14 months</span></span></span></td><td>58<span class="s2 st no">At risk</span></td><td class="n">$41.2M<span class="s2">per month</span></td><td class="n">91.8%</td><td>Today</td><td>Decline 51 spike<span class="s2 st no">Escalated</span></td></tr>
+        <tr><td><span class="p"><i>VH</i><span>Vantage Hospitality<span class="s2">Program manager · prepaid · step 4 of 15</span></span></span></td><td>66<span class="s2 st wa">Slow start</span></td><td class="n">—<span class="s2">projected</span></td><td class="n">—</td><td>28 Aug</td><td>Beneficial ownership<span class="s2 st nt">Waiting on them</span></td></tr>
+        <tr><td><span class="p"><i>TL</i><span>Tessellate Labs<span class="s2">Processor · dormant 8 months</span></span></span></td><td>31<span class="s2 st nt">Dormant</span></td><td class="n">$0.1M<span class="s2">per month</span></td><td class="n">88.4%</td><td>14 Jan</td><td>Volume below floor<span class="s2 st no">Decision</span></td></tr>
+        <tr><td><span class="p"><i>CR</i><span>Cordell Retail Group<span class="s2">Acquirer · e-commerce · live 3 years</span></span></span></td><td>92<span class="s2 st ok">Healthy</span></td><td class="n">$18.9M<span class="s2">per month</span></td><td class="n">95.6%</td><td>26 Aug</td><td>Nothing open<span class="s2 st nt">3-DS migration closed</span></td></tr>
+        <tr><td><span class="p"><i>MT</i><span>Meridian Trust<span class="s2">Issuer · sponsor bank · live 5 years</span></span></span></td><td>96<span class="s2 st ok">Healthy</span></td><td class="n">$96.7M<span class="s2">per month</span></td><td class="n">96.1%</td><td>29 Aug</td><td>Nothing open<span class="s2 st nt">Sponsors 4 programs</span></td></tr>
+      </tbody></table>
+      <div class="tfoot"><span>1–6 of 24</span><span>·</span><span class="lnk">Next</span></div>
+    </main>
+  </div></div>
+
+  <!-- ================= 2. DETAIL ================= -->
+  <div class="cap"><b>A partner, opened</b> the slide-over. Sections and rules, actions as words, the same one orange.</div>
+  <div class="board" style="position:relative"><div class="app" style="min-height:900px">
+    <aside class="sb"><div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</div>
+      <nav><a class="on"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M17.5 13.5a6.5 6.5 0 0 1 4 6.5"/></svg>Partners<span class="ct">24</span></a><a><svg class="i" viewBox="0 0 24 24"><path d="M3 6h5l3 6-3 6H3"/><path d="M10 6h5l3 6-3 6h-5"/></svg>Pipeline<span class="ct">9</span></a><a><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12l3 3 5-6"/></svg>Tasks<span class="ct">9</span></a><a><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/></svg>Reports</a></nav>
+      <div class="foot">Dara Whitfield</div></aside>
+    <main class="mn"><div class="ph"><div><h1>Partner desk</h1><p>24 accounts · $168.4M a month · 34 days median from introduction to live</p></div></div>
+      <div class="now" style="min-height:220px"><div><div class="k">Needs you today</div><h2>Northgate Financial <span>· enrolling, step 10 of 15</span></h2><p class="why">Halvard Ruiz's passport expires on 12 September…</p></div></div>
+      <div class="sec"><h2>Accounts</h2></div>
+      <table class="tb"><tbody>
+        <tr class="hot sel"><td><span class="p"><i>NF</i><span>Northgate Financial<span class="s2" style="color:var(--navy)">Program manager · issuing</span></span></span></td><td>74</td><td class="n">$8.4M</td></tr>
+        <tr><td><span class="p"><i>BP</i><span>Bayline Payments<span class="s2">Acquirer</span></span></span></td><td>58</td><td class="n">$41.2M</td></tr>
+        <tr><td><span class="p"><i>VH</i><span>Vantage Hospitality<span class="s2">Program manager</span></span></span></td><td>66</td><td class="n">—</td></tr>
+      </tbody></table>
+    </main>
+    <div class="scrim"></div>
+    <aside class="panel">
+      <div class="top"><span>Program manager · issuing</span><span class="x"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></span></div>
+      <div class="ttl"><h2>Northgate Financial</h2><div class="meta"><span class="st wa">Watch</span><span>·</span><span>Enrolling, step 10 of 15</span><span>·</span><span>Partner since 18 Aug 2026</span><span>·</span><span>BIN 471288</span></div></div>
+      <div class="ptabs"><button aria-pressed="true">Overview</button><button>Volume</button><button>Programs</button><button>Notes &amp; calls</button></div>
+      <div class="body">
+        <div class="facts"><div><div class="k">Relationship health</div><div class="v">74<small>/ 100</small></div></div><div><div class="k">Monthly volume</div><div class="v">$8.4M<small>projected</small></div></div><div><div class="k">Approval rate</div><div class="v">94.2%</div></div><div><div class="k">p99 latency</div><div class="v">41.7 ms</div></div></div>
+        <div class="stage"><span class="done">Introduced</span><span class="done">Filing</span><span class="done">Program</span><span class="cur">Connecting</span><span>Certifying</span><span>Live</span></div>
+        <div class="note"><div class="k">Next action</div><p>Chase the passport. Without a replacement by 12 September, settlement pauses on the first cycle after that date.</p><div class="act"><button class="btn pri">Chase the document</button><span class="lnk">Snooze a week</span></div></div>
+        <div class="psec"><div class="hd"><h3>Open items</h3><span class="ct">3</span><span class="lnk">Add item</span></div>
+          <div class="row"><div>Owner document expiring<div class="d">Halvard Ruiz's passport · KYB-04 · 9 days</div></div><span class="st wa">Open</span></div>
+          <div class="row"><div>Certification case 14 failing<div class="d">Partial-approval handler echoes the requested amount</div></div><span class="st no">Blocking</span></div>
+          <div class="row"><div>Sponsor collateral ceiling<div class="d">Cascade Trust · awaiting their reply</div></div><span class="st nt">Waiting</span></div></div>
+        <div class="psec"><div class="hd"><h3>Activity</h3><span class="lnk">View all</span></div>
+          <div class="row" style="grid-template-columns:110px 1fr"><span style="font-size:13px;color:var(--g550)">Today 08:12</span><div>Cleared the ownership filing</div></div>
+          <div class="row" style="grid-template-columns:110px 1fr"><span style="font-size:13px;color:var(--g550)">Today 08:04</span><div>Emailed Halvard about the passport</div></div></div>
+      </div>
+      <div class="pfoot"><button class="btn">Open file</button><button class="btn">Log a call</button></div>
+    </aside>
+  </div></div>
+
+  <!-- ================= 3. COMPONENT SHEET ================= -->
+  <div class="cap"><b>The rules, as parts</b> everything the other screens will be built from. If a part isn't here, it doesn't get invented.</div>
+  <div class="board"><div class="sheet">
+    <div class="item"><h4>Type · one weight, five sizes</h4>
+      <p class="t13" style="color:var(--g550); margin:-4px 0 14px">Drawn in Proxima Nova. This public build substitutes Figtree, which is close in proportion but not identical.</p>
+      <div class="scale">
+        <div><small>40 / −.025em</small><span style="font-size:40px; letter-spacing:-.025em; line-height:1.05">Partner desk</span></div>
+        <div><small>28 / −.02em</small><span style="font-size:28px; letter-spacing:-.02em">Northgate Financial</span></div>
+        <div><small>22 / −.015em</small><span style="font-size:22px; letter-spacing:-.015em">Open items</span></div>
+        <div><small>15</small><span>Owner document expiring · body, table cells, buttons</span></div>
+        <div><small>13</small><span style="font-size:13px; color:var(--g550)">Secondary line, column headers, labels, meta</span></div>
+      </div>
+      <p>Hierarchy comes from size alone. Nothing is bold, nothing is mono, nothing is uppercase. Numbers are the body face, tabular.</p></div>
+
+    <div class="item"><h4>Colour · what each one is allowed to do</h4>
+      <div class="sw">
+        <div><i style="background:var(--sig)"></i><small>Signal #FF6000<br>the primary action, the needs-you mark. Twice per screen.</small></div>
+        <div><i style="background:var(--navy)"></i><small>Navy #013D5B<br>structure: links, chart line, brand mark, selected text</small></div>
+        <div><i style="background:var(--blue100)"></i><small>Blue 100<br>selected row, active nav, current stage</small></div>
+        <div><i style="background:var(--g050); border:1px solid var(--g150)"></i><small>Warm grey 050<br>sidebar, hover</small></div>
+        <div><i style="background:var(--g025); border:1px solid var(--g150)"></i><small>Warm grey 025<br>the raised surface</small></div>
+        <div><i style="background:var(--good)"></i><small>Healthy</small></div>
+        <div><i style="background:var(--warn)"></i><small>Watch</small></div>
+        <div><i style="background:var(--bad)"></i><small>At risk</small></div>
+      </div>
+      <p>Status is a coloured word, never a pill. Chart hues appear only inside charts. No tints as fills except Blue 100 for selection.</p></div>
+
+    <div class="item"><h4>Table row · default, hover, selected, needs-you</h4>
+      <div class="rowdemo"><table class="tb"><tbody>
+        <tr><td><span class="p"><i>CR</i><span>Cordell Retail Group<span class="s2">Acquirer · live 3 years</span></span></span></td><td>92<span class="s2 st ok">Healthy</span></td><td class="n">$18.9M</td></tr>
+        <tr class="hov"><td><span class="p"><i>MT</i><span>Meridian Trust<span class="s2">hover · warm grey 050</span></span></span></td><td>96<span class="s2 st ok">Healthy</span></td><td class="n">$96.7M</td></tr>
+        <tr class="sel"><td><span class="p"><i>BP</i><span>Bayline Payments<span class="s2" style="color:var(--navy)">selected · blue 100, navy text</span></span></span></td><td>58<span class="s2" style="color:var(--navy)">At risk</span></td><td class="n">$41.2M</td></tr>
+        <tr class="hot"><td><span class="p"><i>NF</i><span>Northgate Financial<span class="s2">needs you · 3px signal at the edge</span></span></span></td><td>74<span class="s2 st wa">Watch</span></td><td class="n">$8.4M</td></tr>
+      </tbody></table></div>
+      <p>64px rows, two lines per cell, hairlines inside the table only. No vertical dividers, no zebra, no checkboxes until a bulk action exists.</p></div>
+
+    <div class="item"><h4>Surfaces · tone, not lines</h4>
+      <div style="background:var(--g050); border-radius:12px; padding:20px"><div style="background:var(--g025); border-radius:12px; padding:18px 20px"><div style="font-size:13px; color:var(--g550)">Warm grey 025 on warm grey 050</div><div style="background:#fff; border-radius:8px; padding:14px 16px; margin-top:12px; font-size:14px">White on top. Three steps, no borders, no shadows.</div></div></div>
+      <p>The sidebar is 050. The needs-you panel and the next-action note are 025 on white. A slide-over is the only thing with a shadow, because it is the only thing that floats.</p></div>
+
+    <div class="item"><h4>Actions · one solid button per screen</h4>
+      <div class="btns"><button class="btn pri">Chase the document</button><button class="btn">Log a call</button><span class="lnk">Snooze a week</span><span class="lnk">View all</span></div>
+      <div class="btns" style="margin-top:16px"><span class="chip on">All · 24</span><span class="chip">Enrolling · 6</span><span class="chip">Live · 15</span></div>
+      <div style="margin-top:16px" class="field"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>Search partners, BINs, contacts</div>
+      <div style="margin-top:10px" class="field focus">Northg</div>
+      <p>Radius 8 on components, 12 on surfaces, 6 on small parts. Secondary buttons are outlined in warm grey 200, never in ink. Everything below a button is a word in navy.</p></div>
+
+    <div class="item"><h4>Charts · instruments, not decoration</h4>
+      <div class="inst" style="max-width:420px"><div class="hd"><span>Monthly volume, 14 periods</span><b>$8.4M<small>projected</small></b></div>
+        <svg viewBox="0 0 380 150" preserveAspectRatio="none">
+          <g stroke="#E0DCD3" stroke-width="1" stroke-dasharray="2 4"><line x1="40" x2="380" y1="10" y2="10"/><line x1="40" x2="380" y1="50" y2="50"/><line x1="40" x2="380" y1="90" y2="90"/><line x1="40" x2="380" y1="130" y2="130"/></g>
+          <g font-size="11" fill="#948E85" font-family="inherit"><text x="0" y="14">$10M</text><text x="0" y="54">$8M</text><text x="0" y="94">$6M</text><text x="0" y="134">$4M</text></g>
+          <path d="M40.0 122 L60.8 138 L81.6 114 L102.4 90 L123.2 98 L144.0 74 L164.8 82 L185.6 58 L206.4 50 L227.2 66 L248.0 42 L268.8 26 L289.6 34 L310.4 18 L310.4 150 L40.0 150 Z" fill="#013D5B" opacity=".05"/>
+          <path d="M40.0 122 L60.8 138 L81.6 114 L102.4 90 L123.2 98 L144.0 74 L164.8 82 L185.6 58 L206.4 50 L227.2 66 L248.0 42 L268.8 26 L289.6 34 L310.4 18" fill="none" stroke="#013D5B" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+          <circle cx="310.4" cy="18" r="4" fill="#013D5B"/><text x="322" y="22" font-size="12" fill="#1C1A17" font-family="inherit">8.4</text>
+        </svg><div class="ax" style="padding-left:40px"><span>Jun</span><span>Jul</span><span>Aug</span></div></div>
+      <p>Navy line, dotted grid at four levels with values, dated axis, the last point labelled. Categorical hues only when there is more than one series. Never orange.</p></div>
+  </div></div>
+
+</div>
+
+</body>
+</html>

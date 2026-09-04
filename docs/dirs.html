@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Partner Desk Directions · Clearway prototype</title>
+<style>:root{color-scheme:light}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --ground:#FFFFFF; --card:#FFFFFF; --sunk:#FAF8F5; --sunk-2:#F4F1EB;
+  --ink:#1C1A17; --ink-2:#54514D; --ink-3:#6B6760; --ink-4:#948E85;
+  --rule:#E0DCD3; --rule-2:#D0CBC3; --rule-soft:#EBE6DD;
+  --acc:#013D5B; --acc-soft:#D9EBED; --acc-pale:#EBF4F5; --acc-mid:#0C4A69; --teal:#4F8AA0; --teal-pale:#A6CBD6;
+  --black:#14110D;
+  --good:#62800B; --good-soft:#F4FAEB; --warn:#8A7515; --warn-soft:#FCF9D9; --bad:#BF5547; --bad-soft:#FFEEEB;
+  --d1:#4F8AA0; --d2:#BF5547; --d3:#7A9A01; --d4:#805AA1; --d5:#B29B24;
+  --ui:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --val:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0; background:#EDEAE4; color:var(--ink); font-family:var(--ui); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums}
+h1,h2,h3,h4,p{margin:0}
+button{font-family:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer}
+
+/* ---- comparison chrome (not part of any direction) ---- */
+.bar{position:sticky; top:0; z-index:9; background:#1C1A17; color:#fff; display:flex; align-items:center; gap:18px; padding:12px 24px; font-size:13px}
+.bar b{font-weight:600; margin-right:6px}
+.bar .tabs{display:flex; gap:4px}
+.bar .tabs button{padding:7px 14px; border-radius:999px; color:rgba(255,255,255,.6); font-size:13px}
+.bar .tabs button.on{background:#fff; color:#1C1A17; font-weight:500}
+.bar .note{margin-left:auto; color:rgba(255,255,255,.5)}
+.dir{display:none}
+.dir.on{display:block}
+.brief{max-width:1240px; margin:26px auto 0; padding:0 24px; display:grid; grid-template-columns:1fr 1fr 1fr 1.2fr; gap:24px; font-size:13.5px; color:#54514D; line-height:1.55}
+.brief h4{font-size:11px; letter-spacing:.5px; text-transform:uppercase; color:#948E85; margin-bottom:6px; font-weight:600}
+.brief b{color:#1C1A17; font-weight:600}
+.frame{max-width:1240px; margin:20px auto 48px; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 30px 60px -30px rgba(28,26,23,.35), 0 0 0 1px rgba(28,26,23,.06)}
+
+/* =========================================================
+   A — QUIET LUXURY
+   one weight family (300/400), hierarchy from scale only,
+   no borders, no shadows, tone does the separating.
+   ========================================================= */
+.A .frame{padding-bottom:64px}
+.A .top{display:flex; align-items:center; padding:28px 56px 0}
+.A .brand{font-size:16px; letter-spacing:-.01em; display:flex; align-items:center; gap:10px}
+.A .brand i{width:10px; height:10px; border-radius:50%; background:var(--acc); display:inline-block}
+.A nav{margin-left:56px; display:flex; gap:28px; font-size:14px; color:var(--ink-3)}
+.A nav a.on{color:var(--ink)}
+.A .who{margin-left:auto; font-size:13px; color:var(--ink-3)}
+.A .hero{padding:72px 56px 40px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px}
+.A .hero h1{font-size:44px; font-weight:300; letter-spacing:-.025em; line-height:1.08; max-width:760px}
+.A .hero h1 em{font-style:normal; color:var(--ink-3)}
+.A .hero .act{display:flex; gap:10px}
+.A .btn{font-size:14px; padding:12px 20px; border-radius:999px; background:var(--sunk-2); color:var(--ink)}
+.A .btn.pri{background:var(--acc); color:#fff}
+.A .nums{display:grid; grid-template-columns:repeat(4,1fr); padding:0 56px 56px}
+.A .num .v{font-size:38px; font-weight:300; letter-spacing:-.03em; line-height:1}
+.A .num .v small{font-size:16px; color:var(--ink-4); margin-left:4px}
+.A .num .k{font-size:13px; color:var(--ink-3); margin-top:10px}
+.A .num.hot .v{color:var(--acc)}
+.A .body{display:grid; grid-template-columns:220px 1fr 380px; gap:56px; padding:0 56px}
+.A .toc{font-size:15px}
+.A .toc h4{font-size:12px; color:var(--ink-4); font-weight:400; margin-bottom:18px; letter-spacing:.02em}
+.A .toc a{display:block; padding:9px 0; color:var(--ink-3); text-decoration:none; display:flex; align-items:baseline; gap:10px}
+.A .toc a.on{color:var(--ink)}
+.A .toc a .st{margin-left:auto; font-size:12px; color:var(--ink-4)}
+.A .toc a.on .st{color:var(--acc)}
+.A .toc .more{margin-top:18px; font-size:13px; color:var(--acc)}
+.A .main h2{font-size:12px; color:var(--ink-4); font-weight:400; letter-spacing:.02em; margin:0 0 14px}
+.A .row{display:grid; grid-template-columns:1fr auto; gap:24px; align-items:baseline; padding:16px 0; border-top:1px solid var(--rule-soft); font-size:16px}
+.A .row:last-child{border-bottom:1px solid var(--rule-soft)}
+.A .row p{font-size:13.5px; color:var(--ink-3); margin-top:3px}
+.A .row .st{font-size:13px; color:var(--ink-3); white-space:nowrap}
+.A .row .st.hot{color:var(--bad)}
+.A .row .st.ok{color:var(--good)}
+.A .main .gap{height:44px}
+.A .act-log .row{grid-template-columns:120px 1fr}
+.A .act-log .when{font-size:13px; color:var(--ink-4); font-variant-numeric:tabular-nums}
+.A .side .tone{background:var(--sunk); border-radius:24px; padding:32px}
+.A .side .tone + .tone{margin-top:14px}
+.A .side h2{font-size:12px; color:var(--ink-4); font-weight:400; letter-spacing:.02em; margin-bottom:22px}
+.A .side .hv{font-size:64px; font-weight:300; letter-spacing:-.04em; line-height:.95}
+.A .side .hv small{font-size:18px; color:var(--ink-4); letter-spacing:0; margin-left:6px}
+.A .side .hl{font-size:14px; color:var(--ink-3); margin-top:12px}
+.A .side svg{display:block; width:100%; height:64px; margin-top:26px}
+.A .side .next p{font-size:17px; line-height:1.45; letter-spacing:-.01em}
+.A .side .next .btn{margin-top:22px}
+.A .side .people{display:flex; gap:-6px; margin-top:20px; align-items:center}
+.A .side .people span{width:34px; height:34px; border-radius:50%; background:#fff; display:grid; place-items:center; font-size:11px; color:var(--ink-2); margin-right:-6px; box-shadow:0 0 0 2px var(--sunk)}
+.A .side .people em{font-style:normal; font-size:13px; color:var(--ink-3); margin-left:16px}
+
+/* =========================================================
+   B — INK & SIGNAL
+   inverted colour rhythm: a deep ink band carries the
+   greeting, the numbers and the account switcher; the
+   content below is white, rules only, one bright signal.
+   ========================================================= */
+.B{--sig:#A6CBD6; --sig-hot:#E57D6E}
+.B .band{background:var(--acc); color:#fff; padding:26px 48px 0}
+.B .top{display:flex; align-items:center; font-size:14px}
+.B .brand{font-size:16px; font-weight:600; letter-spacing:-.02em; display:flex; align-items:center; gap:10px}
+.B .brand i{width:22px; height:22px; border-radius:6px; background:#fff; display:inline-block}
+.B nav{margin-left:48px; display:flex; gap:4px}
+.B nav a{padding:7px 14px; border-radius:999px; color:rgba(255,255,255,.62)}
+.B nav a.on{background:rgba(255,255,255,.14); color:#fff}
+.B .top .who{margin-left:auto; display:flex; align-items:center; gap:12px; color:rgba(255,255,255,.7)}
+.B .top .who i{width:30px; height:30px; border-radius:50%; background:var(--sig); display:inline-block}
+.B .lede{padding:64px 0 0; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px}
+.B .lede h1{font-size:40px; font-weight:300; letter-spacing:-.02em; line-height:1.1; max-width:720px}
+.B .lede h1 b{font-weight:600; color:var(--sig)}
+.B .lede .btn{background:#fff; color:var(--acc); font-size:14px; font-weight:500; padding:12px 20px; border-radius:8px}
+.B .kpis{display:grid; grid-template-columns:repeat(3,auto) 1fr; gap:64px; padding:48px 0 44px; align-items:end}
+.B .kpi .v{font-size:60px; font-weight:300; letter-spacing:-.035em; line-height:.95}
+.B .kpi .v b{font-weight:300; color:var(--sig-hot)}
+.B .kpi .k{font-size:13px; color:rgba(255,255,255,.62); margin-top:12px}
+.B .kpi .k b{color:#fff; font-weight:500}
+.B .switch{display:flex; gap:36px; border-top:1px solid rgba(255,255,255,.16); overflow-x:auto}
+.B .switch a{padding:18px 0 16px; font-size:14.5px; color:rgba(255,255,255,.62); border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; display:flex; gap:8px; align-items:center}
+.B .switch a i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.35)}
+.B .switch a.hot i{background:var(--sig-hot)}
+.B .switch a.on{color:#fff; border-bottom-color:var(--sig)}
+.B .content{padding:40px 48px 64px; display:grid; grid-template-columns:1fr 1fr; gap:0 64px}
+.B .ph{grid-column:1/-1; display:flex; align-items:baseline; gap:18px; padding-bottom:28px; margin-bottom:8px; border-bottom:1px solid var(--ink)}
+.B .ph h2{font-size:28px; font-weight:600; letter-spacing:-.03em}
+.B .ph .meta{font-size:14px; color:var(--ink-3)}
+.B .ph .pill{margin-left:auto; font-size:13px; font-weight:500; color:var(--warn); display:flex; align-items:center; gap:7px}
+.B .ph .pill i{width:8px; height:8px; border-radius:50%; background:var(--warn)}
+.B .stats{grid-column:1/-1; display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--rule); margin-bottom:36px}
+.B .stats > div{padding:22px 0}
+.B .stats .v{font-size:26px; font-weight:600; letter-spacing:-.03em}
+.B .stats .v small{font-size:13px; font-weight:400; color:var(--ink-3); margin-left:3px}
+.B .stats .k{font-size:13px; color:var(--ink-3); margin-top:4px}
+.B h3{font-size:13px; font-weight:600; letter-spacing:.02em; text-transform:uppercase; margin-bottom:6px}
+.B .li{display:grid; grid-template-columns:1fr auto; gap:20px; padding:16px 0; border-top:1px solid var(--rule); align-items:start}
+.B .li .t{font-size:16px}
+.B .li .d{font-size:13.5px; color:var(--ink-3); margin-top:2px}
+.B .li .st{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; padding:5px 9px; border-radius:4px; background:var(--sunk-2); color:var(--ink-2); white-space:nowrap}
+.B .li .st.hot{background:var(--bad); color:#fff}
+.B .li .st.wa{background:var(--warn-soft); color:var(--warn)}
+.B .next{grid-column:1; background:var(--acc-soft); color:var(--acc); border-radius:12px; padding:28px; margin-top:40px}
+.B .next h3{color:var(--acc-mid)}
+.B .next p{font-size:17px; line-height:1.45; margin-top:8px}
+.B .next .btn{display:inline-block; margin-top:20px; background:var(--acc); color:#fff; font-size:14px; font-weight:500; padding:11px 18px; border-radius:8px}
+.B .tl .li{grid-template-columns:110px 1fr}
+.B .tl .when{font-size:13px; color:var(--ink-3); font-variant-numeric:tabular-nums}
+.B .tl .li.hot .when{color:var(--teal); font-weight:600}
+.B .people{grid-column:1/-1; margin-top:44px; padding-top:28px; border-top:1px solid var(--rule); display:flex; gap:40px; align-items:center}
+.B .people .p{display:flex; align-items:center; gap:12px; font-size:14px}
+.B .people .p i{font-style:normal; width:36px; height:36px; border-radius:50%; background:var(--acc); color:#fff; display:grid; place-items:center; font-size:12px; font-weight:600}
+.B .people .p small{display:block; color:var(--ink-3); font-size:12.5px}
+
+/* =========================================================
+   C — THE PICTURE
+   the data landscape is the hero; chrome recedes; warm,
+   rounded, inset hairlines instead of shadows; monograms
+   carry colour; copy is friendlier.
+   ========================================================= */
+.C .frame{padding-bottom:56px}
+.C .top{display:flex; align-items:center; padding:24px 40px; gap:14px}
+.C .brand{font-size:17px; font-weight:600; letter-spacing:-.02em; display:flex; align-items:center; gap:10px}
+.C .brand i{width:30px; height:30px; border-radius:10px; background:var(--acc); display:inline-block}
+.C nav{margin-left:auto; display:flex; gap:2px; background:var(--sunk-2); border-radius:999px; padding:4px}
+.C nav a{padding:8px 16px; border-radius:999px; font-size:14px; color:var(--ink-3)}
+.C nav a.on{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(28,26,23,.06)}
+.C .who{margin-left:auto; width:34px; height:34px; border-radius:50%; background:var(--d4); color:#fff; display:grid; place-items:center; font-size:12px; font-weight:600}
+.C .greet{padding:34px 40px 22px; display:flex; align-items:end; gap:20px}
+.C .greet h1{font-size:34px; font-weight:600; letter-spacing:-.03em; line-height:1.1}
+.C .greet p{font-size:16px; color:var(--ink-3); margin-top:6px}
+.C .greet .btn{margin-left:auto; background:var(--ink); color:#fff; border-radius:999px; padding:12px 20px; font-size:14px; font-weight:500}
+.C .strip{display:flex; gap:12px; padding:0 40px 28px; overflow-x:auto}
+.C .pc{flex:0 0 218px; border-radius:20px; padding:18px 18px 16px; background:var(--sunk); box-shadow:inset 0 0 0 1px var(--sunk-2); text-align:left}
+.C .pc.on{background:#fff; box-shadow:inset 0 0 0 2px var(--ink)}
+.C .pc .mono{width:40px; height:40px; border-radius:14px; display:grid; place-items:center; font-weight:600; font-size:13px; color:#fff}
+.C .pc .n{font-size:15px; font-weight:600; margin-top:14px; letter-spacing:-.01em}
+.C .pc .s{font-size:12.5px; color:var(--ink-3); margin-top:2px}
+.C .pc svg{display:block; width:100%; height:32px; margin-top:12px}
+.C .picture{margin:0 40px; border-radius:28px; background:#fff; box-shadow:inset 0 0 0 1px var(--rule-soft); overflow:hidden; position:relative}
+.C .picture .hd{position:absolute; left:36px; top:32px; z-index:2}
+.C .picture .hd .who2{display:flex; align-items:center; gap:14px}
+.C .picture .hd .mono{width:52px; height:52px; border-radius:18px; display:grid; place-items:center; font-weight:600; font-size:15px; color:#fff; background:var(--d1)}
+.C .picture .hd h2{font-size:28px; font-weight:600; letter-spacing:-.03em}
+.C .picture .hd p{font-size:14px; color:var(--ink-3)}
+.C .picture .score{position:absolute; right:36px; top:32px; text-align:right; z-index:2}
+.C .picture .score .v{font-size:56px; font-weight:600; letter-spacing:-.04em; line-height:.9; color:var(--d1)}
+.C .picture .score .v small{font-size:16px; color:var(--ink-4); letter-spacing:0; font-weight:400}
+.C .picture .score .k{font-size:13px; color:var(--ink-3); margin-top:6px}
+.C .picture svg{display:block; width:100%; height:300px}
+.C .picture .foot{display:grid; grid-template-columns:repeat(4,1fr); padding:22px 36px 26px; border-top:1px solid var(--rule-soft)}
+.C .picture .foot .v{font-size:22px; font-weight:600; letter-spacing:-.02em}
+.C .picture .foot .k{font-size:13px; color:var(--ink-3)}
+.C .two{display:grid; grid-template-columns:1.25fr .75fr; gap:14px; margin:14px 40px 0}
+.C .soft{border-radius:24px; background:var(--sunk); padding:28px; box-shadow:inset 0 0 0 1px var(--sunk-2)}
+.C .soft h3{font-size:15px; font-weight:600; letter-spacing:-.01em; margin-bottom:14px; display:flex; align-items:center; gap:8px}
+.C .soft h3 span{font-size:12px; color:var(--ink-4); font-weight:400; margin-left:auto}
+.C .it{display:flex; align-items:center; gap:14px; padding:12px 0; border-top:1px solid var(--rule-soft); font-size:15px}
+.C .it:first-of-type{border-top:0}
+.C .it i{width:10px; height:10px; border-radius:50%; flex:none}
+.C .it small{display:block; font-size:13px; color:var(--ink-3)}
+.C .it .st{margin-left:auto; font-size:13px; color:var(--ink-3)}
+.C .next{background:var(--acc); color:#fff; border-radius:24px; padding:28px}
+.C .next h3{font-size:13px; color:rgba(255,255,255,.65); font-weight:500; margin-bottom:10px}
+.C .next p{font-size:19px; line-height:1.4; letter-spacing:-.015em; font-weight:400}
+.C .next .btn{display:inline-block; margin-top:22px; background:#fff; color:var(--acc); border-radius:999px; padding:11px 18px; font-size:14px; font-weight:600}
+.C .next .faces{display:flex; margin-top:28px; align-items:center}
+.C .next .faces span{width:34px; height:34px; border-radius:50%; background:#1F5A78; display:grid; place-items:center; font-size:11px; font-weight:600; margin-right:-6px; box-shadow:0 0 0 2px var(--acc)}
+.C .next .faces em{font-style:normal; font-size:13px; color:rgba(255,255,255,.7); margin-left:18px}
+
+/* =========================================================
+   D — THE PICTURE, AUTHORED
+   the chart is the page, not a card. no pills, no avatars,
+   no buttons, no badges. type does the talking: extrabold
+   statements against light figures; an index instead of a
+   list; actions are sentences with arrows.
+   ========================================================= */
+.D{--hue:#4F8AA0; --hue-ink:#2E6A80; background:#fff}
+.D .frame{border-radius:0; box-shadow:0 0 0 1px rgba(28,26,23,.08)}
+.D .top{display:flex; align-items:baseline; padding:30px 64px 0; font-size:15px}
+.D .brand{font-weight:800; letter-spacing:-.04em; font-size:19px}
+.D nav{margin-left:64px; display:flex; gap:30px}
+.D nav a{color:var(--ink-3); padding-bottom:6px; border-bottom:2px solid transparent}
+.D nav a.on{color:var(--ink); border-bottom-color:var(--ink)}
+.D .top .who{margin-left:auto; color:var(--ink-3)}
+.D .top .who b{color:var(--ink); font-weight:600; margin-left:22px}
+.D .land{position:relative; margin-top:36px; height:560px}
+.D .land svg{position:absolute; inset:0; width:100%; height:100%}
+.D .land .say{position:absolute; left:64px; top:36px; max-width:720px}
+.D .land .say .idx{font-size:14px; color:var(--hue-ink); font-weight:600; letter-spacing:-.01em}
+.D .land .say h1{font-size:72px; font-weight:800; letter-spacing:-.045em; line-height:.96; margin-top:14px}
+.D .land .say h1 em{font-style:normal; color:var(--hue-ink)}
+.D .land .say p{font-size:18px; font-weight:300; color:var(--ink-2); margin-top:22px; max-width:520px; line-height:1.4}
+.D .land .score{position:absolute; right:64px; top:18px; text-align:right}
+.D .land .score .v{font-size:168px; font-weight:800; letter-spacing:-.07em; line-height:.85; color:var(--hue)}
+.D .land .score .k{font-size:14px; color:var(--ink-3); margin-top:6px}
+.D .land .score .k b{color:var(--ink); font-weight:600}
+.D .axis{display:flex; justify-content:space-between; padding:0 64px; font-size:12px; color:var(--ink-4); margin-top:-26px; position:relative}
+.D .axis b{color:var(--hue-ink); font-weight:600}
+.D .facts{display:flex; gap:64px; padding:44px 64px 0; align-items:baseline}
+.D .fact .v{font-size:40px; font-weight:300; letter-spacing:-.03em; line-height:1}
+.D .fact .v small{font-size:15px; color:var(--ink-4); letter-spacing:0; margin-left:3px}
+.D .fact .k{font-size:13px; color:var(--ink-3); margin-top:8px}
+.D .fact.steps .v{display:flex; gap:3px; align-items:flex-end; height:40px}
+.D .fact.steps .v i{width:10px; height:24px; background:var(--rule-soft); display:block}
+.D .fact.steps .v i.done{background:var(--hue); height:40px}
+.D .fact.steps .v i.now{background:var(--ink); height:40px}
+.D .cols{display:grid; grid-template-columns:230px 1fr 1fr; gap:64px; padding:72px 64px 80px}
+.D .index h4{font-size:13px; color:var(--ink-3); font-weight:400; margin-bottom:18px}
+.D .index a{display:block; font-size:19px; font-weight:300; letter-spacing:-.02em; padding:6px 0; color:var(--ink); text-decoration:none; border-left:2px solid transparent; padding-left:14px; margin-left:-16px}
+.D .index a.on{font-weight:800; letter-spacing:-.03em; border-left-color:var(--hue)}
+.D .index a small{display:block; font-size:12.5px; font-weight:400; letter-spacing:0; color:var(--ink-3)}
+.D .index .all{display:block; margin-top:22px; font-size:14px; color:var(--ink); text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1.5px}
+.D h3{font-size:13px; color:var(--ink-3); font-weight:400; margin-bottom:22px}
+.D .num{display:grid; grid-template-columns:36px 1fr; gap:10px; padding:0 0 26px}
+.D .num .n{font-size:26px; font-weight:800; letter-spacing:-.04em; line-height:1; color:var(--hue); padding-top:1px}
+.D .num .n.bad{color:var(--bad)}
+.D .num .t{font-size:19px; font-weight:600; letter-spacing:-.02em; line-height:1.25}
+.D .num .d{font-size:14.5px; color:var(--ink-2); margin-top:5px; line-height:1.45}
+.D .num .d b{font-weight:600; color:var(--bad)}
+.D .go{display:block; margin-top:18px; font-size:26px; font-weight:800; letter-spacing:-.035em; color:var(--acc); text-decoration:none; line-height:1.15}
+.D .go span{border-bottom:3px solid var(--acc)}
+.D .go i{font-style:normal; margin-left:10px}
+.D .go small{display:block; font-size:14px; font-weight:400; letter-spacing:0; color:var(--ink-3); margin-top:12px; max-width:420px; line-height:1.45}
+.D .log{font-size:16px}
+.D .log div{display:grid; grid-template-columns:92px 1fr; gap:16px; padding:9px 0}
+.D .log span{color:var(--ink-4); font-size:13px; padding-top:3px}
+.D .log div.hot span{color:var(--hue-ink); font-weight:600}
+.D .people{margin-top:52px; font-size:15px; line-height:1.6; color:var(--ink-2); max-width:420px}
+.D .people b{font-weight:600; color:var(--ink)}
+.D .people a{color:var(--acc); text-decoration:underline; text-underline-offset:3px}
+</style>
+
+<div class="bar"><b>Partner Desk</b> three directions, same screen, same data
+  <div class="tabs" id="tabs"><button data-d="A">A · Quiet</button><button data-d="B">B · Ink &amp; signal</button><button data-d="C">C · The picture</button><button class="on" data-d="D">D · The picture, authored</button></div>
+  <span class="note">D is C taken further: what changed is listed under it</span></div>
+
+<div class="brief">
+  <div><h4>A · Quiet luxury</h4><b>Take everything away until only the numbers and the sentence are left.</b> One type family at two weights (300 and 400, never bold). Hierarchy comes from scale only: 44px, 38px, 16px, 13px. No card borders, no shadows, no badges, no icons; the side rail is a single tonal surface. Navy appears once. Lineage: Ramp's single-weight rule, Mercury's calibrated restraint.</div>
+  <div><h4>B · Ink &amp; signal</h4><b>An inverted colour rhythm.</b> The navy is no longer an accent card, it is the substrate: a full-bleed ink band carries the greeting, three giant figures and the account switcher. Below it, white content ruled by lines, not boxes. One bright signal (pale cyan) points at the thing that matters; coral marks trouble. Lineage: Wise's dark/light inversion, Linear's "one flashlight" accent.</div>
+  <div><h4>C · The picture</h4><b>The data landscape is the hero.</b> The partner's fourteen-day health trend fills the top of the page in the partner's own hue with the score sitting inside it. Accounts are a strip of soft tiles with their own miniature lines; everything else is a rounded, tonal surface with an inset hairline, no shadows. Friendlier voice. Lineage: Family's warm restraint, where a picture carries the emotion and the chrome stays quiet.</div>
+  <div><h4>D · The picture, authored</h4><b>C with the SaaS removed.</b> The chart is the page, not a card. Gone: pill nav, avatar bubbles, tile strip, rounded cards, buttons, badges, status dots, the greeting. In their place: an extrabold statement about <i>this</i> partner over the landscape, a 168px score in the partner's hue, figures set light, enrollment drawn as fifteen bars, an index instead of a list, numbered items with real sentences, and one action written as a sentence with an arrow.</div>
+</div>
+
+<!-- ===================== A ===================== -->
+<section class="dir A" id="A"><div class="frame">
+  <div class="top"><span class="brand"><i></i>Clearway</span>
+    <nav><a class="on">Partners</a><a>Pipeline</a><a>Tasks</a><a>Reports</a></nav>
+    <span class="who">Dara Whitfield</span></div>
+
+  <div class="hero">
+    <h1>Two accounts need you this week. <em>Everything else is moving on its own.</em></h1>
+    <div class="act"><button class="btn">Log a call</button><button class="btn pri">Add partner</button></div>
+  </div>
+
+  <div class="nums">
+    <div class="num"><div class="v">$168.4<small>M / mo</small></div><div class="k">Book value, up 6.2% on last quarter</div></div>
+    <div class="num"><div class="v">24</div><div class="k">Accounts, six of them enrolling</div></div>
+    <div class="num hot"><div class="v">1</div><div class="k">Item blocking a go-live</div></div>
+    <div class="num"><div class="v">34<small>days</small></div><div class="k">Median introduction to live</div></div>
+  </div>
+
+  <div class="body">
+    <div class="toc">
+      <h4>Accounts</h4>
+      <a class="on">Northgate Financial<span class="st">Watch</span></a>
+      <a>Bayline Payments<span class="st">At risk</span></a>
+      <a>Cordell Retail Group<span class="st"></span></a>
+      <a>Vantage Hospitality<span class="st">Slow</span></a>
+      <a>Meridian Trust<span class="st"></span></a>
+      <a>Tessellate Labs<span class="st">Dormant</span></a>
+      <div class="more">All 24 accounts</div>
+    </div>
+
+    <div class="main">
+      <h2>Northgate Financial · program manager · enrolling, step 10 of 15</h2>
+      <div class="row"><div>Owner document expiring<p>Halvard Ruiz's passport, KYB-04, nine days left</p></div><span class="st">Open</span></div>
+      <div class="row"><div>Certification case 14 failing<p>Partial-approval handler echoes the requested amount</p></div><span class="st hot">Blocking</span></div>
+      <div class="row"><div>Sponsor collateral ceiling<p>Cascade Trust, awaiting their reply</p></div><span class="st">Waiting</span></div>
+      <div class="gap"></div>
+      <h2>Recently</h2>
+      <div class="act-log">
+        <div class="row"><span class="when">Today 08:12</span><div>Cleared the ownership filing</div></div>
+        <div class="row"><span class="when">Today 08:04</span><div>Emailed Halvard about the passport</div></div>
+        <div class="row"><span class="when">Yesterday</span><div>Idris uploaded the PCI attestation</div></div>
+        <div class="row"><span class="when">1 Sep</span><div>Pre-checked their sandbox endpoint</div></div>
+        <div class="row"><span class="when">18 Aug</span><div>Kick-off call, 45 minutes</div></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="tone">
+        <h2>Relationship health</h2>
+        <div class="hv">74<small>of 100</small></div>
+        <div class="hl">Watch. Volume is climbing; one document is holding the rest.</div>
+        <svg viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M0.0 49.1 L23.1 56.0 L46.2 45.6 L69.2 35.2 L92.3 38.7 L115.4 28.3 L138.5 31.7 L161.5 21.3 L184.6 17.9 L207.7 24.8 L230.8 14.4 L253.8 7.5 L276.9 10.9 L300.0 4.0" fill="none" stroke="#1C1A17" stroke-width="1.5"/></svg>
+      </div>
+      <div class="tone next">
+        <h2>Next</h2>
+        <p>Chase the passport. Without a replacement by 12 September, settlement pauses on the first cycle after that date.</p>
+        <button class="btn pri">Chase the document</button>
+        <div class="people"><span>MO</span><span>IV</span><span>TK</span><em>Marguerite, Idris and Tomas on the account</em></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ===================== B ===================== -->
+<section class="dir B" id="B"><div class="frame">
+  <div class="band">
+    <div class="top"><span class="brand"><i></i>Clearway</span>
+      <nav><a class="on">Partners</a><a>Pipeline</a><a>Tasks</a><a>Reports</a></nav>
+      <span class="who">Dara Whitfield <i></i></span></div>
+    <div class="lede">
+      <h1>Morning, Dara. <b>Two accounts</b> need you before Friday; the other twenty-two are fine.</h1>
+      <button class="btn">Add partner</button>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="v">$168.4M</div><div class="k">monthly book value · <b>up 6.2%</b></div></div>
+      <div class="kpi"><div class="v"><b>1</b></div><div class="k">item blocking a go-live</div></div>
+      <div class="kpi"><div class="v">34</div><div class="k">days, introduction to live</div></div>
+    </div>
+    <div class="switch">
+      <a class="on hot"><i></i>Northgate Financial</a><a class="hot"><i></i>Bayline Payments</a><a><i></i>Cordell Retail Group</a><a class="hot"><i></i>Vantage Hospitality</a><a><i></i>Meridian Trust</a><a><i></i>Tessellate Labs</a><a style="margin-left:auto; color:var(--sig)">All 24 →</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="ph"><h2>Northgate Financial</h2><span class="meta">Program manager · issuing · enrolling, step 10 of 15</span><span class="pill"><i></i>Watch</span></div>
+    <div class="stats">
+      <div><div class="v">$8.4M<small>/ mo projected</small></div><div class="k">Monthly volume</div></div>
+      <div><div class="v">94.2%</div><div class="k">Approval rate</div></div>
+      <div><div class="v">41.7 ms</div><div class="k">p99 latency</div></div>
+      <div><div class="v">471288</div><div class="k">BIN</div></div>
+    </div>
+
+    <div>
+      <h3>Open items</h3>
+      <div class="li"><div><div class="t">Owner document expiring</div><div class="d">Halvard Ruiz's passport · KYB-04 · 9 days</div></div><span class="st wa">Open</span></div>
+      <div class="li"><div><div class="t">Certification case 14 failing</div><div class="d">Partial-approval handler echoes the requested amount</div></div><span class="st hot">Blocking</span></div>
+      <div class="li"><div><div class="t">Sponsor collateral ceiling</div><div class="d">Cascade Trust · awaiting</div></div><span class="st">Waiting</span></div>
+    </div>
+
+    <div class="tl">
+      <h3>Activity</h3>
+      <div class="li hot"><span class="when">Today 08:12</span><div class="t">Cleared the ownership filing</div></div>
+      <div class="li hot"><span class="when">Today 08:04</span><div class="t">Emailed Halvard re: passport</div></div>
+      <div class="li"><span class="when">Yesterday</span><div class="t">Idris uploaded the PCI attestation</div></div>
+      <div class="li"><span class="when">1 Sep</span><div class="t">Pre-checked their sandbox endpoint</div></div>
+      <div class="li"><span class="when">18 Aug</span><div class="t">Kick-off call · 45 min</div></div>
+    </div>
+
+    <div class="next">
+      <h3>Next action</h3>
+      <p>Chase the passport. Without a replacement by 12 September, settlement pauses on the first cycle after that date, and authorizations do not.</p>
+      <span class="btn">Chase the document</span>
+    </div>
+
+    <div class="people">
+      <div class="p"><i>MO</i><div>Marguerite Osei<small>Owner · signs</small></div></div>
+      <div class="p"><i>IV</i><div>Idris Vance<small>Chair · compliance</small></div></div>
+      <div class="p"><i>TK</i><div>Tomas Kudela<small>Engineering · keys</small></div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ===================== C ===================== -->
+<section class="dir C" id="C"><div class="frame">
+  <div class="top"><span class="brand"><i></i>Clearway</span>
+    <nav><a class="on">Partners</a><a>Pipeline</a><a>Tasks</a><a>Reports</a></nav>
+    <span class="who">DW</span></div>
+
+  <div class="greet">
+    <div><h1>Good morning, Dara</h1><p>Two accounts could use you this week. Northgate first — there's a passport to chase.</p></div>
+    <button class="btn">Add a partner</button>
+  </div>
+
+  <div class="strip">
+    <button class="pc on"><span class="mono" style="background:var(--d1)">NF</span><div class="n">Northgate Financial</div><div class="s">Enrolling · watch</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 28.0 L9.2 25.8 L18.5 26.9 L27.7 23.6 L36.9 21.5 L46.2 22.5 L55.4 19.3 L64.6 17.1 L73.8 14.9 L83.1 12.7 L92.3 13.8 L101.5 10.5 L110.8 7.3 L120.0 4.0" fill="none" stroke="var(--d1)" stroke-width="2"/></svg></button>
+    <button class="pc"><span class="mono" style="background:var(--d2)">BP</span><div class="n">Bayline Payments</div><div class="s">Live · at risk</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 4.0 L9.2 5.4 L18.5 6.8 L27.7 6.1 L36.9 9.6 L46.2 11.1 L55.4 12.5 L64.6 13.9 L73.8 15.3 L83.1 16.7 L92.3 19.5 L101.5 22.4 L110.8 25.2 L120.0 28.0" fill="none" stroke="var(--d2)" stroke-width="2"/></svg></button>
+    <button class="pc"><span class="mono" style="background:var(--d3)">CR</span><div class="n">Cordell Retail Group</div><div class="s">Live · healthy</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 28.0 L9.2 25.8 L18.5 26.9 L27.7 23.6 L36.9 21.5 L46.2 22.5 L55.4 19.3 L64.6 17.1 L73.8 14.9 L83.1 12.7 L92.3 13.8 L101.5 10.5 L110.8 7.3 L120.0 4.0" fill="none" stroke="var(--d3)" stroke-width="2"/></svg></button>
+    <button class="pc"><span class="mono" style="background:var(--d5)">VH</span><div class="n">Vantage Hospitality</div><div class="s">Enrolling · slow start</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 28.0 L9.2 20.0 L18.5 12.0 L27.7 12.0 L36.9 4.0 L46.2 4.0 L55.4 4.0 L64.6 4.0 L73.8 4.0 L83.1 4.0 L92.3 4.0 L101.5 4.0 L110.8 4.0 L120.0 4.0" fill="none" stroke="var(--d5)" stroke-width="2"/></svg></button>
+    <button class="pc"><span class="mono" style="background:var(--d4)">MT</span><div class="n">Meridian Trust</div><div class="s">Live · healthy</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 28.0 L9.2 25.0 L18.5 22.0 L27.7 23.5 L36.9 20.5 L46.2 17.5 L55.4 19.0 L64.6 16.0 L73.8 13.0 L83.1 11.5 L92.3 10.0 L101.5 7.0 L110.8 5.5 L120.0 4.0" fill="none" stroke="var(--d4)" stroke-width="2"/></svg></button>
+    <button class="pc"><span class="mono" style="background:var(--ink-4)">TL</span><div class="n">Tessellate Labs</div><div class="s">Dormant · 8 months</div>
+      <svg viewBox="0 0 120 32"><path d="M0.0 4.0 L9.2 8.2 L18.5 12.5 L27.7 15.3 L36.9 18.1 L46.2 20.9 L55.4 22.4 L64.6 23.8 L73.8 25.2 L83.1 25.9 L92.3 26.6 L101.5 26.6 L110.8 27.3 L120.0 28.0" fill="none" stroke="var(--ink-4)" stroke-width="2"/></svg></button>
+  </div>
+
+  <div class="picture">
+    <div class="hd"><div class="who2"><span class="mono">NF</span><div><h2>Northgate Financial</h2><p>Program manager · issuing · partner since August</p></div></div></div>
+    <div class="score"><div class="v">74<small> / 100</small></div><div class="k">Relationship health, last 14 days</div></div>
+    <svg viewBox="0 0 1000 300" preserveAspectRatio="none">
+      <defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4F8AA0" stop-opacity=".34"/><stop offset="1" stop-color="#4F8AA0" stop-opacity="0"/></linearGradient></defs>
+      <g transform="translate(0,128) scale(1,.56)">
+        <path d="M0.0 181.9 L76.9 208.0 L153.8 168.8 L230.8 129.6 L307.7 142.7 L384.6 103.5 L461.5 116.5 L538.5 77.3 L615.4 64.3 L692.3 90.4 L769.2 51.2 L846.2 25.1 L923.1 38.1 L1000.0 12.0 L1000 230 L0 230 Z" fill="url(#gA)"/>
+        <path d="M0.0 181.9 L76.9 208.0 L153.8 168.8 L230.8 129.6 L307.7 142.7 L384.6 103.5 L461.5 116.5 L538.5 77.3 L615.4 64.3 L692.3 90.4 L769.2 51.2 L846.2 25.1 L923.1 38.1 L1000.0 12.0" fill="none" stroke="#4F8AA0" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+      </g>
+    </svg>
+    <div class="foot">
+      <div><div class="v">$8.4M</div><div class="k">Projected monthly volume</div></div>
+      <div><div class="v">94.2%</div><div class="k">Approval rate</div></div>
+      <div><div class="v">41.7 ms</div><div class="k">p99 latency</div></div>
+      <div><div class="v">Step 10 of 15</div><div class="k">Enrollment</div></div>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="soft">
+      <h3>What's open <span>3 items</span></h3>
+      <div class="it"><i style="background:var(--warn)"></i><div>Halvard's passport expires in 9 days<small>KYB-04 · owner document</small></div><span class="st">Open</span></div>
+      <div class="it"><i style="background:var(--bad)"></i><div>Certification case 14 is failing<small>Their partial-approval handler echoes the requested amount</small></div><span class="st">Blocking</span></div>
+      <div class="it"><i style="background:var(--ink-4)"></i><div>Sponsor collateral ceiling<small>Cascade Trust · waiting on them</small></div><span class="st">Waiting</span></div>
+      <h3 style="margin-top:26px">Recently <span>5 events</span></h3>
+      <div class="it"><i style="background:var(--acc)"></i><div>Cleared the ownership filing<small>Today, 08:12</small></div></div>
+      <div class="it"><i style="background:var(--acc)"></i><div>Emailed Halvard about the passport<small>Today, 08:04</small></div></div>
+      <div class="it"><i style="background:var(--rule-2)"></i><div>Idris uploaded the PCI attestation<small>Yesterday, 17:40</small></div></div>
+    </div>
+    <div class="next">
+      <h3>Do this next</h3>
+      <p>Chase the passport. If it isn't replaced by 12 September, settlement pauses on the first cycle after that — and authorizations don't.</p>
+      <span class="btn">Chase the document</span>
+      <div class="faces"><span>MO</span><span>IV</span><span>TK</span><em>Marguerite, Idris, Tomas</em></div>
+    </div>
+  </div>
+</div></section>
+
+
+<!-- ===================== D ===================== -->
+<section class="dir on D" id="D"><div class="frame">
+  <div class="top"><span class="brand">Clearway</span>
+    <nav><a class="on">Partners</a><a>Pipeline</a><a>Tasks</a><a>Reports</a></nav>
+    <span class="who">Add a partner <b>Dara Whitfield</b></span></div>
+
+  <div class="land">
+    <svg viewBox="0 0 1400 560" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="gD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4F8AA0" stop-opacity=".28"/><stop offset="1" stop-color="#4F8AA0" stop-opacity="0"/></linearGradient></defs>
+      <g transform="translate(0,150)">
+        <path d="M0 303 L108 340 L215 284 L323 228 L431 247 L538 191 L646 209 L754 153 L862 135 L969 172 L1077 116 L1185 79 L1292 97 L1400 60 L1400 410 L0 410 Z" fill="url(#gD)"/>
+        <path d="M0 303 L108 340 L215 284 L323 228 L431 247 L538 191 L646 209 L754 153 L862 135 L969 172 L1077 116 L1185 79 L1292 97 L1400 60" fill="none" stroke="#4F8AA0" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+      </g>
+    </svg>
+    <div class="say">
+      <div class="idx">Northgate Financial · program manager · enrolling</div>
+      <h1>Climbing fast. <em>One passport</em> is in the way.</h1>
+      <p>Volume, approvals and responsiveness are all up over fourteen days. Halvard Ruiz's passport expires on the 12th, and settlement pauses the cycle after it does.</p>
+    </div>
+    <div class="score"><div class="v">74</div><div class="k"><b>Relationship health</b> of 100 · watch</div></div>
+  </div>
+  <div class="axis"><span>20 Aug</span><span>27 Aug</span><span><b>Today</b></span></div>
+
+  <div class="facts">
+    <div class="fact"><div class="v">$8.4<small>M / mo</small></div><div class="k">Projected volume</div></div>
+    <div class="fact"><div class="v">94.2<small>%</small></div><div class="k">Approval rate</div></div>
+    <div class="fact"><div class="v">41.7<small>ms</small></div><div class="k">p99 latency</div></div>
+    <div class="fact"><div class="v">471288</div><div class="k">BIN</div></div>
+    <div class="fact steps"><div class="v"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i><i></i><i></i><i></i></div><div class="k">Step 10 of 15 · live in about three weeks</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="index">
+      <h4>Your accounts</h4>
+      <a class="on">Northgate<small>Enrolling · watch</small></a>
+      <a>Bayline<small>Live · at risk</small></a>
+      <a>Cordell<small>Live · healthy</small></a>
+      <a>Vantage<small>Enrolling · slow</small></a>
+      <a>Meridian<small>Live · healthy</small></a>
+      <a>Tessellate<small>Dormant</small></a>
+      <a class="all">All twenty-four</a>
+    </div>
+
+    <div>
+      <h3>Three things are open</h3>
+      <div class="num"><div class="n bad">1</div><div><div class="t">Certification case 14 is failing</div><div class="d">Their partial-approval handler echoes the requested amount instead of the approved one. <b>Blocks go-live</b> until it passes.</div></div></div>
+      <div class="num"><div class="n">2</div><div><div class="t">Halvard's passport expires in 9 days</div><div class="d">KYB-04, the last ownership document. Emailed him this morning, Marguerite copied.</div></div></div>
+      <div class="num"><div class="n">3</div><div><div class="t">Sponsor collateral ceiling</div><div class="d">Cascade Trust are deciding. Nothing to do until they reply.</div></div></div>
+      <a class="go" href="#"><span>Chase the document</span><i>→</i><small>Two minutes. Then case 14 is the only thing between Northgate and live.</small></a>
+    </div>
+
+    <div>
+      <h3>Recently</h3>
+      <div class="log">
+        <div class="hot"><span>Today 08:12</span>Cleared the ownership filing</div>
+        <div class="hot"><span>Today 08:04</span>Emailed Halvard about the passport</div>
+        <div><span>Yesterday</span>Idris uploaded the PCI attestation</div>
+        <div><span>1 Sep</span>Pre-checked their sandbox endpoint; mTLS fine, handler flagged</div>
+        <div><span>18 Aug</span>Kick-off call, forty-five minutes</div>
+      </div>
+      <p class="people">On the account: <b>Marguerite Osei</b> signs, <b>Idris Vance</b> owns compliance, <b>Tomas Kudela</b> holds the keys. Sponsored by <b>Cascade Trust</b>. <a href="#">Email everyone</a></p>
+    </div>
+  </div>
+</div></section>
+
+<script>
+(function(){
+  var bs=document.querySelectorAll('#tabs button');
+  bs.forEach(function(b){ b.addEventListener('click',function(){
+    bs.forEach(function(x){ x.classList.toggle('on',x===b) });
+    document.querySelectorAll('.dir').forEach(function(d){ d.classList.toggle('on', d.id===b.dataset.d) });
+    window.scrollTo(0,0);
+  })});
+})();
+</script>
+
+</body>
+</html>

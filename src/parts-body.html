@@ -1,0 +1,174 @@
+<title>Clearway Parts</title>
+<style>
+/*FONTS*/
+/*CSS*/
+body{background:#E9E5DE}
+.pres{max-width:1320px; margin:0 auto; padding:40px 24px 80px}
+.cap{display:flex; align-items:baseline; gap:16px; margin:56px 0 14px; color:var(--g650); font-size:14px}
+.cap:first-child{margin-top:0}
+.cap b{font-weight:400; color:var(--g900); font-size:18px}
+.board{background:var(--white); border-radius:12px; padding:44px 48px 48px; display:grid; grid-template-columns:1fr 1fr; gap:44px 64px}
+.board.one{grid-template-columns:1fr}
+.part h4{font-size:13px; color:var(--g550); margin-bottom:16px}
+.part > p.rule{font-size:13.5px; color:var(--g650); margin-top:14px; line-height:1.5}
+.part .tb{margin-top:0}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+</style>
+<div class="pres">
+
+  <!-- ======================= TRANSACTION REPORTING ======================= -->
+  <div class="cap"><b>Transaction reporting</b> the parts the authorizations screens are built from</div>
+  <div class="board">
+    <div class="part" style="grid-column:1/-1"><h4>Filter · a sentence, not a bar of chips</h4>
+      <p class="fs">Showing <b>approved authorizations</b> for <b>Bayline Payments</b> on <b>all programs</b> in the <b>last 7 days</b>, grouped <b>by hour</b> <span class="add">+ condition</span></p>
+      <p class="rule">The filter reads as the question Dara is asking. Every navy word opens a menu in place; the sentence rewrites itself. No filter bar, no chip stack, no "Apply".</p></div>
+
+    <div class="part"><h4>Period comparator</h4>
+      <div class="facts" style="grid-template-columns:1fr 1fr 1fr"><div><div class="k">This week</div><div class="v">$41.2M</div></div><div><div class="k">Last week</div><div class="v" style="color:var(--g550)">$40.1M</div></div><div><div class="k">Change</div><div class="v st ok">+2.7%</div></div></div>
+      <div class="inst" style="margin-top:18px"><svg viewBox="0 0 560 110">
+        <g stroke="#E0DCD3" stroke-width="1" stroke-dasharray="2 4"><line x1="40" x2="560" y1="10" y2="10"/><line x1="40" x2="560" y1="55" y2="55"/><line x1="40" x2="560" y1="100" y2="100"/></g>
+        <g font-size="11" fill="#948E85" font-family="inherit"><text x="0" y="14">$8M</text><text x="0" y="59">$6M</text><text x="0" y="104">$4M</text></g>
+        <path d="M40 62 L116 58 L193 66 L270 52 L346 56 L422 48 L499 54" fill="none" stroke="#D0CBC3" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <path d="M40 58 L116 50 L193 60 L270 44 L346 46 L422 36 L499 40" fill="none" stroke="#013D5B" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <circle cx="499" cy="40" r="4" fill="#013D5B"/><text x="510" y="44" font-size="12" fill="#1C1A17" font-family="inherit">$6.4M</text></svg>
+        <div class="ax"><span>Mon</span><span>Thu</span><span>Sun</span></div></div>
+      <p class="rule">The previous period is the same line in warm grey 200. No legend needed: navy is now, grey is before, everywhere in the product.</p></div>
+
+    <div class="part"><h4>Part-to-whole rows · decline reasons</h4>
+      <div class="ptw"><span>Insufficient funds · 51</span><span class="bar"><i style="width:100%"></i></span><span class="n"><b>2,418</b> · 46%</span></div>
+      <div class="ptw"><span>Do not honour · 05</span><span class="bar"><i style="width:56%"></i></span><span class="n"><b>1,352</b> · 26%</span></div>
+      <div class="ptw"><span>Expired card · 54</span><span class="bar"><i style="width:23%"></i></span><span class="n"><b>561</b> · 11%</span></div>
+      <div class="ptw"><span>Velocity limit</span><span class="bar"><i style="width:15%"></i></span><span class="n"><b>374</b> · 7%</span></div>
+      <div class="ptw"><span>Everything else</span><span class="bar"><i style="width:21%; background:var(--g200)"></i></span><span class="n"><b>522</b> · 10%</span></div>
+      <p class="rule">Ranked, proportional, one colour. The remainder is grey so the eye stops at the named reasons. This replaces every donut.</p></div>
+
+    <div class="part" style="grid-column:1/-1"><h4>Hourly instrument · authorizations by hour, Tuesday</h4>
+      <div class="inst"><div class="hd"><span>Bayline Payments · decline code 51</span><b>2.4<small>pts above baseline, 09:00–11:00</small></b></div>
+        <svg viewBox="0 0 1180 140" preserveAspectRatio="none" style="height:140px" id="hourly"></svg>
+        <div class="ax" style="padding-left:0"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div></div>
+      <p class="rule">Bars are navy; the hours the sentence is about are the only ones at full strength, the rest sit at 30%. Emphasis by opacity, not by a second colour.</p></div>
+
+    <div class="part" style="grid-column:1/-1"><h4>Row, opened in place</h4>
+      <table class="tb"><thead><tr><th>Time</th><th>Merchant</th><th>Program</th><th class="n">Amount</th><th>Result</th></tr></thead><tbody>
+        <tr><td>09:14:02</td><td>Rogers<span class="s2">Internet and phone</span></td><td>Bayline · fuel</td><td class="n">$52.39</td><td class="st ok">Approved</td></tr>
+        <tr class="sel"><td>09:14:07</td><td>Le Cafe<span class="s2">Restaurants</span></td><td>Bayline · hospitality</td><td class="n">$111.80</td><td>Declined · 51</td></tr>
+        <tr class="expand"><td colspan="5"><div class="kv" style="grid-template-columns:180px 1fr 180px 1fr"><span class="k">Authorization</span><span>auth_8f2c…41e</span><span class="k">Retry of</span><span class="lnk">auth_8f2c…3d0, 180 ms earlier</span><span class="k">Card</span><span>Virtual · 1466</span><span class="k">Response</span><span class="st no">51 · insufficient funds</span><span class="k">Latency</span><span class="lat"><i><b style="width:64%"></b></i>52 ms</span><span class="k">Rule fired</span><span>Velocity, 12 per hour</span></div><div style="margin-top:18px; display:flex; gap:20px"><span class="lnk">Open in Developers</span><span class="lnk">Add to case 14</span></div></td></tr>
+        <tr><td>09:14:11</td><td>Asana<span class="s2">SaaS / software</span></td><td>Bayline · fuel</td><td class="n">$120.20</td><td class="st ok">Approved</td></tr>
+      </tbody></table>
+      <p class="rule">Detail opens under the row on the 025 surface. No modal, no drawer for something this small. The selected row is Blue 100, as the system says.</p></div>
+  </div>
+
+  <!-- ======================= DEVELOPERS ======================= -->
+  <div class="cap"><b>Developers</b> keys, logs and code, without a dark theme</div>
+  <div class="board">
+    <div class="part"><h4>Environment and keys</h4>
+      <div style="display:flex; align-items:center; gap:18px"><span class="env"><button aria-pressed="true">Sandbox</button><button class="live">Live</button></span><span class="mute t13">Live keys move money. The switch turns ink.</span></div>
+      <div class="kv" style="margin-top:22px"><span class="k">Publishable</span><span><span class="key">pk_sandbox_7Qx…Ld2</span> <span class="lnk" style="margin-left:10px">Copy</span></span><span class="k">Secret</span><span><span class="key">sk_sandbox_••••••••••••</span> <span class="lnk" style="margin-left:10px">Reveal</span> <span class="lnk" style="margin-left:14px">Roll</span></span><span class="k">Webhook signing</span><span><span class="key">whsec_3nA…9pQ</span> <span class="lnk" style="margin-left:10px">Copy</span></span></div>
+      <p class="rule">Mono is allowed here and nowhere else, because these are strings a person copies. The words next to them are the actions.</p></div>
+
+    <div class="part" style="grid-column:1/-1"><h4>Tabs or a segmented control · the rule</h4>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:38px 56px">
+        <div>
+          <div class="t13" style="margin-bottom:12px">Tabs — different content, different data</div>
+          <div class="tabstrip"><button aria-pressed="true">Overview</button><button>Volume</button><button>Programs</button><button>Cases</button><button>People</button></div>
+          <p class="rule" style="margin-top:16px">Each panel holds something else entirely. Moving between them changes the subject, so the label carries a full-width rule and the panel below can be any shape.</p>
+        </div>
+        <div>
+          <div class="t13" style="margin-bottom:12px">Segmented control — one set of records, sliced</div>
+          <span class="seg"><button aria-pressed="true">All accounts<span class="ct">24</span></button><button>My book<span class="ct">12</span></button><button>Needs attention<span class="ct">10</span></button></span>
+          <p class="rule">Same table underneath, filtered. The control is compact and sits inline because nothing about the page changes except how many rows survive.</p>
+        </div>
+      </div>
+      <p class="rule" style="margin-top:26px"><b style="font-weight:400; color:var(--g900)">The test:</b> if the panel would still make sense with a different filter applied, it is a tab. If the only difference is which rows are left, it is a segmented control. A third case — a secondary facet on top of a saved view — is a chip row, not a second control.</p>
+      <div style="display:flex; gap:8px; margin-top:16px"><span class="chip on">All 24</span><span class="chip">Enrolling 6</span><span class="chip">Live 13</span><span class="chip">At risk 3</span></div></div>
+
+    <div class="part"><h4>Buttons · three jobs, three weights</h4>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap"><button class="btn pri">Chase the document</button><button class="btn go">Continue</button><button class="btn">Export</button><button class="btn" disabled>Case 14 has to pass first</button></div>
+      <p class="rule">Orange is the one thing that needs you. Navy is the sequence's own forward step, so a fifteen-question flow does not turn orange fifteen times. Everything else is a bordered word.</p></div>
+
+    <div class="part"><h4>Request log</h4>
+      <table class="tb"><tbody>
+        <tr><td style="width:120px">10:41:08</td><td><span class="key" style="background:none; padding:0">POST /v1/authorizations</span><span class="s2">Idempotency key reused</span></td><td class="st ok">200</td><td><span class="lat"><i><b style="width:30%"></b></i>41 ms</span></td></tr>
+        <tr><td>10:41:08</td><td><span class="key" style="background:none; padding:0">POST /v1/authorizations</span><span class="s2">Partial approval echoed requested amount</span></td><td class="st no">422</td><td><span class="lat"><i><b style="width:88%"></b></i>131 ms</span></td></tr>
+        <tr><td>10:40:52</td><td><span class="key" style="background:none; padding:0">GET /v1/cards/1466</span></td><td class="st ok">200</td><td><span class="lat"><i><b style="width:18%"></b></i>24 ms</span></td></tr>
+        <tr><td>10:40:31</td><td><span class="key" style="background:none; padding:0">POST /v1/webhooks/test</span><span class="s2">Delivered after 2 retries</span></td><td class="st wa">202</td><td><span class="lat"><i><b style="width:56%"></b></i>78 ms</span></td></tr>
+      </tbody></table>
+      <p class="rule">Status is a coloured number. Latency is a small proportional bar against the p99 target so a slow call is visible before it is read.</p></div>
+
+    <div class="part" style="grid-column:1/-1"><h4>Code</h4>
+      <div class="code"><span class="cp">Copy</span><span class="ln">1</span>curl https://api.clearway.dev/v1/authorizations \<br><span class="ln">2</span>&nbsp;&nbsp;-u sk_sandbox_…: \<br><span class="ln">3</span>&nbsp;&nbsp;-d amount=11180 -d currency=usd \<br><span class="ln">4</span>&nbsp;&nbsp;-d card=card_1466 -d partial_approval=true</div>
+      <p class="rule">A 025 surface, not a black block. Line numbers in warm grey 400. One word to copy it.</p></div>
+  </div>
+
+  <!-- ======================= ENROLLMENT & ONBOARDING ======================= -->
+  <div class="cap"><b>Enrollment and onboarding</b> long forms, choices, documents, certification</div>
+  <div class="board">
+    <div class="part"><h4>Outline · where you are in fifteen steps</h4>
+      <div class="outline">
+        <a class="done"><span class="n">1</span><span>About the partner</span><span class="s">done</span></a>
+        <a class="done"><span class="n">2</span><span>Ownership and control</span><span class="s">done</span></a>
+        <a class="cur"><span class="n">3</span><span>The program</span><span class="s">step 10 of 15</span></a>
+        <a><span class="n">4</span><span>Connecting</span><span class="s"></span></a>
+        <a><span class="n">5</span><span>Certification</span><span class="s"></span></a>
+      </div>
+      <p class="rule">Numbers are allowed because this is a real sequence. No circles, no connector lines, no ticks: the state is in the colour of the word.</p></div>
+
+    <div class="part"><h4>Fields</h4>
+      <div class="field" style="margin-top:0"><label>Legal name<small>as registered</small></label><div class="in">Northgate Financial Ltd</div></div>
+      <div class="field"><label>Registered number</label><div class="in focus">0892114</div><div class="help">Eight digits. Companies House will fill the rest in.</div></div>
+      <div class="field"><label>Settlement currency</label><div class="in err">EUR</div><div class="help err">This program settles in USD. Change the program, or the currency.</div></div>
+      <p class="rule">Label above, help below, errors as sentences that say what to do. "Required" is a word next to the label, never an asterisk.</p></div>
+
+    <div class="part"><h4>Choice · one of four</h4>
+      <div class="choice">
+        <label><span>Issuing<span class="d">You put cards in people's hands. You own the cardholder.</span></span><span class="mute t13">Most program managers</span></label>
+        <label class="on"><span>Acquiring<span class="d">You take payments for merchants. You own the merchant.</span></span><span class="t13" style="color:var(--navy)">Selected</span></label>
+        <label><span>Processing<span class="d">You move authorizations for someone else's program.</span></span><span></span></label>
+        <label><span>Sponsorship<span class="d">You are the bank behind other partners' programs.</span></span><span></span></label>
+      </div>
+      <p class="rule">Options are rows, not cards. The selected one is Blue 100 with navy text, exactly like a selected table row, because it is the same idea.</p></div>
+
+    <div class="part"><h4>Lookup result and documents</h4>
+      <div class="surface"><div class="t13">We found</div><div class="t22" style="margin-top:4px">Northgate Financial Ltd</div><div class="mute" style="margin-top:4px; font-size:14px">08921144 · incorporated March 2014 · 2 directors · Manchester</div><div style="display:flex; gap:18px; margin-top:14px"><span class="lnk">Use these details</span><span class="lnk">Not the right company</span></div></div>
+      <div class="upload" style="margin-top:18px">Drop the passport here, or<span class="lnk">choose a file</span></div>
+      <div class="row" style="margin-top:6px"><div>PCI attestation.pdf<div class="d">Uploaded by Idris Vance · yesterday</div></div><span class="st ok">Accepted</span></div>
+      <div class="row"><div>Passport, Halvard Ruiz<div class="d">Expires 12 Sep 2026</div></div><span class="st wa">Expiring</span></div>
+      <p class="rule">What the system found is a 025 surface with two words to confirm or reject. Files are rows with a status word.</p></div>
+
+    <div class="part" style="grid-column:1/-1"><h4>Certification · fifteen cases, one failing</h4>
+      <div class="sec" style="margin-top:0"><div class="hd"><h2>Certification suite</h2><span class="ct">14 of 15 passing</span><div class="rt"><span class="lnk">Run all</span><span class="lnk">Download report</span></div></div></div>
+      <table class="tb"><tbody>
+        <tr><td style="width:56px; color:var(--g400)">12</td><td>Reversal after partial approval</td><td class="st ok">Pass</td><td class="n" style="color:var(--g550)">38 ms</td></tr>
+        <tr><td style="color:var(--g400)">13</td><td>Duplicate idempotency key</td><td class="st ok">Pass</td><td class="n" style="color:var(--g550)">41 ms</td></tr>
+        <tr class="hot"><td style="color:var(--g400)">14</td><td>Partial approval echo<span class="s2">Your handler returned the requested amount, not the approved one</span></td><td class="st no">Fail</td><td class="n"><button class="btn pri sm">Fix &amp; re-run</button></td></tr>
+        <tr><td style="color:var(--g400)">15</td><td>Settlement cut-off</td><td class="st ok">Pass</td><td class="n" style="color:var(--g550)">29 ms</td></tr>
+      </tbody></table>
+      <p class="rule">The failing case gets the needs-you mark and the screen's one orange button. Go-live stays blocked until the word says Pass.</p></div>
+  </div>
+
+  <!-- ======================= EVERYWHERE ======================= -->
+  <div class="cap"><b>Everywhere</b> the states every screen needs</div>
+  <div class="board">
+    <div class="part"><h4>Empty</h4>
+      <div class="empty"><div class="t">Nothing needs you today</div><p>All 24 accounts are moving on their own. Bayline's review is booked for Thursday.</p><span class="lnk">See what's coming up</span></div>
+      <p class="rule">A sentence on the 025 surface. No illustration, no icon in a circle.</p></div>
+
+    <div class="part"><h4>Confirm, and confirm sent</h4>
+      <div class="floating dialog"><div class="t">Close Tessellate Labs?</div><p>Their program ends at the next cut-off. Eight months of history stays in Reports.</p><div class="act"><button class="btn">Keep the account</button><button class="btn danger">Close the account</button></div></div>
+      <div style="margin-top:18px"><span class="toast">Note saved to Northgate <span class="lnk">Undo</span></span></div>
+      <p class="rule">A dialog is the one white thing with a shadow, because it floats. Destructive is outlined in red, never solid. A toast is the only ink surface.</p></div>
+  </div>
+</div>
+<script>
+(function(){
+  var v=[12,9,7,6,5,7,14,28,41,63,71,58,44,39,42,45,47,44,38,31,26,21,17,14];
+  var svg=document.getElementById('hourly'), W=1180, H=140, top=8, base=H-8, mx=Math.max.apply(null,v), out='';
+  for(var g=0;g<4;g++){ var y=top+g*(base-top)/3; out+='<line x1="0" x2="'+W+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#E0DCD3" stroke-dasharray="2 4"/>'; }
+  var slot=W/24, bw=slot*0.62;
+  v.forEach(function(n,i){ var h=(n/mx)*(base-top), x=i*slot+(slot-bw)/2, hot=(i>=9&&i<=11);
+    out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="#013D5B" opacity="'+(hot?'1':'.3')+'" rx="1"/>';
+    if(hot) out+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(base-h-6).toFixed(1)+'" text-anchor="middle" font-size="12" fill="#1C1A17" font-family="inherit">'+n+'</text>';
+  });
+  svg.innerHTML=out;
+})();
+</script>

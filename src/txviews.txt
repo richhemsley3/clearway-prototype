@@ -1,0 +1,54 @@
+    <section class="view" data-v="tx-over">
+      <div class="ph"><div><h1>Transaction reporting</h1><p>Northgate Spend · BIN 471288 · commercial debit · USD</p></div>
+        <div class="act"><button class="btn">Schedule a report</button><button class="btn">Download</button></div></div>
+      <p class="fs fsbar">Showing <b>all authorizations</b> on <b>Northgate Spend</b> for the <b>last 14 days</b>, against <b>the 14 days before</b> <span class="add">+ condition</span></p>
+
+      <div class="facts" style="grid-template-columns:repeat(4,1fr); max-width:760px; margin-top:32px"><div><div class="k">Volume, 14 days</div><div class="v">$2.24M</div></div><div><div class="k">14 days before</div><div class="v" style="color:var(--g550)">$2.09M</div></div><div><div class="k">Change</div><div class="v st ok">+7.2%</div></div><div><div class="k">Approval rate</div><div class="v">94.2%</div></div></div>
+      <div class="inst" style="margin-top:22px"><div class="hd"><span>Daily authorization volume · the 14 days before in grey</span></div><div id="daily"></div><div class="ax"><span>20 Aug</span><span>27 Aug</span><span>2 Sep</span></div></div>
+
+      <div class="txtwo">
+        <div><div class="sech" style="margin-top:0"><h2>Why authorizations were declined</h2><span class="t13">10,684 declines</span></div><div id="dec" style="margin-top:14px"></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Volume by acquirer</h2><span class="t13">share of 14 days</span></div><div id="acq" style="margin-top:14px"></div></div>
+      </div>
+
+      <div class="hours"><div class="sech" style="margin-top:0"><h2>Tuesday, by hour</h2><span class="t13">where the decline 51 spike sits</span><div class="rt"><span class="lnk" data-go="tx-auth">Open Tuesday in Authorizations</span></div></div>
+        <div class="inst" style="margin-top:18px"><div class="hd"><span>Authorizations per hour · 09:00–11:00 at full strength</span><b>2.4<small>pts above baseline</small></b></div><svg viewBox="0 0 1180 140" preserveAspectRatio="none" style="height:140px" id="hourly"></svg><div class="ax" style="padding-left:0"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div></div></div>
+    </section>
+
+    <!-- AUTHORIZATIONS -->
+    <section class="view" data-v="tx-auth">
+      <div class="ph"><div><h1>Authorizations</h1><p>Every message as it crossed the wire · last 7 days · 61,412 messages</p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <p class="fs fsbar">Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span></p>
+      <table class="tb" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th class="opt2">Entry</th><th class="n">Amount</th><th class="opt">Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
+      <div class="tfoot"><span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span></div>
+    </section>
+
+    <!-- SETTLEMENT -->
+    <section class="view" data-v="tx-settle">
+      <div class="ph"><div><h1>Settlement</h1><p>Daily cycles, funding and exceptions · cut-off 21:00 UTC</p></div>
+        <div class="act"><button class="btn">Statement</button></div></div>
+      <div class="now"><div><div class="k">Held</div><h2>29 August is still held <span>· $6,886,920 net</span></h2><p class="why">Funding paused on document expiry. Halvard Ruiz's passport is the item; once it is replaced, the cycle releases at the next cut-off.</p><div class="act"><button class="btn pri">Chase the document</button><span class="lnk" data-back="pd">Open in Partner desk</span></div></div>
+        <div class="inst"><div class="hd"><span>Net to fund, last 14 cycles</span><b>$8.30M<small>2 Sep</small></b></div><div id="netfund"></div><div class="ax"><span>20 Aug</span><span>27 Aug</span><span>2 Sep</span></div></div></div>
+      <div class="txtwo">
+        <div><div class="sech" style="margin-top:0"><h2>Where 2 September went</h2><span class="t13">$8,440,140 gross</span></div><div id="wf" style="margin-top:14px"></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Exceptions</h2><span class="t13">this cycle</span></div><div class="row" style="margin-top:6px"><div>3 reversals after cut-off<div class="d">Carried to 3 September</div></div><span class="st nt">Carried</span></div><div class="row"><div>1 cycle held<div class="d">29 August · document expiry</div></div><span class="st wa">Held</span></div><div class="row"><div>Interchange variance<div class="d">$212 against scheme file</div></div><span class="st ok">Within tolerance</span></div></div>
+      </div>
+      <div class="sech"><h2>Cycles</h2><span class="t13">last five</span></div>
+      <table class="tb" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- DISPUTES -->
+    <section class="view" data-v="tx-disp">
+      <div class="ph"><div><h1>Disputes</h1><p>142 open cases · representment deadlines in calendar days</p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <div class="now"><div><div class="k">Due this week</div><h2>12 representments <span>· earliest Thursday</span></h2><p class="why">Twelve cases reach their representment deadline before Friday. Nine have evidence gathered; three are still waiting on the merchant.</p><div class="act"><button class="btn pri">Review the twelve</button><span class="lnk">Chase the three merchants</span></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Where the 142 are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div></div>
+      <div class="sech"><h2>Open cases</h2><span class="t13">142 open · representment deadlines in calendar days</span></div>
+      <table class="tb" id="dtable" style="margin-top:14px"><thead><tr><th>Case</th><th>Merchant</th><th class="n">Amount</th><th>Stage</th><th>Deadline</th></tr></thead><tbody>
+        <tr class="hot"><td>CB-20831<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td>Evidence gathered</td><td class="st wa">Thu, 2 days</td></tr>
+        <tr><td>CB-20819<span class="s2">Reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st nt">Waiting on merchant</td><td class="st wa">Thu, 2 days</td></tr>
+        <tr><td>CB-20802<span class="s2">Reason 4837 · no cardholder authorization</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td>Representment filed</td><td>14 Sep</td></tr>
+        <tr><td>CB-20788<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$248.10</td><td>Pre-arbitration</td><td>21 Sep</td></tr>
+      </tbody></table>
+    </section>

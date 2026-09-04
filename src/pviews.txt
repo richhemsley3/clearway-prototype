@@ -1,0 +1,92 @@
+
+    <!-- ═══ PARTICIPANT · APPLYING ═══ -->
+    <section class="view" data-v="pa-apply">
+      <div class="ph"><div><h1 id="paTitle">Your application</h1><p id="paSub"></p></div>
+        <div class="act"><button class="btn">Download the pack</button></div></div>
+      <div class="now" id="paNow"></div>
+      <div class="sech"><h2>Where you are</h2><span class="t13" id="paStageSub"></span></div>
+      <div style="margin-top:16px" id="paStage"></div>
+      <div class="segrow" id="paSeg"></div>
+      <div id="paQueue" class="hold"></div>
+      <div id="paAfter"></div>
+    </section>
+
+    <!-- ═══ PARTICIPANT · NETWORK RULES ═══ -->
+    <section class="view" data-v="pa-rules">
+      <div class="ph"><div><h1>Network rules and policies</h1><p id="paRulesSub"></p></div></div>
+      <div id="paRules"></div>
+    </section>
+
+    <!-- ═══ PARTICIPANT · BOARDING ═══ -->
+    <section class="view" data-v="pa-board">
+      <div class="ph"><div><h1>Your integration</h1><p id="paBoardSub"></p></div>
+        <div class="act"><button class="btn">Export the plan</button></div></div>
+      <div class="now" id="paBoardNow"></div>
+      <div id="paBoard"></div>
+    </section>
+
+    <!-- ═══ PARTICIPANT · CONTROL PANEL ═══ -->
+    <section class="view" data-v="pa-panel">
+      <div class="ph"><div><h1 id="panelTitle">Control panel</h1><p id="panelSub"></p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <div id="panelBanner"></div>
+      <div class="now" id="panelNow"></div>
+      <div id="panelBody"></div>
+    </section>
+
+    <!-- ═══ DOCUMENTATION HUB ═══ -->
+    <section class="view" data-v="pa-hub">
+      <div class="ph"><div><h1>Documentation hub</h1><p>Everything you are held to, and everything you build against, with the date it changed.</p></div></div>
+      <div class="segrow" id="hubSeg"></div>
+      <div id="hubBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ MESSAGES ═══ -->
+    <section class="view" data-v="pa-msgs">
+      <div class="ph"><div><h1>Messages</h1><p id="msgSub"></p></div>
+        <div class="act"><button class="btn">New message</button></div></div>
+      <div class="segrow" id="msgSeg"></div>
+      <div id="msgBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ AGENT · MANAGED WORKFLOW ═══ -->
+    <section class="view" data-v="pd-onboard">
+      <div class="ph"><div><h1>Onboarding</h1><p id="obSub"></p></div>
+        <div class="act"><button class="btn">Log a call</button><button class="btn">Open the file</button></div></div>
+      <div class="now" id="obNow"></div>
+      <div id="obBody"></div>
+    </section>
+
+    <!-- ═══ AGENT · OPS INTEGRATION ═══ -->
+    <section class="view" data-v="pd-integr">
+      <div class="ph"><div><h1>Integration</h1><p id="inSub"></p></div>
+        <div class="act"><button class="btn">Message the participant</button></div></div>
+      <div class="now" id="inNow"></div>
+      <div class="tabstrip" id="inTabs"></div>
+      <div class="segrow" id="inSeg"></div>
+      <div id="inBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ DEVELOPER · APIS ═══ -->
+    <section class="view" data-v="dv-apis">
+      <div class="ph"><div><h1>APIs</h1><p>Six products, twenty-seven endpoints. Everything here is addressable in your sandbox today.</p></div>
+        <div class="act"><button class="btn">Full reference</button></div></div>
+      <div id="apiBody"></div>
+    </section>
+
+    <!-- ═══ DEVELOPER · TOOLKIT ═══ -->
+    <section class="view" data-v="dv-tool">
+      <div class="ph"><div><h1>Toolkit</h1><p id="tkSub"></p></div></div>
+      <div class="segrow" id="tkEnv"></div>
+      <div class="now" id="tkNow"></div>
+      <div class="segrow" id="tkSeg"></div>
+      <div id="tkBody" class="hold"></div>
+    </section>
+
+    <!-- ═══ DEVELOPER · PERFORMANCE ═══ -->
+    <section class="view" data-v="dv-perf">
+      <div class="ph"><div><h1>API performance</h1><p id="pfSub"></p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <div class="segrow" id="pfSeg"></div>
+      <div id="pfBody" class="hold"></div>
+    </section>

@@ -1,0 +1,987 @@
+<title>Clearway</title>
+<style>
+/*FONTS*/
+/*CSS*/
+/* ── One app, one sidebar ─────────────────────────────────────────────────────
+   Two workspaces behind a switcher, because the personas are genuinely different:
+   Clearway internal (Dara, who runs 24 partner accounts) and a partner's own
+   account (Northgate, who watch their own money). Cross-links move between them.
+   Same system throughout: two backgrounds, orange only on what needs you. */
+
+/* workspace switcher */
+.ws{position:relative; margin:0 0 20px}
+.ws .cur{display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--r-part); cursor:pointer; font-size:15px}
+.ws .cur:hover{background:var(--g100)}
+.ws .cur i{width:26px; height:26px; border-radius:7px; background:var(--navy); color:#fff; display:grid; place-items:center; font-size:11px; font-style:normal; flex:none}
+.ws .cur .nm{line-height:1.2; min-width:0; overflow:hidden}
+.ws .cur .nm, .ws .cur .nm span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ws .cur .nm span{display:block; font-size:12px; color:var(--g550)}
+.ws .cur .ch{margin-left:auto; color:var(--g400); font-size:11px}
+.ws .menu{position:absolute; left:6px; right:-6px; top:calc(100% + 4px); background:var(--white); border:1px solid var(--g150); border-radius:var(--r-part); box-shadow:0 8px 28px rgba(28,26,23,.12); padding:6px; z-index:30; display:none}
+.ws .menu.on{display:block}
+.ws .menu a{display:flex; gap:10px; align-items:center; padding:9px 10px; border-radius:var(--r-small); cursor:pointer; font-size:14.5px}
+.ws .menu a:hover{background:var(--g050)}
+.ws .menu a i{width:24px; height:24px; border-radius:6px; background:var(--g100); color:var(--g650); display:grid; place-items:center; font-size:10px; font-style:normal}
+.ws .menu a.on i{background:var(--navy); color:#fff}
+.ws .menu a span{display:block; font-size:12px; color:var(--g550)}
+.ws .menu h6{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--g550); padding:8px 10px 4px}
+
+/* toolbar above a table */
+.tools{display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap}
+.tools .fld{display:flex; align-items:center; gap:9px; border:1px solid var(--g200); border-radius:var(--r-part); padding:0 12px; height:36px; background:var(--white); min-width:280px}
+.tools .fld input{border:0; outline:0; font:inherit; font-size:14.5px; background:none; width:100%; color:var(--g900)}
+.tools .fld input::placeholder{color:var(--g400)}
+.tools .fld .kbd{font-size:11.5px; color:var(--g400); border:1px solid var(--g150); border-radius:4px; padding:1px 5px}
+.tools .rt{margin-left:auto; display:flex; gap:18px; align-items:center; font-size:14.5px}
+.tb th.so{cursor:pointer; user-select:none}
+.tb th.so:hover{color:var(--g900)}
+.tb th .ar{color:var(--g400); margin-left:5px; font-size:10px}
+.tb th.act .ar{color:var(--g900)}
+.tb td.pick, .tb th.pick{width:44px; padding-right:0}
+.tb tr.sel2 td{background:var(--blue100)}
+.tb tbody tr.sel2:hover td{background:var(--blue100)}
+
+/* selection bar */
+.bulk{position:fixed; left:50%; transform:translateX(-50%); bottom:26px; z-index:35; width:max-content; display:flex; align-items:center; gap:22px; background:var(--g900); color:#fff; border-radius:999px; padding:11px 22px; font-size:14.5px; box-shadow:0 10px 30px rgba(28,26,23,.22)}
+.bulk b{font-weight:400}
+.bulk .a{color:rgba(255,255,255,.82); cursor:pointer}
+.bulk .a:hover{color:#fff}
+.bulk .x{color:rgba(255,255,255,.5); cursor:pointer}
+
+/* toast */
+.toast{position:fixed; left:50%; transform:translateX(-50%) translateY(20px); bottom:28px; z-index:40; background:var(--g900); color:#fff; border-radius:999px; padding:12px 24px; font-size:14.5px; display:flex; gap:20px; align-items:center; opacity:0; pointer-events:none; transition:opacity .18s, transform .18s}
+.toast.on{opacity:1; transform:translateX(-50%); pointer-events:auto}
+.toast .u{color:#fff; text-decoration:underline; text-underline-offset:3px; cursor:pointer}
+
+/* states */
+.skel{padding:6px 0}
+.skel div{height:14px; border-radius:4px; background:var(--g100); margin:22px 16px; animation:pulse 1.1s ease-in-out infinite}
+.skel div:nth-child(3n){width:38%} .skel div:nth-child(3n+1){width:72%} .skel div:nth-child(3n+2){width:55%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.blank{padding:64px 16px; text-align:center; max-width:520px; margin:0 auto}
+.blank .t{font-size:19px; letter-spacing:-.01em}
+.blank p{font-size:15px; color:var(--g650); margin-top:10px; line-height:1.55}
+.blank .act{display:flex; gap:18px; justify-content:center; margin-top:20px}
+.perm{border:1px dashed var(--g200); border-radius:var(--r-surface); padding:34px 32px; margin-top:20px; text-align:center}
+.perm .t{font-size:17px}
+.perm p{font-size:14.5px; color:var(--g650); margin-top:8px; max-width:52ch; margin-left:auto; margin-right:auto; line-height:1.55}
+
+/* record page */
+.rhead{display:flex; align-items:flex-start; gap:20px; padding:34px 0 0}
+.rhead .av2{width:52px; height:52px; border-radius:50%; background:var(--g100); color:var(--g650); display:grid; place-items:center; font-size:16px; flex:none}
+.rhead h1{font-size:34px; letter-spacing:-.022em; line-height:1.1}
+.rhead .meta{font-size:14.5px; color:var(--g550); margin-top:7px; display:flex; gap:8px; flex-wrap:wrap}
+.rhead .act{margin-left:auto; display:flex; gap:10px; align-items:center; padding-top:6px}
+.rtabs{margin-top:26px}
+.grpsec{margin-top:38px}
+.cols2{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:56px; margin-top:30px; align-items:start}
+.tl{margin-top:6px}
+.tl .e{display:grid; grid-template-columns:120px 1fr; gap:16px; padding:11px 0; border-bottom:1px solid var(--g100); font-size:14.5px}
+.tl .e .w{color:var(--g550); font-size:13.5px}
+.menu2{position:relative; display:inline-block}
+.menu2 .pop{position:absolute; right:0; top:calc(100% + 6px); background:var(--white); border:1px solid var(--g150); border-radius:var(--r-part); box-shadow:0 8px 28px rgba(28,26,23,.12); padding:6px; z-index:25; display:none; min-width:210px}
+.menu2 .pop.on{display:block}
+.menu2 .pop a{display:block; padding:8px 12px; border-radius:var(--r-small); font-size:14.5px; cursor:pointer; white-space:nowrap}
+.menu2 .pop a:hover{background:var(--g050)}
+.menu2 .pop h6{font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--g550); padding:8px 12px 4px}
+.pgnav{display:flex; gap:16px; align-items:center; font-size:14px; color:var(--g550)}
+.rep{display:grid; grid-template-columns:1fr 1fr; gap:48px 64px; margin-top:36px}
+.rep .wide{grid-column:1/-1}
+
+/* ── from the transaction views ── */
+.txtwo{display:grid; grid-template-columns:1fr 1fr; gap:44px 64px; margin-top:44px}
+.fsbar{margin-top:28px}
+.hours{margin-top:36px}
+.inst.sm svg{height:150px}
+
+/* ── narrower windows: stack rather than squeeze ── */
+.pgnav{white-space:nowrap}
+/* between 1100 and 760 the sidebar is an icon rail rather than nothing */
+@media (max-width:1100px) and (min-width:761px){
+  .sb{width:64px; padding:22px 10px 18px}
+  .sb .brand{padding:0 0 22px; justify-content:center}
+  .sb .brand{font-size:0; gap:0}
+  .sb nav a{justify-content:center; padding:10px 0}
+  .sb nav a .lb, .sb nav a .ct, .sb .foot{display:none}
+  .ws{margin-bottom:14px}
+  .ws .cur{justify-content:center; padding:8px 0}
+  .ws .cur .nm, .ws .cur .ch{display:none}
+  .ws .menu{left:0; right:auto; width:250px}
+}
+@media (max-width:1240px){
+  .cols2{grid-template-columns:1fr; gap:36px}
+  .rep{grid-template-columns:1fr; gap:40px}
+  .txtwo{grid-template-columns:1fr; gap:36px}
+  .tabstrip{overflow-x:auto; scrollbar-width:none}
+  .tabstrip::-webkit-scrollbar{display:none}
+}
+@media (max-width:1080px){
+  .rhead{flex-wrap:wrap}
+  .rhead .act{margin-left:0; width:100%; padding-top:14px}
+  .tools .fld{min-width:0; flex:1}
+}
+</style>
+
+<div class="app">
+  <aside class="sb">
+    <div class="ws">
+      <div class="cur" id="wscur"></div>
+      <div class="menu" id="wsmenu">
+        <h6>Clearway</h6>
+        <a data-w="cw"><i>CW</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Internal · 24 accounts</span></span></a>
+        <h6>Partner accounts</h6>
+        <a data-w="ng"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate Financial<span>BIN 471288 · live</span></span></a>
+        <a data-w="bp"><i>BP</i><span style="color:var(--g900); font-size:14.5px">Bayline Payments<span>BIN 465120 · live</span></span></a>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="foot" id="who"></div>
+  </aside>
+
+  <main class="mn">
+    <!-- ═══ PARTNERS LIST ═══ -->
+    <section class="view on" data-v="pd-partners">
+      <div class="ph"><div><h1>Partner desk</h1><p id="psub">24 accounts · $168.4M a month · 34 days median from introduction to live</p></div>
+        <div class="act"><button class="btn">Log a call</button><button class="btn">Add partner</button></div></div>
+      <div class="segrow" id="psub2"></div>
+      <div class="now" id="now"></div>
+      <div class="sech"><h2>Accounts</h2>
+        <div class="chips" id="ptabs"></div>
+        <div class="rt"><span class="lnk" id="expo">Export</span></div></div>
+      <div class="tools">
+        <span class="fld"><svg class="i" style="width:15px;height:15px" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg><input id="q" placeholder="Search partners, owners, stages" autocomplete="off"><span class="kbd">/</span></span>
+        <span class="rt"><span class="t13" id="pcount"></span></span>
+      </div>
+      <div id="ptable" class="hold"></div>
+      <div id="bulkbar"></div>
+    </section>
+
+/*PVIEWS*/
+
+    <!-- ═══ PARTNER RECORD (L2) ═══ -->
+    <section class="view" data-v="pd-partner">
+      <div style="padding-top:30px"><span class="crumb2 lnk" data-go="pd-partners" style="font-size:13.5px">← All partners</span></div>
+      <div id="record"></div>
+    </section>
+
+    <!-- ═══ PIPELINE ═══ -->
+    <section class="view" data-v="pd-pipeline">
+      <div class="ph"><div><h1>Pipeline</h1><p id="pipesub"></p></div>
+        <div class="act"><button class="btn">Export</button><button class="btn">Add partner</button></div></div>
+      <div class="tabstrip" id="pipetabs"></div>
+      <div class="segrow" id="pipesub2"></div>
+      <div class="stages" id="stages"></div>
+      <div class="sech" id="pipehd"><h2>In flight</h2><span class="t13" id="pipect"></span></div>
+      <div id="pipegrp" class="hold" style="display:none"></div>
+      <table class="tb hold" id="pipe" style="margin-top:14px"><thead><tr><th>Partner</th><th>Stage</th><th>Days in stage</th><th class="n opt2">Projected volume</th><th class="opt">Owner</th><th></th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- ═══ TASKS ═══ -->
+    <section class="view" data-v="pd-tasks">
+      <div class="ph"><div><h1>Tasks</h1><p id="tsub"></p></div>
+        <div class="act"><button class="btn" id="tclear">Clear completed</button><button class="btn">Add task</button></div></div>
+      <div class="segrow" id="tsub2"></div>
+      <div class="now" id="tnow"></div>
+      <div id="tasks" class="hold deep"></div>
+    </section>
+
+    <!-- ═══ REPORTS ═══ -->
+    <section class="view" data-v="pd-reports">
+      <div class="ph"><div><h1>Reports</h1><p>Your book of business · September against August</p></div>
+        <div class="act"><button class="btn">Schedule</button><button class="btn">Export</button></div></div>
+      <div class="tabstrip" id="rsub2"></div>
+      <div id="reports" class="hold"></div>
+    </section>
+
+    <!-- ═══ TRANSACTION REPORTING (the partner's own account) ═══ -->
+/*TXVIEWS*/
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="pnl">
+  <div class="top"><span id="pnlM"></span><span class="x" id="pnlX">&times;</span></div>
+  <div class="ttl"><h2 id="pnlT"></h2></div>
+  <div class="body" id="pnlB"></div>
+  <div class="pfoot" id="pnlF"></div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+ "use strict";
+ var $=function(s){return document.querySelector(s)}, $$=function(s){return [].slice.call(document.querySelectorAll(s))};
+ var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')};
+ var root=document.documentElement, cv=function(n){return getComputedStyle(root).getPropertyValue(n).trim()};
+
+/*PDATA*/
+
+ /* ── the six rich records, plus eighteen more so the list behaves like a real one ── */
+ var MORE=[
+  ['Halcyon Pay','HP','Program manager · issuing','Live','$14.2M','96.1%',88,'ok','Healthy','Dara Whitfield','Today'],
+  ['Ridgeline Freight','RF','Fleet · issuing','Enrolling · step 3 of 15','—','—',70,'nt','New','Dara Whitfield','Today'],
+  ['Kestrel Union','KU','Credit union · issuing','Live','$6.1M','95.4%',84,'ok','Healthy','Idris Vance','26 Aug'],
+  ['Alder & Vane','AV','Acquirer','Live','$22.8M','93.8%',79,'ok','Healthy','Dara Whitfield','25 Aug'],
+  ['Pemberton Bank','PB','Sponsor bank','Live','$31.4M','97.2%',91,'ok','Healthy','Sana Lindqvist','21 Aug'],
+  ['Lockridge Mutual','LM','Issuer','Live','$9.7M','94.9%',81,'ok','Healthy','Idris Vance','19 Aug'],
+  ['Verity Spend','VS','Program manager · issuing','Certifying','—','—',66,'wa','Watch','Dara Whitfield','Today'],
+  ['Orpington Retail','OR','Acquirer','Live','$4.4M','92.1%',72,'wa','Watch','Dara Whitfield','14 Aug'],
+  ['Stonecrop Labs','SL','Processor','Connecting','—','—',68,'nt','New','Ravi Kapoor','Yesterday'],
+  ['Fennimore Group','FG','Acquirer','Live','$11.9M','95.8%',86,'ok','Healthy','Sana Lindqvist','12 Aug'],
+  ['Bright Harbour','BH','Issuer','Live','$7.2M','96.4%',89,'ok','Healthy','Idris Vance','9 Aug'],
+  ['Calloway Freight','CF','Fleet · issuing','Live','$3.8M','91.7%',64,'wa','Watch','Dara Whitfield','8 Aug'],
+  ['Marchmont Trust','MT','Sponsor bank','Live','$18.6M','96.9%',90,'ok','Healthy','Sana Lindqvist','5 Aug'],
+  ['Islay Payments','IP','Processor','Live','$5.5M','94.1%',77,'ok','Healthy','Ravi Kapoor','2 Aug'],
+  ['Dunmore Retail','DR','Acquirer','Dormant','$0.0M','—',41,'no','Dormant','Dara Whitfield','14 Jan'],
+  ['Thornbury Bank','TB','Issuer','Live','$13.1M','95.2%',83,'ok','Healthy','Idris Vance','29 Jul'],
+  ['Wrenfield Cards','WC','Program manager · issuing','Filing','—','—',69,'nt','New','Dara Whitfield','Yesterday'],
+  ['Aveline Systems','AS','Processor','Live','$2.9M','93.3%',74,'ok','Healthy','Ravi Kapoor','24 Jul']
+ ];
+ var CAT=['enr','risk','live','enr','live','dor'];
+ var LAST=['Today','Today','26 Aug','28 Aug','29 Aug','14 Jan'];
+ var OWN=['Dara Whitfield','Dara Whitfield','Idris Vance','Dara Whitfield','Sana Lindqvist','Dara Whitfield'];
+ var A=[];
+ P.forEach(function(p,i){
+   A.push({rich:i, n:p.n, i:p.i, t:p.t, stage:p.stage, vol:p.vol, apr:p.apr, health:p.health, hs:p.hs, hl:p.hl,
+     own:OWN[i], last:LAST[i], cat:CAT[i], next:p.next, nextAct:p.nextAct, spark:p.spark,
+     st:['Program','Filing',null,'Filing',null,null][i]});
+ });
+ MORE.forEach(function(m){
+   A.push({rich:-1, n:m[0], i:m[1], t:m[2], stage:m[3], vol:m[4], apr:m[5], health:m[6], hs:m[7], hl:m[8],
+     own:m[9], last:m[10],
+     cat:/Live/.test(m[3])?(/Watch/.test(m[8])?'risk':'live'):/Dormant/.test(m[3])?'dor':'enr',
+     st:/Live/.test(m[3])||/Dormant/.test(m[3])?null:m[3].split(' ')[0]});
+ });
+ var num=function(v){ return v==='—'?-1:parseFloat(String(v).replace(/[^0-9.]/g,''))||0 };
+ var dayRank=function(s){ return s==='Today'?0:s==='Yesterday'?1:{'29 Aug':5,'28 Aug':6,'26 Aug':8,'25 Aug':9,'24 Jul':41,'21 Aug':13,'19 Aug':15,'14 Aug':20,'12 Aug':22,'9 Aug':25,'8 Aug':26,'5 Aug':29,'2 Aug':32,'29 Jul':36,'14 Jan':230}[s]||99 };
+
+ /* ── toast, used by anything reversible ── */
+ var tt;
+ function toast(msg,undo){
+   var el=$('#toast');
+   el.innerHTML=esc(msg)+(undo?'<span class="u" id="tu">Undo</span>':'');
+   el.classList.add('on'); clearTimeout(tt); tt=setTimeout(function(){ el.classList.remove('on') },5000);
+   if(undo) $('#tu').addEventListener('click',function(){ undo(); el.classList.remove('on'); });
+ }
+
+ /* The control you just clicked must not move. A filter can shorten the page enough
+    that the browser clamps the scroll, and the re-render finishes one frame — or one
+    loading state — after the click, so the anchor is re-applied until it settles. */
+ var anchTimers=[];
+ function anchored(el, fn){
+   if(!el){ fn(); return; }
+   var target = el.getBoundingClientRect().top;
+   fn();
+   anchTimers.forEach(clearTimeout); anchTimers=[];
+   var fix=function(){
+     if(!el.isConnected) return;
+     var d = el.getBoundingClientRect().top - target;
+     if(Math.abs(d)>0.5) window.scrollBy(0, d);
+   };
+   fix();
+   requestAnimationFrame(fix);
+   [300, 340].forEach(function(ms){ anchTimers.push(setTimeout(fix, ms)) });
+ }
+
+ /* ── instruments ── */
+ /* Charts keep a fixed viewBox, so at a narrow width their labels scale down with
+    everything else. Size the viewBox to the room the chart will actually get. */
+ function cwidth(max, frac){
+   var m=document.querySelector('.mn');
+   var w=(m?m.clientWidth-96:1160)*(frac||1);
+   return Math.max(300, Math.round(Math.min(max, w)));
+ }
+ function line(v,opts){
+   opts=opts||{}; var W=opts.w||380, H=opts.h||150, L=44, R=opts.right||(W>600?86:52), top=10, bot=H-20;
+   var mn=opts.min!=null?opts.min:Math.min.apply(null,v), mx=opts.max!=null?opts.max:Math.max.apply(null,v), rg=(mx-mn)||1;
+   var x=function(i){ return L+i/(v.length-1)*(W-L-R) }, y=function(n){ return top+(1-(n-mn)/rg)*(bot-top) };
+   var out='';
+   for(var g=0;g<4;g++){ var val=mx-g*(mx-mn)/3, yy=y(val); out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+(opts.fmt?opts.fmt(val):Math.round(val))+'</text>'; }
+   if(opts.prev){ out+='<path d="'+opts.prev.map(function(n,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(n).toFixed(1)}).join(' ')+'" fill="none" stroke="'+cv('--g200')+'" stroke-width="2" vector-effect="non-scaling-stroke"/>'; }
+   var d=v.map(function(n,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(n).toFixed(1)}).join(' ');
+   out+='<path d="'+d+'" fill="none" stroke="'+cv('--navy')+'" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+   var lx=x(v.length-1), ly=y(v[v.length-1]);
+   out+='<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="4" fill="'+cv('--navy')+'"/><text x="'+(lx+10).toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" font-size="12" fill="'+cv('--g900')+'">'+(opts.fmt?opts.fmt(v[v.length-1]):v[v.length-1])+'</text>';
+   return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; display:block; font-family:var(--ui)" aria-hidden="true">'+out+'</svg>';
+ }
+ function ptw(rows,fmt){
+   var mx=Math.max.apply(null,rows.map(function(r){return r[1]}));
+   return rows.map(function(r){ return '<div class="ptw"><span class="n2">'+esc(r[0])+'</span><span class="bar"><i style="width:'+(r[1]/mx*100).toFixed(1)+'%'+(r[2]?'; background:var(--g200)':'')+'"></i></span><span class="n"><b>'+fmt(r[1])+'</b>'+(r[3]?' · '+r[3]:'')+'</span></div>' }).join('');
+ }
+ var stw=function(hs){ return hs==='ok'?'ok':hs==='wa'?'wa':hs==='no'?'no':'nt' };
+
+ /* ══════════ PARTNERS LIST ══════════ */
+ var filter='all', q='', sort={k:'need',d:1}, picked={}, loading=false, scope='all', seen=[];
+ var SCOPE=[['all','All accounts'],['mine','My book'],['need','Needs attention'],['recent','Recently viewed']];
+ function inScope(p){
+   if(scope==='mine') return p.own==='Dara Whitfield';
+   if(scope==='need') return p.hs==='wa'||p.hs==='no'||!!p.next;
+   if(scope==='recent') return seen.indexOf(A.indexOf(p))>-1;
+   return true;
+ }
+ function scopeCount(k){ var was=scope; scope=k; var n=A.filter(inScope).length; scope=was; return n }
+ function paintScope(){
+   $('#psub2').innerHTML='<span class="seg">'+SCOPE.map(function(t){
+     var n=scopeCount(t[0]);
+     return '<button data-sc="'+t[0]+'" aria-pressed="'+(scope===t[0])+'">'+t[1]+'<span class="ct">'+n+'</span></button>';
+   }).join('')+'</span><div class="rt"><span class="lnk" id="savedv">Save this view</span></div>';
+   $$('#psub2 button').forEach(function(b){ b.addEventListener('click',function(){
+     anchored($('#psub2'), function(){
+       scope=b.dataset.sc; picked={};
+       paintScope(); load();
+     });
+   }) });
+   $('#savedv').addEventListener('click',function(){ toast('Saved as a view. It will appear here for your team too.') });
+ }
+ var TABS=[['all','All'],['enr','Enrolling'],['live','Live'],['risk','At risk'],['dor','Dormant']];
+
+ function rows(){
+   var out=A.filter(function(p){
+     if(!inScope(p)) return false;
+     if(filter!=='all' && p.cat!==filter) return false;
+     if(q){ var s=(p.n+' '+p.t+' '+p.stage+' '+p.own).toLowerCase(); if(s.indexOf(q.toLowerCase())<0) return false; }
+     return true;
+   });
+   var k=sort.k, d=sort.d;
+   out.sort(function(a,b){
+     var r=0;
+     if(k==='need') r=(a.rich===0?-1:0)-(b.rich===0?-1:0) || a.health-b.health;
+     else if(k==='n') r=a.n.localeCompare(b.n);
+     else if(k==='vol') r=num(a.vol)-num(b.vol);
+     else if(k==='apr') r=num(a.apr)-num(b.apr);
+     else if(k==='health') r=a.health-b.health;
+     else if(k==='last') r=dayRank(b.last)-dayRank(a.last);
+     return r*d;
+   });
+   return out;
+ }
+ function paintNow(){
+   var p=A[0];
+   $('#now').innerHTML='<div><div class="k">Needs you first</div><h2>'+esc(p.n)+' <span>· a document expires in nine days</span></h2>'
+    +'<p class="why">'+esc(p.next)+'</p>'
+    +'<div class="act"><button class="btn pri" id="chase">'+esc(p.nextAct)+'</button><span class="lnk" data-open="0">Open the record</span></div>'
+    +'<div class="also"><span>Also today</span><span><b>2</b> other partners need a reply</span><span><b>9</b> open tasks</span></div></div>'
+    +'<div class="inst sm"><div class="cap t13">Health, last fourteen weeks</div>'+line(p.spark.map(function(n){return Math.round(n*0.84)}),{w:380,h:150,min:50,max:90})+'<div class="ax"><span>14 weeks ago</span><span>now</span></div></div>';
+   $('#chase').addEventListener('click',function(){ toast('Chase sent to Halvard Ruiz, copied to Idris Vance.',function(){ toast('Chase cancelled.') }) });
+ }
+ function paintTabs(){
+   $('#ptabs').innerHTML=TABS.map(function(t){
+     var n=t[0]==='all'?A.filter(inScope).length:A.filter(function(p){return inScope(p)&&p.cat===t[0]}).length;
+     return '<span class="chip'+(filter===t[0]?' on':'')+'" data-f="'+t[0]+'">'+t[1]+' '+n+'</span>';
+   }).join('');
+   $$('#ptabs .chip').forEach(function(b){ b.addEventListener('click',function(){
+     anchored($('#ptabs'), function(){ filter=b.dataset.f; picked={}; paintTabs(); load(); });
+   }) });
+ }
+ function load(){
+   /* hold the height the list already had, so the loading state cannot collapse
+      the page and make the browser clamp the scroll position */
+   var el=$('#ptable'), h=el.offsetHeight;
+   if(h) el.style.minHeight=h+'px';
+   loading=true; paintTable();
+   setTimeout(function(){
+     loading=false; paintTable();
+     requestAnimationFrame(function(){ el.style.minHeight=''; });
+   }, 260);
+ }
+ function paintTable(){
+   var el=$('#ptable');
+   if(loading){ el.innerHTML='<div class="skel">'+new Array(9).join('<div></div>')+'</div>'; $('#pcount').textContent=''; $('#bulkbar').innerHTML=''; return; }
+   var r=rows();
+   $('#pcount').textContent=r.length+' of '+A.length+(q?' · matching “'+q+'”':'');
+   if(!r.length){
+     if(scope==='recent' && !q){
+       el.innerHTML='<div class="blank"><div class="t">You have not opened a partner yet.</div><p>Records you open appear here, newest first, so you can get back to the three accounts you actually worked on today.</p><div class="act"><span class="lnk" id="cf2">Back to all accounts</span></div></div>';
+       $('#cf2').addEventListener('click',function(){ scope='all'; paintScope(); load(); });
+       $('#bulkbar').innerHTML=''; return;
+     }
+     el.innerHTML='<div class="blank"><div class="t">No partner matches that.</div>'
+      +'<p>Nothing in '+(filter==='all'?'your book':'the '+TABS.filter(function(t){return t[0]===filter})[0][1].toLowerCase()+' filter')+' matches “'+esc(q)+'”. Names, owners and stages are all searchable.</p>'
+      +'<div class="act"><span class="lnk" id="cq">Clear the search</span><span class="lnk" id="cf">Search all 24 instead</span></div></div>';
+     $('#cq').addEventListener('click',function(){ q=''; $('#q').value=''; load(); });
+     $('#cf').addEventListener('click',function(){ filter='all'; paintTabs(); load(); });
+     $('#bulkbar').innerHTML=''; return;
+   }
+   var ar=function(k){ return sort.k===k?'<span class="ar">'+(sort.d>0?'▲':'▼')+'</span>':'' };
+   var th=function(k,l,cls){ return '<th class="so '+(sort.k===k?'act ':'')+(cls||'')+'" data-s="'+k+'">'+l+ar(k)+'</th>' };
+   el.innerHTML='<table class="tb"><thead><tr><th class="pick"><span class="cb" id="all"></span></th>'
+    +th('n','Partner')+th('health','Health')+th('vol','Monthly volume','n')+th('apr','Approval','n opt')+th('last','Last contact','opt')+'<th class="opt2">Needs</th></tr></thead><tbody>'
+    +r.map(function(p){
+      var idx=A.indexOf(p);
+      return '<tr data-i="'+idx+'" class="'+(idx===0?'hot ':'')+(picked[idx]?'sel2':'')+'">'
+       +'<td class="pick"><span class="cb'+(picked[idx]?' done':'')+'" data-p="'+idx+'"></span></td>'
+       +'<td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+' · '+esc(p.stage.toLowerCase())+'</span></td>'
+       +'<td class="st '+stw(p.hs)+'">'+esc(p.hl)+'</td>'
+       +'<td class="n">'+esc(p.vol)+'</td><td class="n opt">'+esc(p.apr)+'</td><td class="opt">'+esc(p.last)+'</td>'
+       +'<td class="s2 opt2" style="display:table-cell; font-size:13.5px">'+(p.next?esc(p.nextAct):'—')+'</td></tr>';
+    }).join('')+'</tbody></table>'
+    +'<div class="tfoot"><span>'+r.length+' shown</span><span>·</span><span class="lnk">Load the rest of the book</span></div>';
+   $$('#ptable th.so').forEach(function(h){ h.addEventListener('click',function(){
+     if(sort.k===h.dataset.s) sort.d*=-1; else { sort.k=h.dataset.s; sort.d=1 }
+     paintTable();
+   }) });
+   $$('#ptable tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){
+     if(e.target.closest('.cb')) return; openRecord(+tr.dataset.i);
+   }) });
+   $$('#ptable .cb[data-p]').forEach(function(c){ c.addEventListener('click',function(e){
+     e.stopPropagation(); var i=c.dataset.p; if(picked[i]) delete picked[i]; else picked[i]=1; paintTable();
+   }) });
+   $('#all').addEventListener('click',function(e){
+     e.stopPropagation();
+     var allOn=r.every(function(p){ return picked[A.indexOf(p)] });
+     r.forEach(function(p){ var i=A.indexOf(p); if(allOn) delete picked[i]; else picked[i]=1 });
+     paintTable();
+   });
+   var n=Object.keys(picked).length;
+   $('#bulkbar').innerHTML = n ? '<div class="bulk"><b>'+n+' selected</b><span class="a" id="ba1">Assign an owner</span><span class="a" id="ba2">Add to a campaign</span><span class="a" id="ba3">Export</span><span class="x" id="bx">Clear</span></div>' : '';
+   if(n){
+     $('#bx').addEventListener('click',function(){ picked={}; paintTable(); });
+     $('#ba1').addEventListener('click',function(){ var keep=picked; picked={}; paintTable(); toast(n+' partners assigned to Idris Vance.',function(){ picked=keep; paintTable(); }); });
+     $('#ba2').addEventListener('click',function(){ toast('Added '+n+' partners to “Q4 volume review”.') });
+     $('#ba3').addEventListener('click',function(){ toast('Exporting '+n+' partners as CSV…') });
+   }
+ }
+ $('#q').addEventListener('input',function(){ q=this.value; load(); });
+ document.addEventListener('keydown',function(e){
+   if(e.key==='/' && document.activeElement.tagName!=='INPUT' && $('.view.on').dataset.v==='pd-partners'){ e.preventDefault(); $('#q').focus(); }
+   if(e.key==='Escape'){ $('#toast').classList.remove('on'); $('#wsmenu').classList.remove('on'); $$('.pop').forEach(function(p){p.classList.remove('on')}); }
+ });
+ $('#expo').addEventListener('click',function(){ toast('Exporting '+rows().length+' partners as CSV…') });
+
+ /* ══════════ PARTNER RECORD ══════════ */
+ var rec=0, rtab='over', volState=0, vsub='m', csub='dis';
+ function openRecord(i){ rec=i; rtab='over'; volState=0; vsub='m'; csub='dis';
+   seen=[i].concat(seen.filter(function(x){return x!==i})).slice(0,8);
+   go('pd-partner'); }
+ function stage(p){
+   var STG=['Introduced','Filing','Program','Connecting','Certifying','Live'];
+   var at=/Live/.test(p.stage)?5:/Certif/.test(p.stage)?4:/Connect/.test(p.stage)?3:/Program/.test(p.stage)?2:/Filing/.test(p.stage)?1:0;
+   if(p.rich===0) at=2;
+   return '<div class="stage">'+STG.map(function(s,i){ return '<span class="'+(i<at?'done':i===at?'cur':'')+'">'+s+'</span>' }).join('')+'</div>';
+}
+ function drawRecord(){
+   var p=A[rec], rp=p.rich>-1?P[p.rich]:null, h='';
+   h+='<div class="rhead"><span class="av2">'+p.i+'</span><div><h1>'+esc(p.n)+'</h1>'
+    +'<div class="meta"><span>'+esc(p.t)+'</span><span>·</span><span>'+esc(p.stage)+'</span><span>·</span><span class="st '+stw(p.hs)+'">'+esc(p.hl)+'</span><span>·</span><span>'+esc(p.own)+'</span></div></div>'
+    +'<div class="act"><span class="pgnav"><span class="lnk" id="rprev">←</span><span>'+(rec+1)+' of '+A.length+'</span><span class="lnk" id="rnext">→</span></span>'
+    +'<button class="btn">Log a call</button>'
+    +'<span class="menu2"><button class="btn" id="rmore">More ▾</button><div class="pop" id="rpop">'
+      +'<h6>Move stage</h6><a data-mv="Connecting">Move to Connecting</a><a data-mv="Certifying">Move to Certifying</a><a data-mv="Live">Mark live</a>'
+      +'<h6>Account</h6><a data-x="own">Reassign owner</a><a data-x="watch">Add to watchlist</a><a data-x="arch">Archive account</a>'
+      +'<h6>Their side</h6><a data-x="theirs">Open their control panel</a></div></span></div></div>';
+   var TABS2=[['over','Overview'],['vol','Volume'],['prog','Programs'],['case','Cases'],['ppl','People'],['file','Files'],['note','Notes']];
+   h+='<div class="rtabs tabstrip">'+TABS2.map(function(t){ return '<button data-t="'+t[0]+'" aria-pressed="'+(rtab===t[0])+'">'+t[1]+'</button>' }).join('')
+    +'<div class="rt"><span class="lnk" data-x="tx">Open in Transaction reporting</span></div></div>';
+
+   if(rtab==='over'){
+     h+='<div class="cols2"><div>';
+     if(p.next) h+='<div class="note"><div class="k">Needs you</div><p>'+esc(p.next)+'</p><div class="act"><button class="btn pri" id="rdo">'+esc(p.nextAct)+'</button><span class="lnk">Snooze a week</span></div></div>';
+     h+='<div class="psec"><div class="hd"><h3>Where they are</h3></div>'+stage(p)+'</div>';
+     var pr2=PROMISE[p.rich];
+     if(pr2){ h+='<div class="psec"><div class="hd"><h3>Commitments</h3><span class="ct">'+pr2.length+'</span><div class="rt"><span class="lnk">Add one</span></div></div>'
+       +'<table class="tb">'+pr2.map(function(c){
+          return '<tr><td>'+esc(c[0])+'<span class="s2">'+esc(c[1])+'</span></td>'
+           +'<td style="width:120px" class="t13">'+(c[3]==='us'?'We owe it':'They owe it')+'</td>'
+           +'<td class="st '+c[4]+'" style="width:190px">'+esc(c[2])+'</td></tr>' }).join('')+'</table></div>'; }
+     if(rp&&rp.items){ h+='<div class="psec"><div class="hd"><h3>Open items</h3><span class="ct">'+rp.items.length+'</span></div>'
+       +'<table class="tb">'+rp.items.map(function(it){ return '<tr><td>'+esc(it[0])+'<span class="s2">'+esc(it[1])+'</span></td><td class="st '+stw(it[2])+'" style="width:120px">'+esc(it[3])+'</td></tr>' }).join('')+'</table></div>'; }
+     if(rp&&rp.tl){ h+='<div class="psec"><div class="hd"><h3>Activity</h3><div class="rt"><span class="lnk">All activity</span></div></div><div class="tl">'
+       +rp.tl.map(function(t){ return '<div class="e"><span class="w">'+esc(t[1])+'</span><span>'+esc(t[0])+'</span></div>' }).join('')+'</div></div>'; }
+     h+='</div><div>';
+     h+='<div class="facts" style="grid-template-columns:1fr 1fr"><div><div class="k">Monthly volume</div><div class="v">'+esc(p.vol)+'</div></div>'
+      +'<div><div class="k">Approval</div><div class="v">'+esc(p.apr)+'</div></div>'
+      +'<div><div class="k">Health</div><div class="v">'+p.health+'</div></div>'
+      +'<div><div class="k">Last contact</div><div class="v" style="font-size:19px">'+esc(p.last)+'</div></div></div>';
+     if(rp) h+='<div class="kv" style="margin-top:26px; grid-template-columns:120px 1fr; font-size:14px"><span class="k">BIN</span><span>'+esc(rp.bin)+'</span><span class="k">Tier</span><span>'+esc(rp.tier)+'</span><span class="k">Since</span><span>'+esc(rp.since)+'</span><span class="k">Latency</span><span>'+esc(rp.lat)+'</span></div>';
+     h+='</div></div>';
+   }
+   else if(rtab==='vol'){
+     h+='<div class="segrow" style="margin-top:22px" id="vsub"><span class="seg">'
+       +[['m','Monthly'],['d','Daily'],['p','By program']].map(function(v){ return '<button data-vs="'+v[0]+'" aria-pressed="'+(vsub===v[0])+'">'+v[1]+'</button>' }).join('')
+       +'</span><div class="rt"><span class="lnk">Download CSV</span></div></div>';
+     if(volState===0) h+='<div class="skel" style="margin-top:24px">'+new Array(5).join('<div></div>')+'</div>';
+     else if(volState===1) h+='<div class="blank" style="margin-top:20px"><div class="t">Volume did not load.</div><p>The reporting service timed out after ten seconds. Nothing is wrong with the partner\u2019s account — this is our chart, not their money.</p><div class="act"><span class="lnk" id="vretry">Try again</span><span class="lnk">Report it</span></div></div>';
+     else if(vsub==='m') h+='<div class="cols2" style="margin-top:26px"><div class="inst"><div class="cap t13">Monthly volume, last fourteen months</div>'
+       +line((rp?rp.spark:[60,62,64,66,68,70,72,74,76,78,80,82,84,86]),{w:cwidth(720,0.62),h:210,min:40,max:100,fmt:function(n){return '$'+(n/10).toFixed(1)+'M'}})
+       +'<div class="ax"><span>Jul 2025</span><span>Feb 2026</span><span>Sep 2026</span></div></div>'
+       +'<div class="note plain"><div class="k">What to read into it</div><p>'+esc(rp?rp.volNote:'Steady month on month, with no seasonality worth planning around yet.')+'</p></div></div>';
+     else if(vsub==='d') h+='<div style="margin-top:26px" class="inst"><div class="cap t13">Daily volume, last thirty days · weekends sit low by design</div>'
+       +line([62,64,61,66,68,40,38,70,72,69,74,76,44,41,78,80,77,82,84,46,43,86,88,85,90,92,50,47,94,96],{w:cwidth(1080),h:230,min:30,max:100,fmt:function(n){return '$'+(n/100).toFixed(1)+'M'}})
+       +'<div class="ax"><span>4 Aug</span><span>19 Aug</span><span>3 Sep</span></div></div>'
+       +'<div class="note plain" style="margin-top:26px; max-width:620px"><div class="k">Before you read a dip into it</div><p>The five troughs are Saturdays and Sundays. Fleet fuel is a weekday business, so a flat weekend would be the anomaly, not the drop.</p></div>';
+     else h+='<div style="margin-top:26px" id="progptw"></div>'
+       +'<p class="t13" style="color:var(--g550); margin-top:18px; max-width:60ch">One program carries the account. That is normal at this stage and worth revisiting once the second BIN is live, because concentration is the thing that turns a good month into a bad quarter.</p>';
+   }
+   else if(rtab==='prog'){
+     h+=rp&&rp.progs ? '<table class="tb" style="margin-top:26px"><thead><tr><th>Program</th><th>Detail</th><th>Status</th></tr></thead><tbody>'
+       +rp.progs.map(function(g){ return '<tr><td>'+esc(g[0])+'</td><td>'+esc(g[1])+'</td><td class="st '+stw(g[3]||'nt')+'">'+esc(g[2]||'Live')+'</td></tr>' }).join('')+'</tbody></table>'
+       : '<div class="blank"><div class="t">No programs yet.</div><p>'+esc(p.n)+' has not been assigned a BIN. Programs appear here once the range is allocated at certification.</p><div class="act"><span class="lnk">Start a program</span></div></div>';
+   }
+   else if(rtab==='case'){
+     h+='<div class="tabstrip" style="margin-top:20px" id="csub">'
+       +[['dis','Disputes','3'],['cert','Certification','1'],['inc','Incidents','2']].map(function(v){ return '<button data-cs="'+v[0]+'" aria-pressed="'+(csub===v[0])+'">'+v[1]+'<span class="ct">'+v[2]+'</span></button>' }).join('')
+       +'<div class="rt"><span class="lnk" data-x="tx">Open in their account</span></div></div>';
+     if(csub==='dis') h+='<p class="t13" style="margin-top:22px; color:var(--g550)">These are the partner\u2019s own records. Opening one takes you into their account.</p>'
+       +'<table class="tb" style="margin-top:12px"><tbody>'
+       +'<tr class="hot"><td>CB-20831<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td class="st wa" style="width:130px">Due Thursday</td><td class="n" style="width:170px"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+       +'<tr><td>CB-20819<span class="s2">Reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st wa">Due Thursday</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+       +'<tr><td>CB-20802<span class="s2">Reason 4837 · no cardholder authorization</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td class="st nt">14 Sep</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+       +'</tbody></table>';
+     else if(csub==='cert') h+='<div class="note" style="margin-top:24px"><div class="k">Blocking go-live</div><p>Case 14 fails: the handler answers DE 39 = 10 correctly, then echoes the requested amount in DE 4 instead of the approved one. Twenty-three of twenty-four pass.</p><div class="act"><button class="btn pri">Open case 14 with them</button><span class="lnk">See the run</span></div></div>'
+       +'<table class="tb" style="margin-top:26px"><tbody>'
+       +'<tr><td>Last full run<span class="s2">2 September, 14:02 · six minutes</span></td><td class="st no" style="width:150px">23 of 24</td><td class="n" style="width:150px"><span class="lnk">Report</span></td></tr>'
+       +'<tr><td>Previous run<span class="s2">28 August · same failure</span></td><td class="st no">22 of 24</td><td class="n"><span class="lnk">Report</span></td></tr>'
+       +'</tbody></table>';
+     else h+='<table class="tb" style="margin-top:26px"><tbody>'
+       +'<tr><td>Decline 51 spike<span class="s2">Tuesday 09:00–11:00 · Bayline Payments · +2.4 pts</span></td><td class="st wa" style="width:140px">Watching</td><td class="n" style="width:170px"><span class="lnk" data-x="tx">Open the hours</span></td></tr>'
+       +'<tr><td>Settlement held<span class="s2">29 August · document expiry · released 30 August</span></td><td class="st ok">Resolved</td><td class="n"><span class="lnk">Open the cycle</span></td></tr>'
+       +'</tbody></table>';
+   }
+   else if(rtab==='ppl'){
+     h+=rp&&rp.con ? '<table class="tb" style="margin-top:26px"><thead><tr><th>Person</th><th>Role</th><th>Can do</th><th>Last spoke</th><th class="n"></th></tr></thead><tbody>'
+       +rp.con.map(function(c,ci){ var CAN=['Everything, including closing the membership','Everything except closing','Filings and screening results','Keys, endpoints, certification'];
+         return '<tr><td><span class="av">'+esc(c[0].split(' ').map(function(w){return w[0]}).join('').slice(0,2))+'</span>'+esc(c[0])+'</td><td>'+esc(c[1])+'</td><td class="t13">'+esc(CAN[ci%4])+'</td><td>'+esc(c[2]||'—')+'</td><td class="n"><span class="lnk">Email</span></td></tr>' }).join('')+'</tbody></table>'
+       +(p.rich===0 ? '<div class="psec"><div class="hd"><h3>Access we can see</h3><div class="rt"><span class="lnk">Full audit trail</span></div></div>'
+         +'<div class="note"><div class="k">Worth raising</div><p>One person holds the only production key. Every examiner asks about this, and it is easier to fix now than to explain later.</p><div class="act"><button class="btn pri">Raise it with Idris</button><span class="lnk">Read the control</span></div></div></div>' : '')
+       : '<div class="blank"><div class="t">Nobody on file.</div><p>Add the people you actually deal with, so the next person covering this account is not starting from a switchboard number.</p><div class="act"><span class="lnk">Add a contact</span></div></div>';
+   }
+   else if(rtab==='file'){
+     h+= p.rich===0 ? '<table class="tb" style="margin-top:26px"><tbody>'
+       +'<tr><td>Certificate of incorporation<span class="s2">2.4 MB · filed 19 August</span></td><td class="st ok" style="width:140px">Verified</td><td class="n" style="width:120px"><span class="lnk">Open</span></td></tr>'
+       +'<tr><td>AML and CFT program<span class="s2">1.1 MB · filed 19 August</span></td><td class="st ok">Verified</td><td class="n"><span class="lnk">Open</span></td></tr>'
+       +'<tr class="hot"><td>Passport, Halvard Ruiz<span class="s2">Expires 12 September 2026</span></td><td class="st wa">Expiring</td><td class="n"><span class="lnk">Replace</span></td></tr>'
+       +'<tr><td>PCI DSS attestation<span class="s2">Expires April 2027</span></td><td class="st ok">Verified</td><td class="n"><span class="lnk">Open</span></td></tr>'
+       +'<tr><td>Owner identity documents<span class="s2">4 files · 1 expiring</span></td><td class="st wa">Needs one swap</td><td class="n"><span class="lnk">Open</span></td></tr>'
+       +'</tbody></table>'
+       +'<div class="psec"><div class="hd"><h3>What expires when</h3><span class="ct">next twelve months</span></div>'
+       +'<table class="tb"><tbody>'
+       +[['12 Sep 2026','Passport, Halvard Ruiz','9 days','no'],['02 Jan 2027','Sanctions re-screen, all owners','4 months','nt'],['18 Apr 2027','PCI DSS attestation','7 months','nt']]
+         .map(function(r){ return '<tr'+(r[3]==='no'?' class="hot"':'')+'><td style="width:170px">'+r[0]+'</td><td>'+r[1]+'</td><td class="st '+(r[3]==='no'?'wa':'nt')+'" style="width:150px">'+r[2]+'</td><td class="n" style="width:150px"><span class="lnk">Request early</span></td></tr>' }).join('')
+       +'</tbody></table></div>'
+       +'<div class="upload" style="margin-top:26px">Drop a document here, or<span class="lnk">choose a file</span></div>'
+       : '<div class="blank"><div class="t">No documents on this account.</div><p>Filings appear here as they are verified. Nothing is outstanding from '+esc(p.n)+' at the moment.</p><div class="act"><span class="lnk">Request a document</span></div></div>';
+   }
+   else {
+     h+='<div style="max-width:720px; margin-top:26px"><div class="field" style="margin-top:0"><label>Add a note<small>only your team sees these</small></label><input class="in" id="nnote" placeholder="What happened, and what you promised" style="max-width:none"></div>'
+      +'<div style="margin-top:14px"><button class="btn go" id="nsave">Save the note</button></div><div id="nlist" style="margin-top:30px"></div></div>';
+   }
+   $('#record').innerHTML=h;
+
+   $$('.rtabs button').forEach(function(b){ b.addEventListener('click',function(){
+     rtab=b.dataset.t;
+     if(rtab==='vol'&&volState===0){ drawRecord(); setTimeout(function(){ volState=1; drawRecord(); },700); return; }
+     drawRecord();
+   }) });
+   $$('#vsub button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#vsub'), function(){ vsub=b.dataset.vs; drawRecord(); }) }) });
+   $$('#csub button').forEach(function(b){ b.addEventListener('click',function(){ csub=b.dataset.cs; drawRecord(); }) });
+   var pp=$('#progptw');
+   if(pp) pp.innerHTML=ptw([['Northgate Spend',84,false,'92%'],['Northgate Fleet',7,true,'8%']],function(n){return '$'+(n/10).toFixed(1)+'M'});
+   var vr=$('#vretry'); if(vr) vr.addEventListener('click',function(){ volState=0; drawRecord(); setTimeout(function(){ volState=2; drawRecord(); },600); });
+   $('#rprev').addEventListener('click',function(){ rec=(rec-1+A.length)%A.length; volState=0; drawRecord(); });
+   $('#rnext').addEventListener('click',function(){ rec=(rec+1)%A.length; volState=0; drawRecord(); });
+   $('#rmore').addEventListener('click',function(e){ e.stopPropagation(); $('#rpop').classList.toggle('on'); });
+   $$('#rpop [data-mv]').forEach(function(a){ a.addEventListener('click',function(){
+     var was=A[rec].stage; A[rec].stage=a.dataset.mv; A[rec].cat=a.dataset.mv==='Live'?'live':'enr';
+     $('#rpop').classList.remove('on'); drawRecord(); paintTabs();
+     toast(A[rec].n+' moved to '+a.dataset.mv+'.',function(){ A[rec].stage=was; drawRecord(); paintTabs(); });
+   }) });
+   $$('#rpop [data-x]').forEach(function(a){ a.addEventListener('click',function(){
+     $('#rpop').classList.remove('on');
+     if(a.dataset.x==='theirs'){ acc='mt'; agentView=true; go('pa-panel'); toast('Meridian Trust’s own control panel. Read only, and they are not told you looked.'); return; }
+     toast('Nothing here is wired up yet — this is the menu, not the action.'); }) });
+   var rd=$('#rdo'); if(rd) rd.addEventListener('click',function(){ toast(A[rec].nextAct+' — sent.',function(){ toast('Cancelled.') }) });
+   var ns=$('#nsave'); if(ns) ns.addEventListener('click',function(){
+     var v=$('#nnote').value.trim(); if(!v){ toast('Write something first.'); return; }
+     NOTES.unshift([v,'Just now, you']); $('#nnote').value=''; drawNotes();
+     toast('Note saved to '+A[rec].n+'.',function(){ NOTES.shift(); drawNotes(); });
+   });
+   drawNotes();
+   $$('#record [data-x="tx"], #record [data-x="tx-disp"]').forEach(function(a){ a.addEventListener('click',function(){
+     setWs('ng'); go(a.dataset.x==='tx-disp'?'tx-disp':'tx-over');
+     toast('Switched to Northgate Financial’s own account.',function(){ setWs('cw'); go('pd-partner'); });
+   }) });
+ }
+ var PROMISE={
+  0:[['Replacement passport for Halvard Ruiz','Idris Vance, Northgate','Thursday','them','wa'],
+     ['Collateral ceiling confirmed in writing','Cascade Trust','Before certification','them','wa'],
+     ['Pre-check their sandbox endpoint','Dara Whitfield','Before their first run','us','nt'],
+     ['Case 14 walkthrough with their host team','Ravi Kapoor','Booked for Monday','us','ok']],
+  1:[['Technical review of the decline spike','Dara Whitfield','This week','us','wa'],
+     ['Acquirer routing change','Bayline engineering','Confirmed for 12 Sep','them','ok']],
+  4:[['Quarterly volume pack','Dara Whitfield','Friday','us','nt']]
+ };
+ var NOTES=[['Idris says the passport replacement is with the notary; expects it Thursday.','Today, 08:20 · Dara Whitfield'],
+            ['Sponsor confirmed the collateral ceiling verbally. Needs it in writing before certification.','1 Sep · Dara Whitfield'],
+            ['Kick-off went well. Their host team has written an issuer before, which shows.','18 Aug · Dara Whitfield']];
+ function drawNotes(){ var el=$('#nlist'); if(!el) return;
+   el.innerHTML=NOTES.map(function(n){ return '<div class="row"><div>'+esc(n[0])+'<div class="d">'+esc(n[1])+'</div></div></div>' }).join('');
+ }
+
+ /* ══════════ PIPELINE ══════════ */
+ var STG=['Introduced','Filing','Program','Connecting','Certifying','Live'];
+ var pipeView='flight';
+ var stageOf=function(p){ return p.st && STG.indexOf(p.st)>-1 ? p.st : 'Introduced' };
+ var daysIn=function(p){ return A.indexOf(p)===0?12:[4,6,3,9,5,2,11,7][A.indexOf(p)%8] };
+ function paintPipeSub(){
+   var inflight=A.filter(function(p){ return p.cat==='enr' });
+   var stalled=inflight.filter(function(p){ return daysIn(p)>7 });
+   var T=[['list','Pipeline'],['fore','Forecast'],['conv','Conversion']];
+   var onList = ['flight','stage','stall'].indexOf(pipeView)>-1;
+   $('#pipetabs').innerHTML=T.map(function(t){
+     var on = t[0]==='list' ? onList : pipeView===t[0];
+     return '<button data-pt="'+t[0]+'" aria-pressed="'+on+'">'+t[1]+'</button>';
+   }).join('');
+   $$('#pipetabs button').forEach(function(b){ b.addEventListener('click',function(){ pipeView = b.dataset.pt==='list' ? 'flight' : b.dataset.pt; drawPipe(); }) });
+   var V=[['flight','In flight',inflight.length],['stage','By stage',''],['stall','Stalled',stalled.length]];
+   $('#pipesub2').style.display = onList ? '' : 'none';
+   $('#pipesub2').innerHTML='<span class="seg">'+V.map(function(v){ return '<button data-pv="'+v[0]+'" aria-pressed="'+(pipeView===v[0])+'">'+v[1]+(v[2]!==''?'<span class="ct">'+v[2]+'</span>':'')+'</button>' }).join('')+'</span>'
+     +'<div class="rt"><span class="lnk">Sort: days in stage</span></div>';
+   $$('#pipesub2 button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#pipesub2'), function(){ pipeView=b.dataset.pv; drawPipe(); }) }) });
+ }
+ function drawPipe(){
+   paintPipeSub();
+   var inflight=A.filter(function(p){ return p.cat==='enr' });
+   if(pipeView==='stall') inflight=inflight.filter(function(p){ return daysIn(p)>7 });
+   var st2=A.filter(function(p){ return p.cat==='enr' && daysIn(p)>7 }).length;
+   $('#pipesub').textContent=A.filter(function(p){return p.cat==='enr'}).length+' partners between introduction and live · $18.4M projected · '+st2+' stalled';
+   $('#pipect').textContent=inflight.length+' in flight';
+   var all=A.filter(function(p){ return p.cat==='enr' });
+   var counts=STG.map(function(st){ return all.filter(function(p){ return stageOf(p)===st }).length });
+   $('#stages').innerHTML=STG.map(function(s,i){ var n=counts[i];
+     return '<div><div class="k">'+s+'</div><div class="v">'+n+'</div><div class="m">'+(n?Math.round(4+i*3)+' days median':'nobody here')+'</div><div class="bar"><i style="width:'+Math.min(100,n*45)+'%"></i></div></div>' }).join('');
+   var grouped = pipeView==='stage'||pipeView==='fore'||pipeView==='conv';
+   $('#stages').style.display = grouped ? 'none' : '';
+   $('#pipehd').style.display = grouped ? 'none' : '';
+   if(pipeView==='fore'||pipeView==='conv'){
+     $('#pipe').style.display='none';
+     var host2=$('#pipegrp'); host2.style.display='';
+     if(pipeView==='fore'){
+       var F=[['September','Verity Spend','Certifying','$1.8M','80%'],
+              ['October','Northgate Financial','Program','$8.4M','65%'],
+              ['October','Stonecrop Labs','Connecting','$2.2M','70%'],
+              ['November','Wrenfield Cards','Filing','$3.1M','40%'],
+              ['November','Vantage Hospitality','Filing','$2.0M','35%'],
+              ['December','Ridgeline Freight','Introduced','$0.9M','25%']];
+       host2.innerHTML='<div class="facts" style="margin-top:34px"><div><div class="k">Weighted pipeline</div><div class="v">$9.6M</div></div>'
+        +'<div><div class="k">Unweighted</div><div class="v">$18.4M</div></div>'
+        +'<div><div class="k">Expected live this quarter</div><div class="v">3<small>of 6</small></div></div>'
+        +'<div><div class="k">Median to live</div><div class="v">34<small>days</small></div></div></div>'
+        +'<div class="inst" style="margin-top:38px"><div class="cap t13">Projected monthly volume as each partner goes live · weighted by confidence</div>'
+        +line([168,170,172,180,184,188],{w:cwidth(1160),h:220,min:160,max:195,fmt:function(n){return '$'+Math.round(n)+'M'}})
+        +'<div class="ax"><span>Sep</span><span>Nov</span><span>Feb</span></div></div>'
+        +'<div class="sech"><h2>What lands when</h2><span class="t13">confidence is ours, not theirs</span></div>'
+        +'<table class="tb" style="margin-top:14px"><thead><tr><th>Expected</th><th>Partner</th><th>Stage now</th><th class="n">Monthly volume</th><th class="n">Confidence</th></tr></thead><tbody>'
+        +F.map(function(r){ return '<tr><td style="width:150px">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="n st '+(parseInt(r[4])>60?'ok':parseInt(r[4])>34?'wa':'nt')+'">'+r[4]+'</td></tr>' }).join('')
+        +'</tbody></table>'
+        +'<p class="t13" style="margin-top:20px; color:var(--g550); max-width:70ch">Confidence is set by the stage, not by the partner. Nobody at Filing has ever been more than 40% likely to go live inside a quarter, whatever they told us on the call.</p>';
+     } else {
+       var C=[['Introduced → Filing',92],['Filing → Program',78],['Program → Connecting',85],['Connecting → Certifying',88],['Certifying → Live',71]];
+       host2.innerHTML='<div class="sech" style="margin-top:34px"><h2>Stage to stage</h2><span class="t13">last twelve months · 31 partners</span></div>'
+        +'<div style="margin-top:16px">'+ptw(C.map(function(c){ return [c[0], c[1], c[1]<75, c[1]+'%'] }),function(n){ return '' })+'</div>'
+        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where we lose people</div><p>Certifying to Live is the leak: seven in ten make it, and the three who do not are almost always a host team that ran out of time rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
+        +'<div><div class="sech" style="margin-top:0"><h2>Time in each stage</h2><span class="t13">median days</span></div>'
+        +'<table class="tb" style="margin-top:14px"><tbody>'
+        +[['Introduced','4 days'],['Filing','9 days'],['Program','6 days'],['Connecting','5 days'],['Certifying','11 days']].map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n" style="width:140px">'+r[1]+'</td></tr>' }).join('')
+        +'</tbody></table></div></div>';
+     }
+     return;
+   }
+   if(pipeView==='stage'){
+     $('#pipe').style.display='none';
+     var host=$('#pipegrp'); 
+     host.style.display='';
+     var groups=STG.map(function(st){ return [st, A.filter(function(p){ return p.cat==='enr' && stageOf(p)===st })] }).filter(function(g){ return g[1].length });
+     host.innerHTML=groups.map(function(g){
+       var st=g[0], in_=g[1];
+       return '<div class="grpsec"><div class="sech" style="margin-top:0"><h2>'+st+'</h2><span class="t13">'+in_.length+(in_.length===1?' partner':' partners')+'</span>'
+        +'<div class="rt"><span class="t13">'+(in_.length?Math.round(4+STG.indexOf(st)*3)+' days median':'')+'</span></div></div>'
+        +('<table class="tb" style="margin-top:10px"><tbody>'+in_.map(function(p){
+            var idx=A.indexOf(p);
+            return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+'</span></td>'
+             +'<td style="width:150px">'+daysIn(p)+' days here</td><td class="n" style="width:150px">'+(p.vol==='—'?'$2.0M est':esc(p.vol))+'</td><td style="width:170px">'+esc(p.own)+'</td></tr>';
+          }).join('')+'</tbody></table>')+'</div>';
+     }).join('')
+     + '<p class="t13" style="margin-top:30px; color:var(--g550)">'+(6-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
+     $$('#pipegrp tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(){ openRecord(+tr.dataset.i) }) });
+     return;
+   }
+   $('#pipegrp').style.display='none'; $('#pipe').style.display='';
+   if(!inflight.length){
+     $('#pipe').style.display='none';
+     $('#pipegrp').style.display='';
+     $('#pipegrp').innerHTML='<div class="blank"><div class="t">Nothing is stalled.</div><p>Every partner in flight has moved stage in the last week. That is unusual, and worth not getting used to.</p></div>';
+     return;
+   }
+   $('#pipe tbody').innerHTML=inflight.map(function(p){
+     var idx=A.indexOf(p);
+     return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+'</span></td>'
+      +'<td>'+esc(p.stage)+'</td><td>'+daysIn(p)+' days'+(daysIn(p)>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2">'+(p.vol==='—'?'$2.0M est':esc(p.vol))+'</td><td class="opt">'+esc(p.own)+'</td>'
+      +'<td class="n" style="width:150px"><span class="menu2"><span class="lnk" data-mm="'+idx+'">Move ▾</span><div class="pop" data-pp="'+idx+'">'
+      +STG.map(function(s){ return '<a data-to="'+s+'" data-i="'+idx+'">'+s+'</a>' }).join('')+'</div></span></td></tr>';
+   }).join('');
+   $$('#pipe [data-mm]').forEach(function(a){ a.addEventListener('click',function(e){
+     e.stopPropagation(); $$('#pipe .pop').forEach(function(p){ p.classList.toggle('on', p.dataset.pp===a.dataset.mm && !p.classList.contains('on')) });
+   }) });
+   $$('#pipe [data-to]').forEach(function(a){ a.addEventListener('click',function(e){
+     e.stopPropagation(); var i=+a.dataset.i, was=A[i].stage;
+     A[i].stage=a.dataset.to; if(a.dataset.to==='Live') A[i].cat='live';
+     drawPipe(); paintTabs();
+     toast(A[i].n+' moved to '+a.dataset.to+'.',function(){ A[i].stage=was; A[i].cat='enr'; drawPipe(); paintTabs(); });
+   }) });
+   $$('#pipe tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){ if(e.target.closest('.menu2')) return; openRecord(+tr.dataset.i); }) });
+ }
+
+ /* ══════════ TASKS ══════════ */
+ var TASKS=[
+  ['Today',[
+    ['Chase Halvard Ruiz’s passport','Northgate Financial · blocks settlement after 12 Sep','High',0,1],
+    ['Reply to Idris on the collateral ceiling','Northgate Financial','High',0,0],
+    ['Pre-check Verity Spend’s sandbox endpoint','Verity Spend · before their first run','Normal',0,0],
+    ['Confirm Ridgeline’s micro-deposits landed','Ridgeline Freight','Normal',1,0]]],
+  ['This week',[
+    ['Quarterly review pack for Pemberton','Pemberton Bank · due Friday','Normal',0,0],
+    ['Walk Stonecrop through webhook signing','Stonecrop Labs','Normal',0,0],
+    ['Dormancy call with Dunmore Retail','Dunmore Retail · 230 days quiet','Low',0,0]]],
+  ['Waiting on someone else',[
+    ['Cascade Trust collateral confirmation','Northgate Financial · chased twice','Normal',0,0],
+    ['Legal on the Halcyon addendum','Halcyon Pay','Low',0,0]]]
+ ];
+ var taskView='mine';
+ var TEAM=[['Idris Vance','Walk Kestrel Union through the new advice event','Kestrel Union','Today'],
+           ['Sana Lindqvist','Collateral review, Pemberton','Pemberton Bank','Today'],
+           ['Ravi Kapoor','Route Stonecrop to the new BIN range','Stonecrop Labs','Tomorrow'],
+           ['Idris Vance','Quarterly pack, Bright Harbour','Bright Harbour','Friday']];
+ function paintTaskSub(){
+   var open=0,done=0; TASKS.forEach(function(g){ g[1].forEach(function(t){ t[3]?done++:open++ }) });
+   var V=[['mine','Mine',open],['team','My team',TEAM.length],['done','Done today',done]];
+   $('#tsub2').innerHTML='<span class="seg">'+V.map(function(v){ return '<button data-tv="'+v[0]+'" aria-pressed="'+(taskView===v[0])+'">'+v[1]+'<span class="ct">'+v[2]+'</span></button>' }).join('')+'</span>'
+     +'<div class="rt"><span class="lnk">Group by partner</span></div>';
+   $$('#tsub2 button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#tsub2'), function(){ taskView=b.dataset.tv; drawTasks(); }) }) });
+ }
+ function drawTasks(){
+   paintTaskSub();
+   var open=0, done=0;
+   TASKS.forEach(function(g){ g[1].forEach(function(t){ t[3]?done++:open++ }) });
+   $('#tsub').textContent=open+' open · '+done+' done today · two waiting on somebody else';
+   var first=null; TASKS[0][1].forEach(function(t){ if(!first&&!t[3]&&t[4]) first=t });
+   $('#tnow').innerHTML= first
+     ? '<div><div class="k">Do this first</div><h2>'+esc(first[0])+'</h2><p class="why">'+esc(first[1])+'. Everything else on today’s list can wait a day without costing anybody money; this one cannot.</p><div class="act"><button class="btn pri" id="tdo">Mark it done</button><span class="lnk" data-open="0">Open Northgate</span></div></div><div class="rec"><h4>Where today goes</h4><div class="rr"><span class="l">Blocking somebody</span><span class="v">1</span></div><div class="rr"><span class="l">Due today</span><span class="v">3</span></div><div class="rr"><span class="l">Waiting on others</span><span class="v">2</span></div><div class="rr"><span class="l">Done</span><span class="v">'+done+'</span></div></div>'
+     : '<div><div class="k">Today</div><h2>Nothing is blocking anybody.</h2><p class="why">Everything urgent is done. What is left is this week’s work, and none of it costs money if it slips a day.</p><div class="act"><span class="lnk" data-go="pd-partners">Back to the book</span></div></div><div></div>';
+   var td=$('#tdo'); if(td) td.addEventListener('click',function(){ first[3]=1; drawTasks(); toast('Marked done.',function(){ first[3]=0; drawTasks(); }); });
+   $('#tnow').style.display = taskView==='mine' ? '' : 'none';   /* the brief is about my day, so it goes with my list */
+   if(taskView==='team'){
+     $('#tasks').innerHTML='<div class="sech"><h2>Open across the team</h2><span class="t13">read only · four people</span></div>'
+      +'<table class="tb" style="margin-top:10px"><tbody>'+TEAM.map(function(t){
+        return '<tr><td style="width:200px"><span class="av">'+t[0].split(' ').map(function(w){return w[0]}).join('')+'</span>'+esc(t[0])+'</td><td>'+esc(t[1])+'<span class="s2">'+esc(t[2])+'</span></td><td class="n" style="width:130px; color:var(--g550)">'+esc(t[3])+'</td></tr>';
+      }).join('')+'</tbody></table>';
+     return;
+   }
+   if(taskView==='done'){
+     var dn=[]; TASKS.forEach(function(g){ g[1].forEach(function(t){ if(t[3]) dn.push(t) }) });
+     $('#tasks').innerHTML = dn.length
+       ? '<div class="sech"><h2>Done today</h2><span class="t13">'+dn.length+'</span></div><table class="tb" style="margin-top:10px"><tbody>'
+         +dn.map(function(t){ return '<tr class="done"><td style="width:52px"><span class="cb done"></span></td><td><span class="t">'+esc(t[0])+'</span><span class="s2">'+esc(t[1])+'</span></td></tr>' }).join('')+'</tbody></table>'
+       : '<div class="blank"><div class="t">Nothing done yet today.</div><p>Tick something off on the Mine tab and it will show up here, so the end of the day has something to look at.</p></div>';
+     return;
+   }
+   $('#tasks').innerHTML=TASKS.map(function(g,gi){
+     return '<div class="sech"><h2>'+esc(g[0])+'</h2><span class="t13">'+g[1].filter(function(t){return !t[3]}).length+' open</span></div>'
+      +'<table class="tb" style="margin-top:10px"><tbody>'+g[1].map(function(t,ti){
+        return '<tr class="'+(t[3]?'done ':'')+(t[4]&&!t[3]?'hot':'')+'"><td style="width:52px"><span class="cb'+(t[3]?' done':'')+'" data-t="'+gi+'.'+ti+'"></span></td>'
+         +'<td><span class="t">'+esc(t[0])+'</span><span class="s2">'+esc(t[1])+'</span></td>'
+         +'<td class="st '+(t[2]==='High'?'no':t[2]==='Low'?'nt':'wa')+'" style="width:110px">'+t[2]+'</td></tr>';
+      }).join('')+'</tbody></table>';
+   }).join('');
+   $$('#tasks .cb[data-t]').forEach(function(c){ c.addEventListener('click',function(){
+     var p=c.dataset.t.split('.'), t=TASKS[p[0]][1][p[1]];
+     t[3]=t[3]?0:1; drawTasks();
+     toast(t[3]?'Marked done.':'Reopened.',function(){ t[3]=t[3]?0:1; drawTasks(); });
+   }) });
+ }
+ $('#tclear').addEventListener('click',function(){
+   var snapshot=TASKS.map(function(g){ return g[1].map(function(t){ return t[3] }) });
+   TASKS.forEach(function(g){ g[1]=g[1].filter(function(t){ return !t[3] }) });
+   drawTasks(); toast('Cleared the completed tasks.');
+ });
+
+ /* ══════════ REPORTS ══════════ */
+ var repView='vol';
+ function paintRepSub(){
+   var V=[['vol','Volume'],['health','Health'],['act','Activity'],['fee','Fees and margin']];
+   $('#rsub2').innerHTML=V.map(function(v){ return '<button data-rv="'+v[0]+'" aria-pressed="'+(repView===v[0])+'">'+v[1]+'</button>' }).join('')
+     +'<div class="rt"><span class="lnk">September</span><span class="lnk">Compare to August</span></div>';
+   $$('#rsub2 button').forEach(function(b){ b.addEventListener('click',function(){ repView=b.dataset.rv; drawReports(); }) });
+ }
+ function drawReports(){
+   paintRepSub();
+   var live=A.filter(function(p){return p.cat==='live'});
+   var vol=live.map(function(p){ return [p.n, num(p.vol)] }).sort(function(a,b){return b[1]-a[1]}).slice(0,6);
+   var health=[['Healthy',A.filter(function(p){return p.hs==='ok'}).length],['Watch',A.filter(function(p){return p.hs==='wa'}).length],['New',A.filter(function(p){return p.hs==='nt'}).length],['Dormant',A.filter(function(p){return p.hs==='no'}).length]];
+   var facts='<div class="facts" style="margin-top:32px"><div><div class="k">Volume, September</div><div class="v">$168.4M</div></div>'
+    +'<div><div class="k">August</div><div class="v">$161.2M</div></div>'
+    +'<div><div class="k">Change</div><div class="v st ok">+4.5%</div></div>'
+    +'<div><div class="k">Median to live</div><div class="v">34<small>days</small></div></div></div>';
+   if(repView==='vol'){
+     $('#reports').innerHTML=facts
+      +'<div class="rep"><div class="wide inst"><div class="cap t13">Book volume, last twelve months · last year in grey</div>'
+      +line([132,138,141,139,145,148,151,149,155,158,161,168],{w:cwidth(1160),h:250,min:120,max:180,prev:[118,120,124,121,126,128,131,129,133,136,138,142],fmt:function(n){return '$'+Math.round(n)+'M'}})
+      +'<div class="ax"><span>Oct 2025</span><span>Mar 2026</span><span>Sep 2026</span></div></div>'
+      +'<div><div class="sech" style="margin-top:0"><h2>Volume by partner</h2><span class="t13">top six · click to open</span></div><div id="volptw" style="margin-top:14px"></div></div>'
+      +'<div><div class="sech" style="margin-top:0"><h2>Growth against August</h2><span class="t13">five biggest movers</span></div>'
+      +'<table class="tb" style="margin-top:10px"><tbody>'
+      +[['Meridian Trust','+8.2%','ok'],['Bayline Payments','+5.1%','ok'],['Alder & Vane','+2.4%','ok'],['Orpington Retail','−3.8%','wa'],['Calloway Freight','−6.1%','no']]
+        .map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n st '+r[2]+'" style="width:120px">'+r[1]+'</td></tr>' }).join('')
+      +'</tbody></table></div></div>';
+   }
+   else if(repView==='health'){
+     $('#reports').innerHTML='<div class="rep" style="margin-top:26px"><div><div class="sech" style="margin-top:0"><h2>Portfolio health</h2><span class="t13">24 accounts · click a band</span></div><div id="hptw" style="margin-top:14px"></div></div>'
+      +'<div><div class="sech" style="margin-top:0"><h2>What is dragging</h2><span class="t13">the five worst</span></div>'
+      +'<table class="tb" style="margin-top:10px"><tbody>'
+      +[['Dunmore Retail','230 days quiet','no','Dormant'],['Calloway Freight','Approval down 3 points','wa','Watch'],['Tessellate Labs','Eight months dormant','no','Dormant'],['Orpington Retail','Two failed settlements','wa','Watch'],['Northgate Financial','Document expires in 9 days','wa','Watch']]
+        .map(function(r){ return '<tr><td>'+r[0]+'<span class="s2">'+r[1]+'</span></td><td class="st '+r[2]+'" style="width:120px">'+r[3]+'</td></tr>' }).join('')
+      +'</tbody></table></div>'
+      +'<div class="wide"><div class="sech"><h2>Health over the year</h2><span class="t13">book average</span></div><div class="inst" style="margin-top:12px"><div id="hline"></div><div class="ax"><span>Oct 2025</span><span>Mar 2026</span><span>Sep 2026</span></div></div></div></div>';
+     $('#hline').innerHTML=line([74,75,73,76,78,77,79,80,79,81,82,81],{w:cwidth(1160),h:220,min:60,max:90,fmt:function(n){return Math.round(n)}});
+   }
+   else if(repView==='act'){
+     $('#reports').innerHTML='<div class="facts" style="margin-top:32px"><div><div class="k">Calls logged</div><div class="v">38</div></div>'
+      +'<div><div class="k">Median reply</div><div class="v">2.4<small>h</small></div></div>'
+      +'<div><div class="k">Accounts touched</div><div class="v">19<small>of 24</small></div></div>'
+      +'<div><div class="k">Untouched 30 days</div><div class="v st wa">3</div></div></div>'
+      +'<div class="rep"><div class="wide"><div class="sech" style="margin-top:0"><h2>Not spoken to in a month</h2><span class="t13">three accounts</span></div>'
+      +'<table class="tb" style="margin-top:10px"><tbody>'
+      +[['Dunmore Retail','14 January','230 days'],['Aveline Systems','24 July','41 days'],['Thornbury Bank','29 July','36 days']]
+        .map(function(r){ return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n st wa" style="width:140px">'+r[2]+'</td><td class="n" style="width:130px"><span class="lnk">Log a call</span></td></tr>' }).join('')
+      +'</tbody></table></div></div>';
+   }
+   else {
+     $('#reports').innerHTML='<div class="perm" style="margin-top:30px"><div class="t">You do not have access to fee data.</div><p>Interchange and margin are visible to finance and to account directors. You can see volume, health and activity on every account in your book, which is what this screen is for.</p><div style="margin-top:16px"><span class="lnk" id="reqacc">Request access from Sana Lindqvist</span></div></div>';
+     $('#reqacc').addEventListener('click',function(){ toast('Access requested. Sana usually answers the same day.') });
+     return;
+   }
+   if($('#volptw')) $('#volptw').innerHTML=ptw(vol.map(function(v,i){ return [v[0], v[1], i>0, null] }),function(n){return '$'+n.toFixed(1)+'M'});
+   if($('#hptw')) $('#hptw').innerHTML=ptw(health.map(function(hh,i){ return [hh[0], hh[1], i>0, null] }),function(n){return n+' accounts'});
+   $$('#volptw .ptw').forEach(function(row,i){ row.style.cursor='pointer'; row.addEventListener('click',function(){
+     var name=vol[i][0], idx=A.map(function(p){return p.n}).indexOf(name);
+     if(idx>-1) openRecord(idx);
+   }) });
+   $$('#hptw .ptw').forEach(function(row,i){ row.style.cursor='pointer'; row.addEventListener('click',function(){
+     filter=['live','risk','enr','dor'][i]||'all'; paintTabs(); go('pd-partners'); load();
+   }) });
+   var ra=$('#reqacc'); if(ra) ra.addEventListener('click',function(){ toast('Access requested. Sana usually answers the same day.') });
+ }
+
+ /* ══════════ TRANSACTION VIEWS: sub-navigation over the rows already rendered ══════════ */
+ var TXSUB={
+  'tx-auth':{sel:'#msgt', tabs:[['all','All messages',null],['dec','Declines',/Declined|Referral/],['rev','Reversals',/Reversed/],['app','Approved',/Approved/]],
+             note:'Every message as it crossed the wire. Filtering here does not change what we keep — thirteen months, whatever you look at.'},
+  'tx-settle':{sel:'#sett', tabs:[['all','All cycles',null],['held','Held',/Held/],['ok','Settled',/Settled/]],
+             note:'A held cycle keeps authorizing. Only the money stops, and only until the reason clears.'},
+  'tx-disp':{sel:'#dtable', tabs:[['all','All cases',null],['due','Due this week',/2 days|Thu/],['wait','Waiting on merchant',/Waiting/]],
+             note:'Deadlines are calendar days, not working days. A case due Thursday is due Thursday.'}
+ };
+ var txsub={};
+ function drawTxSub(v){
+   var cfg=TXSUB[v]; if(!cfg) return;
+   var sec=document.querySelector('[data-v="'+v+'"]');
+   var host=sec.querySelector('.txsub');
+   if(!host){
+     host=document.createElement('div'); host.className='segrow txsub';
+     var ph=sec.querySelector('.ph'); ph.parentNode.insertBefore(host, ph.nextSibling);
+     var n=document.createElement('p'); n.className='t13'; n.style.cssText='color:var(--g550); margin-top:16px; max-width:74ch';
+     n.textContent=cfg.note; host.parentNode.insertBefore(n, host.nextSibling);
+   }
+   var cur=txsub[v]||'all';
+   var tb=sec.querySelector(cfg.sel+' tbody')||sec.querySelector(cfg.sel);
+   var rows=tb?[].slice.call(tb.querySelectorAll('tr')):[];
+   host.innerHTML='<span class="seg">'+cfg.tabs.map(function(t){
+     var n=t[2]?rows.filter(function(r){ return t[2].test(r.textContent) }).length:rows.length;
+     return '<button data-tt="'+t[0]+'" aria-pressed="'+(cur===t[0])+'">'+t[1]+'<span class="ct">'+n+'</span></button>';
+   }).join('')+'</span><div class="rt"><span class="lnk">Save this view</span></div>';
+   rows.forEach(function(r){
+     if(r.classList.contains('expand')) return;
+     var t=cfg.tabs.filter(function(x){return x[0]===cur})[0];
+     r.style.display = (!t[2]||t[2].test(r.textContent)) ? '' : 'none';
+   });
+   [].forEach.call(host.querySelectorAll('button'),function(b){ b.addEventListener('click',function(){ anchored(host, function(){ txsub[v]=b.dataset.tt; drawTxSub(v); }) }) });
+ }
+
+ /* ══════════ SHELL ══════════ */
+ var WS={
+  cw:{i:'CW', n:'Partner desk', s:'Internal · 24 accounts', who:'Dara Whitfield',
+      nav:[['pd-partners','Partners',String(A.length)],['pd-pipeline','Pipeline',String(A.filter(function(p){return p.cat==='enr'}).length)],['pd-tasks','Tasks',String(TASKS.reduce(function(a,g){return a+g[1].filter(function(t){return !t[3]}).length},0))],['pd-reports','Reports','']]},
+  ng:{i:'NF', n:'Northgate Financial', s:'BIN 471288 · live', who:'Northgate Spend',
+      nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','142']]},
+  bp:{i:'BP', n:'Bayline Payments', s:'BIN 465120 · live', who:'Bayline Payments',
+      nav:[['tx-over','Overview',''],['tx-auth','Authorizations',''],['tx-settle','Settlement',''],['tx-disp','Disputes','38']]}
+ };
+ var ws='cw';
+ var ICON={'pd-partners':'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M17.5 13.5a6.5 6.5 0 0 1 4 6.5"/>',
+   'pd-pipeline':'<path d="M3 6h5l3 6-3 6H3"/><path d="M10 6h5l3 6-3 6h-5"/>',
+   'pd-tasks':'<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 12l3 3 5-6"/>',
+   'pd-reports':'<path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/>',
+   'tx-over':'<path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/>',
+   'tx-auth':'<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/>',
+   'tx-settle':'<rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19"/>',
+   'tx-disp':'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>'};
+ function setWs(k){
+   ws=k; var w=WS[k];
+   $('#wscur').innerHTML='<i>'+w.i+'</i><span class="nm">'+esc(w.n)+'<span>'+esc(w.s)+'</span></span><span class="ch">▾</span>';
+   $('#who').textContent=w.who;
+   $('#nav').innerHTML=w.nav.map(function(n){
+     return '<a data-go="'+n[0]+'" title="'+esc(n[1])+'"><svg class="i" viewBox="0 0 24 24">'+ICON[n[0]]+'</svg><span class="lb">'+esc(n[1])+'</span>'+(n[2]?'<span class="ct">'+n[2]+'</span>':'')+'</a>';
+   }).join('');
+   $$('#wsmenu a').forEach(function(a){ a.classList.toggle('on', a.dataset.w===k) });
+   wire();
+   go(w.nav[0][0]);
+ }
+ $('#wscur').addEventListener('click',function(e){ e.stopPropagation(); $('#wsmenu').classList.toggle('on') });
+ $$('#wsmenu a').forEach(function(a){ a.addEventListener('click',function(){ $('#wsmenu').classList.remove('on'); setWs(a.dataset.w); }) });
+ document.addEventListener('click',function(){ $('#wsmenu').classList.remove('on'); $$('.pop').forEach(function(p){ p.classList.remove('on') }); });
+
+ var PDRAW={};
+ var curView='pd-partners';
+ function repaint(n){
+   if(PDRAW[n]){ PDRAW[n](); return; }
+   if(n==='pd-partners'){ paintNow(); paintScope(); paintTabs(); paintTable(); }
+   if(n==='pd-partner') drawRecord();
+   if(n==='pd-pipeline') drawPipe();
+   if(n==='pd-tasks') drawTasks();
+   if(n==='pd-reports') drawReports();
+   if(TXSUB[n]) drawTxSub(n);
+ }
+ var rsT; window.addEventListener('resize',function(){
+   clearTimeout(rsT); rsT=setTimeout(function(){ repaint(curView) }, 180);
+ });
+ function go(n){
+   curView=n;
+   if(typeof closePanel==='function') closePanel();
+   var _t=$('#toast'); if(_t) _t.classList.remove('on');
+   $$('.view').forEach(function(v){ v.classList.toggle('on', v.dataset.v===n) });
+   $$('#nav a').forEach(function(a){ a.classList.toggle('on', a.dataset.go===n) });
+   if(n==='pd-partner') $$('#nav a').forEach(function(a){ a.classList.toggle('on', a.dataset.go==='pd-partners') });
+   window.scrollTo(0,0);
+   if(n==='pd-partners'){ paintScope(); paintTabs(); load(); }
+   if(n==='pd-partner') drawRecord();
+   if(n==='pd-pipeline') drawPipe();
+   if(n==='pd-tasks') drawTasks();
+   if(n==='pd-reports') drawReports();
+   if(TXSUB[n]) setTimeout(function(){ drawTxSub(n) },30);
+   if(PDRAW[n]) PDRAW[n]();
+ }
+ function wire(){ $$('[data-back]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(){ setWs('cw'); openRecord(0); toast('Back in the Clearway desk, on Northgate’s record.'); }) });
+   $$('[data-go]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(e){ e.preventDefault(); go(a.dataset.go) }) });
+   $$('[data-open]').forEach(function(a){ if(a.dataset.wired) return; a.dataset.wired=1; a.addEventListener('click',function(){ openRecord(+a.dataset.open) }) }); }
+
+/*SPINE*/
+/*PJS*/
+ $('#pnlX').addEventListener('click',closePanel);
+ $('#scrim').addEventListener('click',closePanel);
+ document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePanel() });
+ paintNow(); setWs('cw');
+})();
+</script>
+
+<script>
+/*TXJS*/
+</script>

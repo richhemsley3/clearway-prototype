@@ -1,0 +1,288 @@
+ /* ══════════════════════════════════════════════════════════════════
+    THE SPINE — one lifecycle, three accounts, three sides.
+
+    Every persona reads these records. The row that says "waiting on a
+    signature" on the agent's screen is the same row the participant is
+    being asked to sign, and the failing test case a developer sees is
+    the reason the agent's go-live date is at risk.
+
+    Field conventions, taken from how real products model this:
+      who    'you' | 'cw'   whose turn it is. A column, not a tone of voice.
+      dstate 'over'|'now'|'soon'   overdue / due now / eventually due.
+      gates  what stops if this is not done, and when. Never "may be limited".
+    ══════════════════════════════════════════════════════════════════ */
+
+ var ACC = {
+   rf:{k:'rf', n:'Ridgeline Freight', i:'RF', st:'applying',  s:'Applying · fleet fuel',        who:'Elena Ridge',   role:'Head of finance', since:'Introduced 4 August'},
+   nf:{k:'nf', n:'Northgate Financial', i:'NF', st:'boarding', s:'Approved · not yet activated', who:'Idris Vance',   role:'Program manager', since:'Approved 18 August'},
+   mt:{k:'mt', n:'Meridian Trust', i:'MT', st:'live',          s:'Live · BIN 465088',            who:'Lena Ostrom',   role:'Head of payments', since:'Live since 4 March'}
+ };
+
+ /* ── Ridgeline's queue. Half of it is ours, and it says so. ── */
+ var QUEUE = [
+  {k:'agr', t:'Master participation agreement', kind:'Signature', who:'you', due:'Thursday 4 September', dstate:'now',
+   gates:'Contracting cannot close, and integration cannot be scheduled, until both signatures are in.',
+   state:'partial', note:'Issued 28 August. One of two signatures received.',
+   sig:[['Elena Ridge','Head of finance','Signed 1 September at 09:14'],['Marcus Ridge','Chief executive','Not signed']]},
+
+  {k:'pci', t:'PCI DSS attestation of compliance', kind:'Document', who:'you', due:'11 September', dstate:'soon',
+   gates:'Your certification window cannot be booked without it.', state:'open',
+   note:'Most recent AOC, signed by your QSA. A ROC summary is not a substitute.'},
+
+  {k:'bank', t:'Settlement bank letter', kind:'Document', who:'you', due:'11 September', dstate:'soon',
+   gates:'BIN allocation pauses on 14 September without it.', state:'open',
+   note:'On bank letterhead, naming the account that will receive settlement.'},
+
+  {k:'ack', t:'Network rules and policies', kind:'Acknowledgement', who:'you', due:'Thursday 4 September', dstate:'now',
+   gates:'Required before integration begins. Two of six acknowledged.', state:'open',
+   note:'Dispute handling moved to v6.0 on 1 September, so it needs acknowledging again.', go:'pa-rules'},
+
+  {k:'ubo', t:'Beneficial ownership declaration', kind:'Document', who:'you', due:'Was due 29 August', dstate:'over',
+   gates:'Risk sign-off is held until this clears.', state:'rejected',
+   note:'Cleared the ownership check. Did not clear the address check: the utility bill is dated 3 June and we need one issued inside the last 30 days.'},
+
+  {k:'risk', t:'Risk review sign-off', kind:'Review', who:'cw', due:'Thursday 4 September', dstate:'now',
+   gates:'The last thing between you and contracting close.', state:'open',
+   note:'With our risk team since 28 August. Dara Whitfield is chasing it.'},
+
+  {k:'bin', t:'BIN range allocation', kind:'Setup', who:'cw', due:'18 September', dstate:'soon',
+   gates:'Needed before your engineers can point at anything real.', state:'open',
+   note:'Requested from the network on 1 September. Twelve working days is normal.'},
+
+  {k:'inc', t:'Certificate of incorporation', kind:'Document', who:'you', due:'', dstate:'done',
+   gates:'', state:'done', note:'Accepted 21 August.'},
+
+  {k:'acc', t:'Audited accounts, two years', kind:'Document', who:'you', due:'', dstate:'done',
+   gates:'', state:'done', note:'Accepted 21 August. FY2024 and FY2025.'}
+ ];
+
+ /* ── Policies. Version and effective date, acknowledged one at a time. ── */
+ var POLICY = [
+  ['Network participation rules','v8.2','1 July 2026',48,'ack','Acknowledged 21 August by Elena Ridge'],
+  ['Data protection standard','v3.1','1 April 2026',22,'ack','Acknowledged 21 August by Elena Ridge'],
+  ['Dispute handling rules','v6.0','1 September 2026',31,'new','Replaces v5.4, which you acknowledged in August. Response windows changed, so it needs acknowledging again.'],
+  ['Settlement and funding rules','v4.4','1 January 2026',19,'todo',''],
+  ['Brand and marks','v2.7','1 January 2026',14,'todo',''],
+  ['Security requirements · PCI DSS 4.0','v1.9','1 March 2026',26,'todo','']
+ ];
+
+ /* ── Northgate's integration. Five milestones, and an owner on each. ── */
+ var MILE = [
+  {k:'conn', t:'Connectivity', own:'both', st:'done', d:'Completed 3 August',
+   detail:'MPLS primary and backup, both IP ranges allowlisted, mutual TLS to the authorization endpoint.',
+   items:[['Primary circuit','done'],['Backup circuit','done'],['IP allowlist, four ranges','done'],['Mutual TLS handshake','done']]},
+
+  {k:'conf', t:'Business configuration', own:'cw', st:'done', d:'Completed 14 August',
+   detail:'BIN 471288 ranges, fee tables, settlement account and dispute routing, all set by Clearway operations.',
+   items:[['BIN ranges','done'],['Fee schedule','done'],['Settlement account','done'],['Dispute routing','done']]},
+
+  {k:'cert', t:'Testing and certification', own:'you', st:'now', d:'Window booked 15–19 September',
+   detail:'Sixty-one cases were selected for your configuration. Forty-seven have passed, three are failing and eleven have not been run.',
+   items:[['Sandbox connected','done'],['Test plan generated','done'],['Cases passing','now'],['Certification window','soon']]},
+
+  {k:'prod', t:'Production readiness', own:'both', st:'soon', d:'Opens once certification passes',
+   detail:'Runbook, on-call rota for the first settlement cycle, and a dry run of the first file.',
+   items:[['Runbook filed','todo'],['On-call rota','todo'],['Settlement dry run','done']]},
+
+  {k:'live', t:'Go live', own:'cw', st:'soon', d:'Target 6 October',
+   detail:'BIN activation at 06:00 on 6 October. Your first settlement cycle runs the following morning.',
+   items:[['BIN activation','todo'],['First settlement cycle','todo']]}
+ ];
+
+ /* ── The certification suite. Generated from the configuration, so the
+       denominator is a fact about Northgate rather than a round number. ── */
+ var SUITE = [
+  {k:'auth', n:'Authorization', tot:24, pass:22, fail:1, nr:1},
+  {k:'rev',  n:'Reversals and adjustments', tot:11, pass:11, fail:0, nr:0},
+  {k:'set',  n:'Settlement and clearing', tot:9, pass:7, fail:0, nr:2},
+  {k:'dis',  n:'Disputes', tot:8, pass:5, fail:1, nr:2},
+  {k:'tok',  n:'Tokens and provisioning', tot:9, pass:2, fail:1, nr:6}
+ ];
+
+ var FAILS = [
+  {id:'AUTH-14', suite:'auth', n:'Partial approval honoured on a split-tender authorization',
+   code:'PARTIAL_APPROVAL_NOT_HONOURED', run:'2 September at 14:22',
+   exp:'approvalCode present, approvedAmount 4200',
+   act:'responseCode 51, no approvalCode',
+   fix:'approvalCode A41F92, approvedAmount 4200',
+   why:'Your endpoint declined rather than approving the lower amount. Partial approval is mandatory for fuel, where the pump asks for more than the cardholder has, and a decline sends a driver away from a forecourt with a working card.',
+   after:'Your endpoint now approves the available balance and returns an approval code, which is what the pump needs before it will release fuel to that value.',
+   json:'{\n  "responseCode": "51",\n  "approvedAmount": null,\n  "requestedAmount": 6800,\n  "availableBalance": 4200\n}',
+   jsonOk:'{\n  "responseCode": "00",\n  "approvalCode": "A41F92",\n  "approvedAmount": 4200,\n  "requestedAmount": 6800,\n  "availableBalance": 4200\n}'},
+
+  {id:'DISP-03', suite:'dis', n:'Retrieval request acknowledged inside 24 hours',
+   code:'RETRIEVAL_ACK_TIMEOUT', run:'2 September at 14:24',
+   exp:'acknowledgement inside 24 hours',
+   act:'no acknowledgement after 31 hours',
+   fix:'acknowledged in 40 minutes',
+   why:'The retrieval webhook was delivered and your endpoint returned 200, but nothing acknowledged the case. The clock belongs to the network, and v6.0 cut it from forty-eight hours to twenty-four on 1 September.',
+   after:'The acknowledgement now fires from the webhook handler rather than the overnight job, so it lands in minutes rather than never.',
+   json:'{\n  "retrievalId": "rtv_88c3",\n  "deliveredAt": "2026-09-01T02:00:11Z",\n  "acknowledgedAt": null,\n  "deadline": "2026-09-02T02:00:11Z"\n}',
+   jsonOk:'{\n  "retrievalId": "rtv_88c3",\n  "deliveredAt": "2026-09-01T02:00:11Z",\n  "acknowledgedAt": "2026-09-01T02:40:03Z",\n  "deadline": "2026-09-02T02:00:11Z"\n}'},
+
+  {id:'TOK-07', suite:'tok', n:'Token lifecycle: suspend, then resume',
+   code:'TOKEN_STATE_NOT_APPLIED', run:'1 September at 17:40',
+   exp:'token state SUSPENDED',
+   act:'token state ACTIVE',
+   fix:'token state SUSPENDED',
+   why:'The suspend call returned 202 and the state never changed. A 202 means we accepted the instruction, not that it has happened — the state follows on a callback, and nothing here consumed it.',
+   after:'The lifecycle callback is consumed and your local state now follows ours.',
+   json:'{\n  "tokenId": "tok_41b8",\n  "requested": "SUSPEND",\n  "accepted": true,\n  "state": "ACTIVE"\n}',
+   jsonOk:'{\n  "tokenId": "tok_41b8",\n  "requested": "SUSPEND",\n  "accepted": true,\n  "state": "SUSPENDED"\n}'}
+ ];
+
+ var WAIVER = [
+  ['CLEARING-09','End-of-day file delivered at 02:00 rather than 00:30','Variance granted to 31 December 2026','Clearway operations']
+ ];
+
+ /* ── Pre-production. Half of these we can check ourselves. ── */
+ var PREP = [
+  ['Production keys generated','auto','done','Generated 29 August. They do not work until activation.','cw'],
+  ['Live webhook endpoint registered and answering','auto','done','Forty-seven deliveries in the last twenty-four hours, all 200.','you'],
+  ['Mutual TLS certificate valid past go live','auto','fail','Your certificate expires 21 September, fifteen days before go live.','you'],
+  ['IP allowlist matches your production egress','auto','done','Four of four ranges matched this morning.','you'],
+  ['Runbook and escalation path filed','self','todo','Who we call at 03:00 on the first settlement night.','you'],
+  ['On-call rota for the first cycle','self','todo','Names and numbers for 6 to 10 October.','you'],
+  ['First settlement cycle dry run','self','done','Ran 28 August against the pre-production file.','cw'],
+  ['Certification passed with no open failures','auto','fail','Three cases are failing. AUTH-14 is the one that matters.','you']
+ ];
+
+ /* ── Live service. What a control panel is actually for. ── */
+ var MODULE = [
+  {k:'tx-auth',  n:'Authorizations', v:'61,412 messages', s:'last seven days', act:'2 declines flagged for review', hot:false},
+  {k:'tx-settle',n:'Settlement',     v:'$96.7M',          s:'this month',      act:'Next cycle 4 September 06:00 · cut-off 17:00 today', hot:true},
+  {k:'tx-disp',  n:'Disputes',       v:'142 open',        s:'across all reason codes', act:'9 need a response by Friday', hot:true},
+  {k:'dv-perf',  n:'API performance',v:'99.98%',          s:'availability, thirty days', act:'One endpoint above its latency budget', hot:false},
+  {k:'pa-hub',   n:'Documentation hub', v:'4 documents',  s:'changed this month', act:'Dispute handling moved to v6.0', hot:false},
+  {k:'pa-msgs',  n:'Messages',       v:'2 threads',       s:'awaiting your reply', act:'', hot:false}
+ ];
+
+ var ENDP = [
+  ['POST /authorizations','412,880','31 ms','68 ms','0.02%',false],
+  ['POST /reversals','8,140','28 ms','61 ms','0.01%',false],
+  ['GET /settlements/{id}','2,410','44 ms','190 ms','0.00%',false],
+  ['POST /disputes/{id}/evidence','312','210 ms','1,240 ms','0.32%',true],
+  ['POST /tokens','19,600','36 ms','79 ms','0.01%',false]
+ ];
+
+ var INCID = [
+  ['24 August, 09:12 to 09:41','Elevated latency uploading dispute evidence','Minor','1,840 requests','Resolved'],
+  ['11 August, 02:00 to 02:06','Settlement file delivered late','Minor','No requests','Resolved']
+ ];
+
+ /* ── Threads. The reference is the object id, and the status says
+       whose turn it is rather than where it sits in a state machine. ── */
+ var THREAD = [
+  {a:'rf', id:'MSG-4488', t:'Second signature on the participation agreement', w:'Dara Whitfield', r:'Clearway', st:'you', last:'Yesterday at 10:05',
+   msgs:[['Dara Whitfield','Clearway','2 September, 10:05','Elena signed on the 1st. We are waiting on Marcus. October integration slots close on the 12th, and after that the next window is November, so this is worth a nudge rather than a wait.'],
+         ['Elena Ridge','Ridgeline','1 September, 09:20','Signed. Marcus is travelling until Thursday but he has it on his phone.']]},
+
+  {a:'rf', id:'MSG-4483', t:'Beneficial ownership: the address check', w:'Clearway risk', r:'Clearway', st:'you', last:'29 August',
+   msgs:[['Clearway risk','Clearway','29 August, 15:40','We sent the declaration back. The ownership side is fine — both owners matched. The address did not: the utility bill is dated 3 June and we need one issued inside the last thirty days. Anything from July or August will clear it.']]},
+
+  {a:'rf', id:'MSG-4479', t:'Introduction and what happens next', w:'Dara Whitfield', r:'Clearway', st:'none', last:'4 August',
+   msgs:[['Dara Whitfield','Clearway','4 August, 11:00','Cascade Trust introduced us. Fleet fuel and prepaid, single geography — that is a straightforward shape and the usual path is about eleven weeks from here to live.']]},
+
+  {a:'mt', id:'MSG-3120', t:'Four Visa disputes lapse on Friday', w:'Clearway disputes', r:'Clearway', st:'you', last:'Today at 08:15',
+   msgs:[['Clearway disputes','Clearway','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
+
+  {a:'mt', id:'MSG-3114', t:'Settlement cut-off moves to 16:30 in October', w:'Clearway operations', r:'Clearway', st:'none', last:'28 August',
+   msgs:[['Clearway operations','Clearway','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
+
+  {a:'mt', id:'MSG-3090', t:'Evidence upload latency', w:'Clearway engineering', r:'Clearway', st:'done', last:'24 August',
+   msgs:[['Clearway engineering','Clearway','24 August, 10:12','Fixed and deployed. The 09:12 to 09:41 window on the 24th caught 1,840 of your requests. Evidence upload is a file path, not a message path, so nothing in authorization was affected.'],
+         ['Lena Ostrom','Meridian Trust','24 August, 09:30','Evidence uploads are timing out. Anything on your side?']]},
+
+  {a:'nf', id:'MSG-4471', t:'Certification window, 15 to 19 September', w:'Dara Whitfield', r:'Clearway', st:'you', last:'Yesterday at 16:20',
+   msgs:[['Dara Whitfield','Clearway','2 September, 16:20','I have held 15 to 19 September with the testing team. That assumes AUTH-14 is fixed by the 12th, because they will not open a window against a failing partial approval. If it slips, the next clear week is the 29th, which puts go live into late October.'],
+         ['Idris Vance','Northgate','2 September, 09:04','Ravi thinks the partial approval is a one-line change on our side. Can we hold the window while he confirms?']]},
+
+  {a:'nf', id:'MSG-4468', t:'Replacement passport for Halvard Ruiz', w:'Dara Whitfield', r:'Clearway', st:'you', last:'1 September',
+   msgs:[['Dara Whitfield','Clearway','1 September, 11:30','Halvard’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date. This is not a soft deadline, and it is the single thing most likely to move go live.'],
+         ['Idris Vance','Northgate','29 August, 14:12','He has an appointment on the 8th. Is a receipt from the passport office enough to hold the file open?'],
+         ['Dara Whitfield','Clearway','29 August, 15:01','A receipt holds it for thirty days. Send it the day he has it.']]},
+
+  {a:'nf', id:'MSG-4459', t:'October release notes · dispute handling v6.0', w:'Clearway operations', r:'Clearway', st:'none', last:'28 August',
+   msgs:[['Clearway operations','Clearway','28 August, 08:00','Dispute handling rules move to v6.0 on 1 September. Retrieval acknowledgement drops from 48 hours to 24. Nothing else in the release affects you.']]},
+
+  {a:'nf', id:'MSG-4402', t:'Fee schedule confirmation', w:'Priya Raman', r:'Clearway', st:'done', last:'14 August',
+   msgs:[['Priya Raman','Clearway','14 August, 10:22','Signed schedule attached, effective from activation.'],
+         ['Idris Vance','Northgate','13 August, 17:45','Confirmed on our side.']]}
+ ];
+
+ var DOCS = [
+  ['Network participation rules','v8.2','1 July 2026','Policy','No change this month'],
+  ['Dispute handling rules','v6.0','1 September 2026','Policy','Retrieval acknowledgement cut from 48 hours to 24'],
+  ['Implementation guide','2026.3','22 August 2026','Guide','Two new sections on partial approval'],
+  ['Message specification','ISO 8583 · 2026.2','1 August 2026','Specification','DE 48 subfield 92 added for fuel'],
+  ['API reference','v3','2 September 2026','Reference','Token suspend and resume now documented'],
+  ['Settlement calendar','2026','1 January 2026','Reference','No change'],
+  ['Release notes','September 2026','28 August 2026','Notes','Dispute rules v6.0, fuel partial approval mandatory']
+ ];
+
+ var APIS = [
+  {k:'auth', n:'Authorizations', v:'v3', st:'GA', auth:'Mutual TLS and OAuth 2.0', ep:5, rate:'200 a second, burst 400', cases:'24',
+   d:'The message path. Authorize, capture, void, and the balance enquiry that sits in front of a fuel pump.',
+   gotcha:'partialApproval defaults to false. For fuel it has to be true.',
+   sample:'POST /v3/authorizations',
+   body:'{\n  "amount": 6800,\n  "currency": "USD",\n  "acceptor": { "id": "BAY04417" },\n  "entryMode": "071",\n  "partialApproval": true\n}'},
+
+  {k:'rev', n:'Reversals and adjustments', v:'v3', st:'GA', auth:'Mutual TLS and OAuth 2.0', ep:3, rate:'200 a second', cases:'11',
+   d:'Full and partial reversals, and the adjustment path for a completion that differs from the authorization.',
+   gotcha:'After clearing it is an adjustment, not a reversal. Different endpoint.',
+   sample:'POST /v3/authorizations/{id}/reversals',
+   body:'{\n  "amount": 2400,\n  "reason": "CUSTOMER_CANCELLED"\n}'},
+
+  {k:'set', n:'Settlement files', v:'v2', st:'GA', auth:'SFTP, or REST with mutual TLS', ep:4, rate:'20 a minute', cases:'9',
+   d:'Daily clearing and settlement files, plus a REST endpoint for a single cycle when you need to ask rather than wait.',
+   gotcha:'The REST endpoint reads a cycle. It cannot create or re-run one.',
+   sample:'GET /v2/settlements/{cycleId}',
+   body:''},
+
+  {k:'dis', n:'Disputes', v:'v2', st:'GA', auth:'Mutual TLS and OAuth 2.0', ep:6, rate:'20 a minute', cases:'8',
+   d:'Retrievals, chargebacks, evidence upload and representment. The clocks in here belong to the network, not to us.',
+   gotcha:'4.5 MB across all files, and the issuer will not open a link.',
+   sample:'POST /v2/disputes/{id}/evidence',
+   body:'{\n  "evidenceType": "RECEIPT",\n  "file": "<multipart>"\n}'},
+
+  {k:'tok', n:'Tokens and provisioning', v:'v1', st:'Beta', auth:'Mutual TLS and OAuth 2.0', ep:5, rate:'50 a second', cases:'9',
+   d:'Network tokens and their lifecycle. Beta means the shape can still change, with thirty days of notice.',
+   gotcha:'Suspend returns 202. Wait for the callback before trusting the state.',
+   sample:'POST /v1/tokens',
+   body:'{\n  "pan": "4917610000000031",\n  "wallet": "FLEET_APP"\n}'},
+
+  {k:'rep', n:'Reporting', v:'v2', st:'GA', auth:'OAuth 2.0', ep:4, rate:'20 a minute', cases:'0',
+   d:'Everything the control panel shows, addressable. Interchange, fees and volumes, by day or by cycle.',
+   gotcha:'Figures settle at 06:00. Before that a cycle is provisional.',
+   sample:'GET /v2/reports/volume',
+   body:''}
+ ];
+
+ /* ── policy state is per participant: the same document, different history ── */
+ var POLST = {
+   rf:['ack','ack','new','todo','todo','todo'],
+   nf:['ack','ack','new','ack','ack','ack'],
+   mt:['ack','ack','new','ack','ack','ack']
+ };
+ var POLWHO = {rf:'Elena Ridge', nf:'Idris Vance', mt:'Lena Ostrom'};
+ var POLWHEN = {rf:'21 August', nf:'2 March', mt:'4 March 2026'};
+ var POLDATE = {rf:['21 August','21 August','21 August','','',''], nf:['2 March','2 March','','2 March','2 March','2 March'], mt:['4 March','4 March','','4 March','4 March','4 March']};
+
+ /* ── the agent's book, between introduction and integration ── */
+ var DEALS = [
+  {k:'rf', n:'Ridgeline Freight', stage:'Contracting', vol:'$0.9M', days:6,
+   note:'Second signature outstanding', next:'Chase Marcus Ridge',
+   detail:'Risk passed on 28 August. Elena signed on the 1st. Marcus has opened the pack twice and not signed it. October integration slots close on the 12th.'},
+  {k:'wc', n:'Wrenfield Cards', stage:'Risk due diligence', vol:'$3.1M', days:9,
+   note:'Waiting on the AML pack', next:'Chase the AML pack',
+   detail:'Nine days at risk review, all of it waiting on them. Their compliance lead left in August and nobody has picked this up. Worth a call rather than another email.'},
+  {k:'sl', n:'Stonecrop Labs', stage:'Contracting', vol:'$2.2M', days:2,
+   note:'Both signatures in, sent to operations today', next:'Nothing — it is with Priya',
+   detail:'Cleanest file this quarter. Signed inside four days of issue, risk passed first time, no variances asked for.'},
+  {k:'vs', n:'Verity Spend', stage:'Risk due diligence', vol:'$1.8M', days:14,
+   note:'Adverse media hit, second look', next:'Second-line review',
+   detail:'A 2023 article about a former director who left in 2024. Almost certainly noise, but it needs a second-line opinion on file before contracting, and that has been queued for a week.'},
+  {k:'hf', n:'Harbour Freight Co', stage:'Introduced', vol:'$0.6M', days:1,
+   note:'First call booked Thursday', next:'Hold the call',
+   detail:'Introduced by Cascade Trust on Tuesday. Small book, single depot, but they run three fuel cards today and want one.'}
+ ];

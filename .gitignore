@@ -1,0 +1,8 @@
+# the licensed studio typeface goes here and is not redistributed
+src/fonts.txt
+
+# scratch
+*.png
+!docs/**/*.png
+.DS_Store
+node_modules/

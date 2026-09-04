@@ -1,0 +1,156 @@
+<title>Clearway Transaction Reporting</title>
+<style>
+/*FONTS*/
+/*CSS*/
+.two{display:grid; grid-template-columns:1fr 1fr; gap:44px 64px; margin-top:44px}
+.fsbar{margin-top:28px}
+.hours{margin-top:36px}
+</style>
+
+<div class="app">
+  <aside class="sb">
+    <div class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</div>
+    <nav id="nav">
+      <a class="on" data-go="over"><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 16V9"/><path d="M11 16V5"/><path d="M16 16v-6"/></svg>Overview</a>
+      <a data-go="auth"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg>Authorizations</a>
+      <a data-go="settle"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M3.5 10h17"/></svg>Settlement</a>
+      <a data-go="disp"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>Disputes<span class="ct">142</span></a>
+    </nav>
+    <div class="foot">Northgate Spend · BIN 471288</div>
+  </aside>
+
+  <main class="mn">
+    <!-- OVERVIEW -->
+    <section class="view on" data-v="over">
+      <div class="ph"><div><h1>Transaction reporting</h1><p>Northgate Spend · BIN 471288 · commercial debit · USD</p></div>
+        <div class="act"><button class="btn">Schedule a report</button><button class="btn">Download</button></div></div>
+      <p class="fs fsbar">Showing <b>all authorizations</b> on <b>Northgate Spend</b> for the <b>last 14 days</b>, against <b>the 14 days before</b> <span class="add">+ condition</span></p>
+
+      <div class="facts" style="grid-template-columns:repeat(4,1fr); max-width:760px; margin-top:32px"><div><div class="k">Volume, 14 days</div><div class="v">$2.24M</div></div><div><div class="k">14 days before</div><div class="v" style="color:var(--g550)">$2.09M</div></div><div><div class="k">Change</div><div class="v st ok">+7.2%</div></div><div><div class="k">Approval rate</div><div class="v">94.2%</div></div></div>
+      <div class="inst" style="margin-top:22px"><div class="hd"><span>Daily authorization volume · the 14 days before in grey</span></div><div id="daily"></div><div class="ax"><span>20 Aug</span><span>27 Aug</span><span>2 Sep</span></div></div>
+
+      <div class="two">
+        <div><div class="sech" style="margin-top:0"><h2>Why authorizations were declined</h2><span class="t13">10,684 declines</span></div><div id="dec" style="margin-top:14px"></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Volume by acquirer</h2><span class="t13">share of 14 days</span></div><div id="acq" style="margin-top:14px"></div></div>
+      </div>
+
+      <div class="hours"><div class="sech" style="margin-top:0"><h2>Tuesday, by hour</h2><span class="t13">where the decline 51 spike sits</span><div class="rt"><span class="lnk">Open Tuesday in Authorizations</span></div></div>
+        <div class="inst" style="margin-top:18px"><div class="hd"><span>Authorizations per hour · 09:00–11:00 at full strength</span><b>2.4<small>pts above baseline</small></b></div><svg viewBox="0 0 1180 140" preserveAspectRatio="none" style="height:140px" id="hourly"></svg><div class="ax" style="padding-left:0"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div></div></div>
+    </section>
+
+    <!-- AUTHORIZATIONS -->
+    <section class="view" data-v="auth">
+      <div class="ph"><div><h1>Authorizations</h1><p>Every message as it crossed the wire · last 7 days · 61,412 messages</p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <p class="fs fsbar">Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span></p>
+      <table class="tb" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th>Entry</th><th class="n">Amount</th><th>Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
+      <div class="tfoot"><span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span></div>
+    </section>
+
+    <!-- SETTLEMENT -->
+    <section class="view" data-v="settle">
+      <div class="ph"><div><h1>Settlement</h1><p>Daily cycles, funding and exceptions · cut-off 21:00 UTC</p></div>
+        <div class="act"><button class="btn">Statement</button></div></div>
+      <div class="now"><div><div class="k">Held</div><h2>29 August is still held <span>· $6,886,920 net</span></h2><p class="why">Funding paused on document expiry. Halvard Ruiz's passport is the item; once it is replaced, the cycle releases at the next cut-off.</p><div class="act"><button class="btn pri">Chase the document</button><span class="lnk">Open in Partner desk</span></div></div>
+        <div class="inst"><div class="hd"><span>Net to fund, last 14 cycles</span><b>$8.30M<small>2 Sep</small></b></div><div id="netfund"></div><div class="ax"><span>20 Aug</span><span>27 Aug</span><span>2 Sep</span></div></div></div>
+      <div class="two">
+        <div><div class="sech" style="margin-top:0"><h2>Where 2 September went</h2><span class="t13">$8,440,140 gross</span></div><div id="wf" style="margin-top:14px"></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Exceptions</h2><span class="t13">this cycle</span></div><div class="row" style="margin-top:6px"><div>3 reversals after cut-off<div class="d">Carried to 3 September</div></div><span class="st nt">Carried</span></div><div class="row"><div>1 cycle held<div class="d">29 August · document expiry</div></div><span class="st wa">Held</span></div><div class="row"><div>Interchange variance<div class="d">$212 against scheme file</div></div><span class="st ok">Within tolerance</span></div></div>
+      </div>
+      <div class="sech"><h2>Cycles</h2><span class="t13">last five</span></div>
+      <table class="tb" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- DISPUTES -->
+    <section class="view" data-v="disp">
+      <div class="ph"><div><h1>Disputes</h1><p>142 open cases · representment deadlines in calendar days</p></div>
+        <div class="act"><button class="btn">Export</button></div></div>
+      <div class="now"><div><div class="k">Due this week</div><h2>12 representments <span>· earliest Thursday</span></h2><p class="why">Twelve cases reach their representment deadline before Friday. Nine have evidence gathered; three are still waiting on the merchant.</p><div class="act"><button class="btn pri">Review the twelve</button><span class="lnk">Chase the three merchants</span></div></div>
+        <div><div class="sech" style="margin-top:0"><h2>Where the 142 are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div></div>
+      <div class="sech"><h2>Open cases</h2><div class="tabs"><button aria-pressed="true">All <span>142</span></button><button>Due this week <span>12</span></button><button>Waiting on merchant <span>31</span></button></div></div>
+      <table class="tb" style="margin-top:14px"><thead><tr><th>Case</th><th>Merchant</th><th class="n">Amount</th><th>Stage</th><th>Deadline</th></tr></thead><tbody>
+        <tr class="hot"><td>CB-20831<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td>Evidence gathered</td><td class="st wa">Thu, 2 days</td></tr>
+        <tr><td>CB-20819<span class="s2">Reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st nt">Waiting on merchant</td><td class="st wa">Thu, 2 days</td></tr>
+        <tr><td>CB-20802<span class="s2">Reason 4837 · no cardholder authorization</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td>Representment filed</td><td>14 Sep</td></tr>
+        <tr><td>CB-20788<span class="s2">Reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$248.10</td><td>Pre-arbitration</td><td>21 Sep</td></tr>
+      </tbody></table>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+ "use strict";
+ var $=function(s){return document.querySelector(s)}, root=document.documentElement;
+ var cv=function(n){return getComputedStyle(root).getPropertyValue(n).trim()};
+ var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;')};
+ var fmt=function(n){return n.toLocaleString('en-US')};
+/*DATA*/
+
+ function bars(v,opts){
+   opts=opts||{}; var W=opts.w||1100, H=opts.h||220, L=44, top=12, base=H-10, mx=opts.max||Math.max.apply(null,v), n=v.length, slot=(W-L)/n, bw=slot*(opts.bw||0.5), out='';
+   for(var g=0;g<4;g++){ var val=mx-g*mx/3, yy=top+(1-val/mx)*(base-top); out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+(opts.fmt?opts.fmt(val):Math.round(val))+'</text>'; }
+   v.forEach(function(n,i){ var h=n/mx*(base-top), x=L+i*slot+(slot-bw)/2;
+     if(opts.prev){ var ph=opts.prev[i]/mx*(base-top); out+='<rect x="'+(x-bw*0.55).toFixed(1)+'" y="'+(base-ph).toFixed(1)+'" width="'+(bw*0.5).toFixed(1)+'" height="'+ph.toFixed(1)+'" fill="'+cv('--g200')+'" rx="1"/>'; }
+     var hot=!opts.hot||opts.hot(i);
+     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+cv('--navy')+'" opacity="'+(hot?1:.3)+'" rx="1"/>';
+     if(opts.label&&opts.label(i)) out+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(base-h-6).toFixed(1)+'" text-anchor="middle" font-size="12" fill="'+cv('--g900')+'">'+(opts.fmt?opts.fmt(n):n)+'</text>';
+   });
+   return '<svg viewBox="0 0 '+W+' '+H+'" style="height:'+H+'px; font-family:var(--ui); display:block; width:100%" preserveAspectRatio="none" aria-hidden="true">'+out+'</svg>';
+ }
+ function line(v,opts){
+   opts=opts||{}; var W=opts.w||380, H=opts.h||150, L=40, R=opts.right||50, top=10, bot=H-20;
+   var mn=opts.min!=null?opts.min:Math.min.apply(null,v), mx=opts.max!=null?opts.max:Math.max.apply(null,v), rg=(mx-mn)||1;
+   var x=function(i){ return L+i/(v.length-1)*(W-L-R) }, y=function(n){ return top+(1-(n-mn)/rg)*(bot-top) }, out='';
+   for(var g=0;g<4;g++){ var val=mx-g*(mx-mn)/3, yy=y(val); out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+(opts.fmt?opts.fmt(val):Math.round(val))+'</text>'; }
+   var d=v.map(function(n,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(n).toFixed(1)}).join(' ');
+   out+='<path d="'+d+'" fill="none" stroke="'+cv('--navy')+'" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+   var lx=x(v.length-1), ly=y(v[v.length-1]);
+   out+='<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="4" fill="'+cv('--navy')+'"/><text x="'+(lx+10).toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" font-size="12" fill="'+cv('--g900')+'">'+(opts.fmt?opts.fmt(v[v.length-1]):v[v.length-1])+'</text>';
+   return '<svg viewBox="0 0 '+W+' '+H+'" style="height:'+H+'px; font-family:var(--ui); display:block; width:100%" preserveAspectRatio="none" aria-hidden="true">'+out+'</svg>';
+ }
+ function ptw(rows,fmt){
+   var mx=Math.max.apply(null,rows.map(function(r){return r[1]}));
+   return rows.map(function(r){ return '<div class="ptw"><span>'+r[0]+'</span><span class="bar"><i style="width:'+(r[1]/mx*100).toFixed(1)+'%'+(r[2]?'; background:var(--g200)':'')+'"></i></span><span class="n"><b>'+fmt(r[1])+'</b>'+(r[3]?' · '+r[3]:'')+'</span></div>' }).join('');
+ }
+
+ /* overview */
+ var PREV=DAY.map(function(d,i){ return Math.round(d[1]*(0.88+((i*7)%9)/60)) });
+ $('#daily').innerHTML=bars(DAY.map(function(d){return d[1]}),{h:220,max:200000,prev:PREV,fmt:function(n){return '$'+Math.round(n/1000)+'k'},label:function(i){return i===DAY.length-1}});
+ var dtot=DEC.reduce(function(a,b){return a+b[2]},0);
+ $('#dec').innerHTML=ptw(DEC.map(function(d){ return [d[1]+' · '+d[0], d[2], false, Math.round(d[2]/dtot*100)+'%'] }),fmt);
+ $('#acq').innerHTML=ptw(ACQ.map(function(a,i){ return [a[0], a[1], i===ACQ.length-1, null] }),function(n){return n.toFixed(1)+'%'});
+ (function(){ var v=[12,9,7,6,5,7,14,28,41,63,71,58,44,39,42,45,47,44,38,31,26,21,17,14];
+   $('#hourly').outerHTML=bars(v,{w:1180,h:140,bw:0.62,hot:function(i){return i>=9&&i<=11},label:function(i){return i>=9&&i<=11}}).replace('<svg','<svg id="hourly"'); })();
+
+ /* authorizations: rows open in place */
+ var openMsg=0;
+ function drawMsgs(){
+   $('#msgt tbody').innerHTML=MSG.map(function(m,i){
+     var o=i===openMsg, cls=m[6]==='s-ok'?'ok':m[6]==='s-no'?'no':m[6]==='s-wa'?'wa':'nt', ms=parseInt(m[4]);
+     return '<tr data-i="'+i+'"'+(o?' class="sel"':'')+'><td>'+m[0]+'</td><td>'+esc(m[1])+'</td><td class="mute">'+esc(m[2])+'</td><td class="n">'+m[3]+'</td><td><span class="lat"><i><b style="width:'+Math.min(100,ms/60*100).toFixed(0)+'%"></b></i>'+m[4]+'</span></td><td class="st '+cls+'">'+esc(m[5])+'</td></tr>'
+      +(o?'<tr class="expand"><td colspan="6"><div class="kv" style="grid-template-columns:200px 1fr 200px 1fr">'+m[7].map(function(f){ return '<span class="k">'+f[0]+' · '+esc(f[1])+'</span><span>'+f[2]+'</span>' }).join('')+'</div><div style="margin-top:18px; display:flex; gap:20px"><span class="lnk">Open in Developers</span><span class="lnk">Copy message</span></div></td></tr>':'');
+   }).join('');
+   [].forEach.call(document.querySelectorAll('#msgt tbody tr[data-i]'),function(r){ r.addEventListener('click',function(){ openMsg=openMsg===+r.dataset.i?-1:+r.dataset.i; drawMsgs(); }) });
+ }
+ drawMsgs();
+
+ /* settlement */
+ var NET=[8.1,8.4,6.9,5.3,8.2,8.5,8.3,8.4,8.7,7.0,5.4,8.1,8.8,8.3];
+ $('#netfund').innerHTML=line(NET,{min:4,max:10,fmt:function(n){return '$'+n.toFixed(1)+'M'}});
+ var wtot=WF.reduce(function(a,b){return a+b[1]},0);
+ $('#wf').innerHTML=ptw(WF.map(function(w,i){ return [w[0], w[1], i>0, (w[1]/wtot*100).toFixed(2)+'%'] }),function(n){return '$'+fmt(n)});
+ $('#sett tbody').innerHTML=SET.map(function(r){ return '<tr'+(r[5]==='s-wa'?' class="hot"':'')+'><td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="st '+(r[5]==='s-ok'?'ok':'wa')+'">'+r[4]+'</td></tr>' }).join('');
+
+ /* disputes */
+ $('#funnel').innerHTML=ptw(FN.map(function(f){ return [f[0], f[1], false, null] }),function(n){return n+' cases'});
+
+ /* views */
+ function go(n){
+   [].forEach.call(document.querySelectorAll('.view'),function(v){ v.classList.toggle('on', v.dataset.v===n) });
+   [].forEach.call(document.querySelectorAll('#nav a'),function(a){ a.classList.toggle('on', a.dataset.go===n) });
+   window.scrollTo(0,0);
+ }
+ [].forEach.call(document.querySelectorAll('#nav a[data-go]'),function(a){ a.addEventListener('click',function(e){ e.preventDefault(); go(a.dataset.go) }) });
+})();
+</script>

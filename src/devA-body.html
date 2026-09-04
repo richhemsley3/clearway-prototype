@@ -1,0 +1,298 @@
+<title>Clearway Developers A</title>
+<style>
+/*FONTS*/
+/*CSS*/
+/* Register A — same system, more air and scale.
+   Brief: an integration lead sent to evaluate. One job: decide in ten minutes whether we are worth two weeks of their team.
+   First thing: a real authorization exchange. Orange appears once per act, on the one action the page wants. */
+body{background:#fff}
+.top{position:sticky; top:0; z-index:5; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--g150)}
+.top .wrap{max-width:1180px; margin:0 auto; padding:16px 44px; display:flex; align-items:center; gap:40px}
+.top .brand{display:flex; align-items:center; gap:10px; font-size:17px; letter-spacing:-.02em}
+.top .brand i{width:22px; height:22px; border-radius:6px; background:var(--navy); display:grid; place-items:center; color:#fff}
+.top nav{display:flex; gap:28px; font-size:14.5px; color:var(--g650)}
+.top nav a{cursor:pointer} .top nav a:hover{color:var(--g900)}
+.top .rt{margin-left:auto; display:flex; align-items:center; gap:20px}
+.band{width:100%; padding:96px 0}
+.band .wrap{max-width:1180px; margin:0 auto; padding:0 44px}
+/* warm tone blocks separate the acts; two steps only, both from the greys we already have */
+.band.tone{background:var(--g050)}
+/* two backgrounds only: a surface inside a band takes the other one */
+.band .note, .band .surface, .band .code{background:var(--g050)}
+.band.tone .note, .band.tone .surface, .band.tone .code{background:var(--white)}
+.band.last{padding-bottom:110px}
+.eyebrow{font-size:13px; color:var(--g550)}
+h1.d{font-size:64px; letter-spacing:-.03em; line-height:1.02; margin-top:14px; max-width:16ch}
+h2.d{font-size:40px; letter-spacing:-.025em; line-height:1.1; max-width:20ch}
+.lede{font-size:19px; line-height:1.5; color:var(--g650); margin-top:22px; max-width:60ch}
+.sub{font-size:16.5px; line-height:1.55; color:var(--g650); margin-top:16px; max-width:62ch}
+.cta{display:flex; align-items:center; gap:22px; margin-top:36px}
+.wire{display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:56px; border:1px solid var(--g150); border-radius:var(--r-surface); overflow:hidden}
+.wire > div{padding:26px 28px}
+.wire > div:first-child{border-right:1px solid var(--g150)}
+.wire .hd{display:flex; align-items:baseline; justify-content:space-between; font-size:13px; color:var(--g550); margin-bottom:14px}
+.wire .code{background:none; padding:0; font-size:13px; white-space:pre; overflow-x:auto}
+.diffbox .code{white-space:pre; overflow-x:auto}
+.wire .code .k{color:var(--g550)} .wire .code .s{color:var(--navy)} .wire .code .o{color:var(--sig)}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:64px 80px; margin-top:44px; align-items:start}
+.two.wide{grid-template-columns:minmax(0,1fr) 420px}
+.sb2{display:grid; grid-template-columns:repeat(4,1fr); gap:32px; margin-top:44px}
+.sb2 .v{font-size:44px; letter-spacing:-.03em; line-height:1}
+.sb2 .v small{font-size:15px; color:var(--g550); letter-spacing:0; margin-left:5px}
+.sb2 .k{font-size:13.5px; color:var(--g550); margin-top:8px}
+.sb2 .d{font-size:13.5px; color:var(--g650); margin-top:10px; line-height:1.45}
+.gate{margin-top:44px}
+.gate .cols{display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:64px; align-items:start}
+.pane{border:1px solid var(--g150); border-radius:var(--r-part); background:#fff; overflow:hidden}
+.pane .bar{display:flex; align-items:center; gap:16px; padding:12px 16px; border-bottom:1px solid var(--g150); font-size:13px; color:var(--g550)}
+.pane .bar .rt{margin-left:auto; display:flex; gap:16px}
+.pane .body{padding:18px 20px; font-family:var(--code); font-size:13px; line-height:1.7; white-space:pre-wrap; outline:none}
+.pane .body .k{color:var(--g550)} .pane .body .s{color:var(--navy)}
+.pane .foot{border-top:1px solid var(--g150); padding:12px 16px; display:flex; align-items:center; gap:14px}
+
+.docs .row{grid-template-columns:220px minmax(0,1fr) auto}
+/* locked is a state of the content, not a faded surface — the pane keeps its own background */
+.locked .pane .body{color:var(--g400)}
+.locked .pane .bar .lnk, .locked .pane .bar .key{color:var(--g400)}
+.fine{font-size:13px; color:var(--g550); line-height:1.5}
+@media (max-width:980px){ .two,.two.wide,.wire,.gate .cols{grid-template-columns:1fr} .sb2{grid-template-columns:1fr 1fr} h1.d{font-size:44px} .top nav{display:none} }
+</style>
+
+<div class="top"><div class="wrap">
+  <span class="brand"><i><svg class="i" style="width:13px;height:13px;stroke-width:2" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="2"/><path d="M1.5 7h13"/></svg></i>Clearway</span>
+  <nav><a>How it works</a><a>Docs</a><a data-jump="sandbox">Sandbox</a><a>Pricing</a></nav>
+  <span class="rt"><span class="lnk">Talk to us</span><button class="btn" data-jump="sandbox">Open the sandbox</button></span>
+</div></div>
+
+
+  <!-- HERO -->
+<section class="band"><div class="wrap">
+    <p class="eyebrow">Clearway for developers · API v3</p>
+    <h1 class="d">Answer an authorization in 29 milliseconds.</h1>
+    <p class="lede">We are a card network you talk to over HTTPS. The same ISO 8583 data elements, kept by name, without the socket plumbing, the leased line, or the eighteen-month integration. Here is the entire exchange.</p>
+    <div class="cta"><button class="btn go" data-jump="sandbox">Run this in the sandbox</button><span class="lnk">Read the quickstart</span><span class="t13" style="color:var(--g550)">Sandbox needs a mutual NDA · about two minutes</span></div>
+
+    <div class="wire">
+      <div>
+        <div class="hd"><span>What we POST to your endpoint</span><span>09:41:22.104</span></div>
+        <div class="code"><span class="k">{</span>
+  "id": <span class="s">"auth_8f2c41e"</span>,
+  "amount": 4820,          <span class="k">// DE 4, minor units</span>
+  "currency": "usd",
+  "card": <span class="s">"card_1466"</span>,
+  "acceptor": "BAYLINE FUEL 14",
+  "entry_mode": "071",     <span class="k">// DE 22, contactless</span>
+  "partial_approval": true <span class="k">// DE 61</span>
+<span class="k">}</span></div>
+      </div>
+      <div>
+        <div class="hd"><span>What you answer</span><span class="st ok">200 · 29 ms</span></div>
+        <div class="code"><span class="k">{</span>
+  "decision": <span class="s">"approve"</span>,
+  "approved_amount": 2500, <span class="k">// DE 4 you echo</span>
+  "code": "10"             <span class="k">// DE 39, partial</span>
+<span class="k">}</span>
+
+<span class="k">// Anything else, and we stand in
+// on your behalf at 500 ms —
+// and tell you that we did.</span></div>
+      </div>
+    </div>
+</div></section>
+
+  <!-- THREE CALLS -->
+<section class="band"><div class="wrap">
+    <p class="eyebrow">The whole model</p>
+    <h2 class="d">Three calls. Everything else is a variation on them.</h2>
+    <p class="sub">Reversals, partial approvals, stand-in, disputes and settlement all reduce to these three. Seventeen endpoints in total; you will use six.</p>
+    <div style="margin-top:40px; max-width:900px">
+      <div class="row"><div style="font-size:17px">Create a card<div class="d" style="font-size:14.5px; margin-top:4px">Issue a virtual PAN on your BIN. You store the token; the PAN is held by us, so your PCI scope stays where it is.</div></div><span class="key">POST /v3/cards</span></div>
+      <div class="row"><div style="font-size:17px">Answer the tap<div class="d" style="font-size:14.5px; margin-top:4px">We POST the authorization to you. Reply <b style="font-weight:400; color:var(--g900)">approve</b> or a decline code inside 500 ms.</div></div><span class="key">your endpoint</span></div>
+      <div class="row"><div style="font-size:17px">Reconcile<div class="d" style="font-size:14.5px; margin-top:4px">Pull the cycle after the 21:00 UTC cut-off, or take the webhook and never poll again.</div></div><span class="key">GET /v3/settlements</span></div>
+    </div>
+</div></section>
+
+  <!-- DIVISION OF LABOUR -->
+<section class="band tone"><div class="wrap">
+    <p class="eyebrow">Where the line sits</p>
+    <h2 class="d">What stays yours, and what stops being your problem.</h2>
+    <p class="sub">Most processors blur this. It is the first thing your risk team will ask, so here it is as a table rather than a claim.</p>
+    <table class="tb" style="margin-top:36px"><thead><tr><th>Responsibility</th><th>You</th><th>Clearway</th></tr></thead><tbody>
+      <tr><td>The authorization decision<span class="s2">Approve, decline, partial, and why</span></td><td>Yours, always</td><td class="st nt">Stand-in only past 500 ms</td></tr>
+      <tr><td>Cardholder relationship<span class="s2">Who gets a card, what it may buy</span></td><td>Yours</td><td class="st nt">Never contacts them</td></tr>
+      <tr><td>Primary account numbers<span class="s2">Storage, display, PCI scope</span></td><td class="st nt">Never touches your systems</td><td>Ours · vaulted</td></tr>
+      <tr><td>Scheme connectivity<span class="s2">Sockets, leased lines, MTI framing</span></td><td class="st nt">Nothing to run</td><td>Ours</td></tr>
+      <tr><td>Certification<span class="s2">24 cases before you go live</span></td><td>You run it, as often as you like</td><td>We sit with you on the failures</td></tr>
+      <tr><td>Settlement and funding<span class="s2">Gross, interchange, scheme fees, net</span></td><td>You reconcile one file a day</td><td>Ours, at 21:00 UTC</td></tr>
+    </tbody></table>
+</div></section>
+
+  <!-- PROOF -->
+<section class="band"><div class="wrap">
+    <p class="eyebrow">Twelve months, not a good week</p>
+    <h2 class="d">The numbers your architect will ask for first.</h2>
+    <div class="two wide" style="margin-top:40px">
+      <div class="inst"><div class="cap t13">Median round trip, last twelve months · the 500 ms budget is twenty times this</div><div id="lat"></div><div class="ax"><span>Sep 2025</span><span>Mar 2026</span><span>Sep 2026</span></div></div>
+      <div>
+        <div class="note plain" style="margin-top:0"><div class="k">Read this before you trust the graph</div>
+          <p>29 ms is our half of the round trip: the time from the terminal reaching us to us reaching you. Your handler's time is yours, and it is the number that decides whether you stay inside the budget.</p></div>
+      </div>
+    </div>
+    <div class="sb2">
+      <div><div class="v">29<small>ms</small></div><div class="k">Median round trip</div><div class="d">p99 is 131 ms. Both measured at our edge, both published monthly.</div></div>
+      <div><div class="v">99.995<small>%</small></div><div class="k">Authorization uptime, 12 months</div><div class="d">Two incidents, twenty-six minutes total. Both post-mortems are public.</div></div>
+      <div><div class="v">24</div><div class="k">Certification cases</div><div class="d">Run them in sandbox as often as you like, before anyone signs anything.</div></div>
+      <div><div class="v">4</div><div class="k">First-party SDKs</div><div class="d">Node, Python, Go, Java — generated from the same OpenAPI file as the reference.</div></div>
+    </div>
+</div></section>
+
+  <!-- SANDBOX -->
+<section class="band tone" id="sandbox"><div class="wrap">
+    <p class="eyebrow">Sandbox</p>
+    <h2 class="d">Send a real authorization in about two minutes.</h2>
+    <p class="sub">A live key, scoped to a test BIN, valid for twenty-four hours. Test PANs that decline on demand, a simulated terminal, and a clock you can push forward to a settlement cut-off.</p>
+
+    <div class="gate">
+      <div class="cols">
+        <div class="locked" id="lock">
+          <div class="pane">
+            <div class="bar"><span class="key" style="background:none; padding:0">POST /v3/authorizations</span><span id="lockword" style="color:var(--g400)">locked</span><span class="rt"><span class="lnk">Approve</span><span class="lnk">Decline 51</span><span class="lnk">Partial</span></span></div>
+            <div class="body" id="req" contenteditable="false">{
+  "amount": 4820,
+  "currency": "usd",
+  "card": "card_test_1466",
+  "partial_approval": true
+}</div>
+            <div class="foot"><button class="btn go" id="send" disabled>Send</button><span class="t13" id="sendnote" style="color:var(--g550)">Unlocks once the NDA is accepted</span></div>
+          </div>
+          <div class="pane" id="respane" style="margin-top:18px; display:none">
+            <div class="bar"><span>Response</span><span class="rt" id="restime"></span></div>
+            <div class="body" id="res"></div>
+          </div>
+        </div>
+
+        <div id="ndabox">
+          <div class="t22">First, a mutual NDA</div>
+          <p class="fine" style="margin-top:10px">The sandbox exposes our test BIN ranges and the certification suite, so legal asks for a two-way NDA before we hand over a key. It is one page, it is mutual, and it does not commit you to anything else.</p>
+          <div class="field"><label>Name</label><input class="in" type="text" placeholder="Your name" autocomplete="off"></div>
+          <div class="field"><label>Company</label><input class="in" type="text" placeholder="The entity that will sign" autocomplete="off"></div>
+          <div class="field"><label>Work email<small>we send the signed copy here</small></label><input class="in" type="email" placeholder="you@company.com" autocomplete="off"></div>
+          <label style="display:flex; gap:12px; align-items:flex-start; margin-top:22px; cursor:pointer" id="acceptrow">
+            <span class="cb" id="cb" style="flex:none; margin-top:2px"></span>
+            <span class="fine" style="color:var(--g900)">I accept the <span class="lnk">mutual NDA</span> on behalf of my company. <span style="color:var(--g550)">One page · read it first, it takes ninety seconds.</span></span>
+          </label>
+          <div style="margin-top:22px"><button class="btn pri" id="unlock">Accept and issue my key</button></div>
+          <p class="fine" style="margin-top:16px">No card, no sales call. We will email the signed copy and the key. <span class="lnk">Send it to legal instead</span></p>
+        </div>
+      </div>
+      <div id="keyout" style="display:none; margin-top:32px; padding-top:28px; border-top:1px solid var(--g150)">
+        <div class="two">
+          <div><div class="t13">Your sandbox key · expires in 24 hours</div>
+            <div style="margin-top:10px; display:flex; align-items:center; gap:16px"><span class="key">sk_sandbox_4f2c9a17c91e</span><span class="lnk">Copy</span><span class="lnk">Extend to 30 days</span></div>
+            <p class="fine" style="margin-top:14px">Signed NDA is in your inbox. The key is scoped to BIN 471288 on our test range — it cannot touch a live program, so nothing here can move money.</p></div>
+          <div><div class="t13">Test cards</div>
+            <div class="kv" style="margin-top:10px; grid-template-columns:170px 1fr; font-size:14px">
+              <span class="k">Always approves</span><span>4712 8800 0000 0002</span>
+              <span class="k">Declines 51</span><span>4712 8800 0000 0051</span>
+              <span class="k">Partial approval</span><span>4712 8800 0000 0010</span>
+              <span class="k">Times out</span><span>4712 8800 0000 0500</span>
+            </div></div>
+        </div>
+      </div>
+    </div>
+</div></section>
+
+  <!-- DOCS -->
+<section class="band"><div class="wrap">
+    <p class="eyebrow">Documentation</p>
+    <h2 class="d">Written as tasks, not as a tour of the object model.</h2>
+    <div class="docs" style="margin-top:36px; max-width:960px">
+      <div class="row" style="grid-template-columns:230px minmax(0,1fr) auto"><div style="font-size:17px">Guides</div><div class="d" style="font-size:14.5px">Issuing, spend controls, 3-D Secure, disputes, stand-in. Each one ends with a working request.</div><span class="lnk">Read</span></div>
+      <div class="row" style="grid-template-columns:230px minmax(0,1fr) auto"><div style="font-size:17px">API reference</div><div class="d" style="font-size:14.5px">Every field with the ISO 8583 data element it maps to, so your host team can read it beside the spec they already have.</div><span class="lnk">Read</span></div>
+      <div class="row" style="grid-template-columns:230px minmax(0,1fr) auto"><div style="font-size:17px">Certification suite</div><div class="d" style="font-size:14.5px">All 24 cases, with the exact request we send and the response we expect. Runnable in sandbox today.</div><span class="lnk">Read</span></div>
+      <div class="row" style="grid-template-columns:230px minmax(0,1fr) auto"><div style="font-size:17px">SDKs and OpenAPI</div><div class="d" style="font-size:14.5px">Node, Python, Go, Java. Typed, retry-aware, generated. Postman collection and the raw 3.1 file.</div><span class="lnk">Download</span></div>
+    </div>
+</div></section>
+
+  <!-- HONESTY -->
+<section class="band tone"><div class="wrap">
+    <div class="two wide">
+      <div>
+        <p class="eyebrow">The part most vendors leave out</p>
+        <h2 class="d">Where hosts usually fail the first time.</h2>
+        <p class="sub">Roughly a third of first certification runs fail on case 14. Your handler answers <span class="key">DE 39 = 10</span> correctly — a partial approval — and then echoes the amount we asked for instead of the amount you approved. It costs a day. Knowing it now costs nothing.</p>
+        <div class="cta"><span class="lnk">Read all 24 cases</span><span class="lnk">See the failure in the sandbox</span></div>
+      </div>
+      <div class="diffbox">
+        <div class="code" style="line-height:1.9"><span style="color:var(--g550)">we send</span>
+DE 4   4820
+
+<span style="color:var(--g550)">you answer</span>
+DE 39  10      <span style="color:var(--g550)">partial · correct</span>
+DE 4   <span style="color:var(--bad)">4820</span>    <span style="color:var(--bad)">← requested, not approved</span>
+
+<span style="color:var(--g550)">expected</span>
+DE 4   2500</div>
+      </div>
+    </div>
+</div></section>
+
+  <!-- CLOSE -->
+<section class="band last"><div class="wrap">
+    <h2 class="d" style="max-width:22ch">Two minutes to a key. Two weeks to certified.</h2>
+    <p class="sub">That is the honest range: teams who have written a host before are through certification in about ten working days. Teams who have not take three to four weeks, and Dara sits with them for it.</p>
+    <div class="cta"><button class="btn go" data-jump="sandbox">Open the sandbox</button><span class="lnk">Talk to an engineer, not a rep</span></div>
+</div></section>
+</div>
+
+<script>
+(function(){
+ "use strict";
+ var $=function(s){return document.querySelector(s)}, $$=function(s){return [].slice.call(document.querySelectorAll(s))};
+ var root=document.documentElement, cv=function(n){return getComputedStyle(root).getPropertyValue(n).trim()};
+
+ function line(v,opts){
+   opts=opts||{}; var W=opts.w||700, H=opts.h||190, L=44, R=52, top=10, bot=H-22;
+   var mn=opts.min, mx=opts.max, rg=(mx-mn)||1;
+   var x=function(i){ return L+i/(v.length-1)*(W-L-R) }, y=function(n){ return top+(1-(n-mn)/rg)*(bot-top) };
+   var out='';
+   for(var g=0;g<4;g++){ var val=mx-g*(mx-mn)/3, yy=y(val);
+     out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+Math.round(val)+' ms</text>'; }
+   var d=v.map(function(n,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(n).toFixed(1)}).join(' ');
+   out+='<path d="'+d+'" fill="none" stroke="'+cv('--navy')+'" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+   var lx=x(v.length-1), ly=y(v[v.length-1]);
+   out+='<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="4" fill="'+cv('--navy')+'"/><text x="'+(lx+10).toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" font-size="12" fill="'+cv('--g900')+'">29 ms</text>';
+   return '<svg viewBox="0 0 '+W+' '+H+'" style="height:'+H+'px; font-family:var(--ui)" preserveAspectRatio="none" aria-hidden="true">'+out+'</svg>';
+ }
+ $('#lat').innerHTML=line([31,30,32,29,30,28,31,29,30,29,28,29],{min:20,max:40});
+
+ $$('[data-jump]').forEach(function(a){ a.addEventListener('click',function(){ var t=document.getElementById(a.dataset.jump); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}) }) });
+
+ /* NDA gate */
+ var ok=false;
+ $('#acceptrow').addEventListener('click',function(e){ e.preventDefault(); ok=!ok; $('#cb').classList.toggle('done',ok); });
+ $('#unlock').addEventListener('click',function(){
+   if(!ok){ $('#cb').classList.add('done'); ok=true; }
+   $('#lock').classList.remove('locked');
+   $('#req').setAttribute('contenteditable','true');
+   $('#send').disabled=false;
+   $('#lockword').textContent='live';
+   $('#sendnote').textContent='Editable · this hits our sandbox, not a live program';
+   $('#ndabox').innerHTML='<div class="t22">You are in.</div><p class="fine" style="margin-top:10px">The signed NDA is in your inbox. Your key is below, and it works for twenty-four hours — extend it whenever you like, no one will chase you.</p><div style="margin-top:22px"><span class="lnk">Read the quickstart</span></div>';
+   $('#keyout').style.display='block';
+   $('#keyout').scrollIntoView({behavior:'smooth',block:'center'});
+ });
+ $('#send').addEventListener('click',function(){
+   var t=$('#req').textContent, ms=27+Math.round(Math.random()*8);
+   var decline=/0051/.test(t), partial=/partial_approval"\s*:\s*true/.test(t);
+   var body = decline
+     ? '{\n  "decision": "decline",\n  "code": "51",\n  "reason": "insufficient_funds"\n}'
+     : partial
+       ? '{\n  "decision": "approve",\n  "approved_amount": 2500,\n  "code": "10"\n}'
+       : '{\n  "decision": "approve",\n  "approved_amount": 4820,\n  "code": "00"\n}';
+   $('#res').textContent=body;
+   $('#restime').innerHTML='<span class="st '+(decline?'wa':'ok')+'">'+(decline?'200 · declined':'200 · approved')+'</span><span style="color:var(--g550); margin-left:14px">'+ms+' ms</span>';
+   $('#respane').style.display='block';
+ });
+})();
+</script>

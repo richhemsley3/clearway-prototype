@@ -1,0 +1,27 @@
+ var DAY=[['Thu 20',162800,8600],['Fri 21',177300,9600],['Sat 22',135100,7200],['Sun 23',112600,6000],
+  ['Mon 24',165900,8900],['Tue 25',171800,9400],['Wed 26',169400,9100],['Thu 27',167700,9200],
+  ['Fri 28',182500,9900],['Sat 29',141600,7500],['Sun 30',115500,6200],['Mon 31',170200,9100],
+  ['Tue 01',176400,11600],['Wed 02',173600,10606]];
+ var DEC=[['05','Do not honour',3842],['51','Insufficient funds',2914],['14','Invalid card number',1377],['54','Expired card',1106],['61','Over the limit',802],['59','Suspected fraud',643]];
+ var ACQ=[['Bayline Payments',38.4,'--d1'],['Northgate Merchant Svcs',26.1,'--d2'],['Cordell Retail Group',17.8,'--d3'],['Vantage Hospitality',11.2,'--d4'],['Others',6.5,'--d5']];
+ var SET=[['2 Sep','$8,440,140','$121,480','$8,300,420','Settled','s-ok'],
+  ['1 Sep','$8,904,110','$128,640','$8,775,470','Settled','s-ok'],
+  ['31 Aug','$8,213,660','$118,900','$8,094,760','Settled','s-ok'],
+  ['30 Aug','$5,402,880','$78,900','$5,323,980','Settled','s-ok'],
+  ['29 Aug','$6,988,140','$101,220','$6,886,920','Held &middot; doc expiry','s-wa']];
+ var RC=[['00','Approved',94.2],['05','Do not honour',2.1],['51','Insufficient funds',1.6],['14','Invalid PAN',0.8],['54','Expired',0.6],['other','Everything else',0.7]];
+ var MSG=[
+  ['a1f0-88c3','Bayline Payments','071 contactless','$1,902.55','44 ms','Declined 51','s-no',
+   [['DE 2','Primary account number','4712 88•• •••• 9265'],['DE 3','Processing code','00 00 00'],['DE 4','Amount, transaction','190255'],['DE 7','Transmission date/time','0903 09:41:22'],['DE 22','POS entry mode','071 — contactless chip'],['DE 39','Response code','51 — insufficient funds'],['DE 41','Terminal ID','BAY04417'],['DE 43','Acceptor name','BAYLINE FUEL 14 · WILMINGTON DE']]],
+  ['a1f0-88c2','Northgate Merchant Svcs','051 chip','$248.10','31 ms','Approved','s-ok',
+   [['DE 2','Primary account number','4712 88•• •••• 4471'],['DE 4','Amount, transaction','24810'],['DE 22','POS entry mode','051 — chip contact'],['DE 38','Approval code','A41X72'],['DE 39','Response code','00 — approved'],['DE 43','Acceptor name','NORTHGATE SUPPLY · DOVER DE']]],
+  ['a1f0-88c4','Northgate Merchant Svcs','— reversal','&minus;$248.10','28 ms','Reversed','',
+   [['MTI','Message type','0400 — reversal request'],['DE 4','Amount, transaction','24810'],['DE 38','Original approval code','A41X72'],['DE 39','Response code','00 — accepted'],['DE 90','Original data elements','0100 · a1f0-88c2']]],
+  ['a1f0-88c5','Cordell Retail Group','901 e-commerce','$76.00','39 ms','Referral 01','s-wa',
+   [['DE 2','Primary account number','4712 88•• •••• 1180'],['DE 4','Amount, transaction','7600'],['DE 22','POS entry mode','901 — e-commerce'],['DE 39','Response code','01 — refer to issuer'],['DE 43','Acceptor name','CORDELL ONLINE · REMOTE']]],
+  ['a1f0-88c6','Bayline Payments','071 contactless','$18.75','33 ms','Approved','s-ok',
+   [['DE 2','Primary account number','4712 88•• •••• 3092'],['DE 4','Amount, transaction','1875'],['DE 38','Approval code','A41X88'],['DE 39','Response code','00 — approved'],['DE 43','Acceptor name','BAYLINE CAFE 02 · NEWARK DE']]],
+  ['a1f0-88c7','Vantage Hospitality','051 chip','$412.90','36 ms','Approved','s-ok',
+   [['DE 2','Primary account number','4712 88•• •••• 7741'],['DE 4','Amount, transaction','41290'],['DE 22','POS entry mode','051 — chip contact'],['DE 38','Approval code','A41Y03'],['DE 39','Response code','00 — approved'],['DE 43','Acceptor name','VANTAGE RESORTS · DOVER DE']]]];
+ var WF=[['Net to fund',8300420,'--ink'],['Interchange',121480,'--d1'],['Scheme fees',18240,'--d4']];
+ var FN=[['Retrieval request',142],['Chargeback received',96],['Evidence gathered',61],['Representment filed',44],['Pre-arbitration',12],['Arbitration',3]];
