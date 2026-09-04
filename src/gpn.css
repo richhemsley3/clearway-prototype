@@ -438,3 +438,37 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 #wsmenu .when a i{background:none; color:var(--navy); font-size:12px; min-width:24px; flex:none}
 #wsmenu .when a.on span{color:var(--g900)}
 .mode{display:none}
+
+/* ── documents, not rows ─────────────────────────────────────── */
+.docs{margin-top:14px}
+.docs .doc{display:grid; grid-template-columns:20px minmax(0,1fr) 220px; gap:0 20px; padding:22px 0; border-bottom:1px solid var(--g100)}
+.docs .doc .dot{width:10px; height:10px; border-radius:50%; background:var(--g200); margin-top:7px}
+.docs .doc.hot .dot{background:var(--sig)}
+.docs .doc h3{font-size:18px; letter-spacing:-.01em; line-height:1.25}
+.docs .doc .meta{font-size:13px; color:var(--g550); margin-top:4px}
+.docs .doc p{font-size:15px; line-height:1.55; color:var(--g650); margin-top:10px; max-width:64ch}
+.docs .doc .chg{margin-top:12px; padding:12px 16px; background:var(--g050); border-radius:var(--r-part); font-size:14px; line-height:1.5; max-width:64ch}
+.docs .doc .chg .k{display:block; font-size:12px; color:var(--g550); margin-bottom:4px}
+.docs .doc .side{display:flex; flex-direction:column; align-items:flex-start; gap:6px; padding-top:2px}
+.docs .doc .side .sub{font-size:13px; color:var(--g550); line-height:1.4}
+.docs .doc .side .btn{margin-top:8px}
+.docs .doc .side .lnk{margin-top:4px}
+@media (max-width:900px){ .docs .doc{grid-template-columns:20px minmax(0,1fr)} .docs .doc .side{grid-column:2} }
+
+/* a reading pane: a list to navigate, a document to read */
+.rp{display:grid; grid-template-columns:260px minmax(0,1fr); gap:0 48px; margin-top:26px; border-top:1px solid var(--g150); padding-top:22px; min-height:520px}
+.rp .nav h6{font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--g550); margin:22px 0 6px}
+.rp .nav h6:first-child{margin-top:0}
+.rp .nav a{display:block; padding:8px 10px; border-radius:var(--r-small); cursor:pointer}
+.rp .nav a:hover{background:var(--g050)}
+.rp .nav a.on{background:var(--blue100); color:var(--navy)}
+.rp .nav a .t{display:block; font-size:14px; line-height:1.3}
+.rp .nav a .m{display:block; font-size:12px; color:var(--g550); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.rp .nav a.on .m{color:var(--navy); opacity:.75}
+.rp .nav .foot{margin-top:28px; padding:0 10px}
+.rp .pane{min-width:0; max-width:760px}
+.doc-h .k{font-size:13px; color:var(--g550)}
+.doc-h h2{font-size:28px; letter-spacing:-.02em; line-height:1.15; margin-top:6px}
+.doc-h .deck{font-size:16px; line-height:1.5; color:var(--g650); margin-top:10px; max-width:60ch}
+.rp .pane .note{margin-top:24px}
+@media (max-width:1000px){ .rp{grid-template-columns:1fr} .rp .nav{display:flex; flex-wrap:wrap; gap:4px 18px} .rp .nav h6{width:100%; margin-top:14px} }

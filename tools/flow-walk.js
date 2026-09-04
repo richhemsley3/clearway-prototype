@@ -35,8 +35,8 @@ const {chromium}=require('playwright');const fs=require('fs');
  // C. the participant sees contracting closed
  await ws('pa1'); await nav('pa-apply'); await shot('apply_after'); console.log('pa1 nav:', await navtxt());
  await nav('pa-rules');
- await p.evaluate(()=>document.querySelector('#paRules tr[data-p="2"]').click()); await p.waitForTimeout(500);
- await clk('#pnlGo'); await p.waitForTimeout(400); await shot('rules_acked'); console.log('pa1 nav after ack:', await navtxt());
+ await p.evaluate(()=>document.querySelector('#paRules .doc.hot [data-act]').click()); await p.waitForTimeout(500);
+ await clk('#docAck'); await p.waitForTimeout(400); await shot('rules_acked'); console.log('pa1 nav after ack:', await navtxt());
 
  console.log(errs.length?('ERRORS\n'+errs.join('\n')):'no page errors');
  await b.close();

@@ -138,23 +138,20 @@
    $('#paQueue').innerHTML='<table class="tb" style="margin-top:20px"><thead><tr><th>Item</th><th>Whose turn</th><th>Due</th><th class="opt">What it holds up</th><th class="n"></th></tr></thead><tbody>'
     +rows.map(function(q,i){
       var first=q.k==='nda';
-      return '<tr data-q0="'+q.k+'"'+(first?' class="hot"':'')+'><td>'+esc(q.t)+'<span class="s2">'+esc(q.kind)+(confirmed0[q.k]?' · confirmed':'')+'</span></td>'
+      return '<tr data-q0="'+q.k+'"'+(first?' class="hot"':'')+'><td>'+esc(q.t)+'<span class="s2" style="max-width:60ch">'+esc(q.kind)+' · '+esc(q.note.split('. ')[0].replace(/\.$/,''))+(confirmed0[q.k]?' · confirmed':'')+'</span></td>'
        +'<td>'+turn(q.who)+'</td>'
        +'<td>'+(first?'<span class="st wa">Next</span>':q.who==='cw'?'<span class="st nt">Later</span>':'<span class="st nt">Later</span>')+'<span class="s2">'+esc(q.due)+'</span></td>'
        +'<td class="opt mute" style="max-width:34ch">'+esc(q.gates)+'</td>'
        +'<td class="n nw">'+(q.act?'<span class="lnk">'+esc(q.act)+'</span>':'')+'</td></tr>' }).join('')
     +'</tbody></table>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Each date is the latest the item can arrive without moving go-live. The list is complete on day one; items change state here, they are not added.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Each date is the latest the item can arrive without moving go-live. The list is complete on day one; items change state here, they are not added. What we accept for each is under its name.</p>';
    $$('#paQueue tr[data-q0]').forEach(function(tr){ tr.addEventListener('click',function(){ openQ0(tr.dataset.q0) }) });
  }
  function openQ0(k){
-     var q=QUEUE0.filter(function(x){return x.k===k})[0]; if(!q) return;
-     if(q.go){ if(q.k==='team') formSec='people'; go(q.go); return; }
-     panel(q.t, q.kind+' · '+(q.who==='cw'?'with GPN':'with you')+' · '+q.due,
-       '<p style="font-size:15px; color:var(--g650); line-height:1.6">'+esc(q.note)+'</p>'
-       +'<div class="rec" style="margin-top:24px"><h4>What it holds up</h4><div class="rr"><span class="l">Gates</span><span class="v" style="max-width:40ch">'+esc(q.gates)+'</span></div>'
-       +'<div class="rr"><span class="l">Due</span><span class="v">'+esc(q.due)+'</span></div></div>',
-       q.act||'Close', function(){ closePanel(); if(q.act) toast(q.t+' — '+(q.kind==='Signature'?'signing link sent to Elena Ridge.':q.kind==='Details'?'form opened.':'upload opened.')); }, q.act?'':'go');
+   var q=QUEUE0.filter(function(x){return x.k===k})[0]; if(!q) return;
+   if(q.go){ if(q.k==='team') formSec='people'; go(q.go); return; }
+   if(!q.act){ toast(q.t+' is with us. '+q.note.split('. ')[0]+'.'); return; }
+   toast(q.t+' — '+(q.kind==='Signature'?'signing link sent to Elena Ridge.':q.kind==='Details'?'form opened.':'upload opened.'));
  }
 
  function drawForm0(){

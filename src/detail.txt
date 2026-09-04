@@ -1,0 +1,161 @@
+ /* ══════════════════════════════════════════════════════════════════
+    DETAIL — where a thing's detail is light, the row carries it. A
+    document opens in a reading pane beside its list. An object goes
+    to its record. The slide-over is kept for the two places it earns
+    its keep: a queue item with an action, and a failing case with a
+    payload to read and a re-run to fire.
+    ══════════════════════════════════════════════════════════════════ */
+
+ /* ── what each document is for, in one line ───────────────────── */
+ var DESC={
+  'Network participation rules':'Who may join, what a participant must maintain, and how membership ends.',
+  'Data protection standard':'How cardholder and transaction data is stored, moved and deleted, and who may see it.',
+  'Dispute handling rules':'Retrieval, chargeback, representment and arbitration, with the clock on each step.',
+  'Settlement and funding rules':'Cycles, cut-offs, holds, and how funds move between you and the network.',
+  'Brand and marks':'Card artwork, the mark on the plastic, and where the network name may appear.',
+  'Security requirements · PCI DSS 4.0':'What is in scope, key custody, certificates, and the attestation we accept.',
+  'Implementation guide':'The path from sandbox to live, in the order an integration meets it.',
+  'Message specification':'Every field on the wire, by message type, with the values we accept.',
+  'API reference':'Every endpoint, parameter and error, with a request you can copy.',
+  'Settlement calendar':'Cycle dates, cut-offs and bank holidays for the year.',
+  'Release notes':'What changed, when it takes effect, and who it touches.'
+ };
+ var CHANGED={
+  'Dispute handling rules':['Clause 4.2','Retrieval requests must be acknowledged inside twenty-four hours. Under v5.4 you had forty-eight. Nothing else in the document has moved.'],
+  'Message specification':['DE 48, subfield 92','A fuel-specific subfield carrying the pump’s pre-authorization amount, so a partial approval can be reconciled against what was asked.'],
+  'Implementation guide':['Sections 7 and 8','Two new sections on partial approval: the field everyone gets wrong, and the certification case that catches it.'],
+  'API reference':['Tokens','Suspend and resume are documented, with the 409 you get when a token is already in the state you asked for.'],
+  'Release notes':['September','Dispute rules v6.0 in force; fuel partial approval mandatory from 1 October; settlement cut-off moves to 16:30.']
+ };
+
+ /* ── NETWORK RULES · documents, not rows ──────────────────────── */
+ function ruleBlocks(items){
+   /* items: [{p, st, sub, act, actCls, onAct, onOpen}] */
+   return '<div class="docs">'+items.map(function(it,i){ var p=it.p;
+     return '<div class="doc'+(it.hot?' hot':'')+'" data-i="'+i+'"><div class="dot"></div>'
+      +'<div class="body"><h3>'+esc(p[0])+'</h3><div class="meta">'+esc(p[1])+' · effective '+esc(p[2])+' · '+p[3]+' pages</div>'
+      +'<p>'+esc(DESC[p[0]]||'')+'</p>'
+      +(it.change?'<div class="chg"><span class="k">What changed · '+esc(it.change[0])+'</span>'+esc(it.change[1])+'</div>':'')
+      +'</div>'
+      +'<div class="side"><span class="st '+it.stc+'">'+esc(it.stl)+'</span><span class="sub">'+esc(it.sub||'')+'</span>'
+      +(it.act?'<button class="btn'+(it.actCls?' '+it.actCls:'')+' sm" data-act="'+i+'">'+esc(it.act)+'</button>':'')
+      +'<span class="lnk" data-open="'+i+'">Open the document</span></div></div>' }).join('')+'</div>';
+ }
+ drawRules=function(){
+   var host=$('#paRules'), items=[];
+   if(FIRST && acc==='rf'){
+     var todo=POLST0.filter(function(s){return s==='todo'}).length;
+     $('#paRulesSub').textContent=POLICY.length+' documents · two before risk review, four before integration · '+(todo?todo+' to read now':'both read');
+     POLICY.forEach(function(p,i){ var s=POLST0[i]; if(i===2) p=[p[0],'v5.4','1 March 2026',29];
+       items.push({p:p, stc:s==='ack'?'ok':s==='todo'?'wa':'nt', stl:s==='ack'?'Acknowledged':s==='todo'?'Before risk review':'Before integration',
+         sub:s==='ack'?'today, by Elena Ridge':s==='todo'?'read it before the pack goes in':'opens when integration is scheduled',
+         act:s==='todo'?'Read and acknowledge':null, actCls:'pri', hot:s==='todo',
+         onAct:function(){ hubOpen='d:'+p[0]; go('pa-hub'); }}); });
+     host.innerHTML='<div class="sech"><h2>Before risk review</h2><span class="t13">two documents · about seventy pages between them</span></div>'+ruleBlocks(items.slice(0,2))
+      +'<div class="sech" style="margin-top:40px"><h2>Before integration</h2><span class="t13">four documents · we will ask when they matter</span></div>'+ruleBlocks(items.slice(2))
+      +'<div class="txtwo" style="margin-top:38px"><div class="note plain"><div class="k">Why two now and four later</div><p>Acknowledgement is recorded against a version. If we asked for all six today, at least one would change before you went live and you would read it twice. The two that govern risk review are the two that cannot move.</p></div>'
+      +'<div class="note plain"><div class="k">What acknowledging means</div><p>That the named person has read the version shown and the account is bound by it. The button sits at the end of the document, so it cannot be reached without passing the text.</p></div></div>';
+   } else {
+     var st=POLST[acc], todo=polTodo(acc), who=POLWHO[acc];
+     if(FIRST && acc==='nf') st=['ack','ack','ack','ack','ack','ack'];
+     var last=POLDATE[acc].filter(Boolean).slice(-1)[0]||POLWHEN[acc];
+     $('#paRulesSub').textContent=POLICY.length+' documents · '+(todo?todo+' to acknowledge':'all acknowledged')+' · last acknowledged by '+who+' on '+last;
+     POLICY.forEach(function(p,i){ var s=st[i];
+       items.push({p:p, stc:s==='ack'?'ok':s==='new'?'wa':'nt', stl:s==='ack'?'Acknowledged':s==='new'?'New version':'To read',
+         sub:s==='ack'?(POLDATE[acc][i]||POLWHEN[acc])+', '+who:s==='new'?'replaces v'+(p[1].slice(1,2)-1)+'.4, acknowledged in '+(acc==='rf'?'August':'March'):'not yet read on this account',
+         change:s==='new'?CHANGED[p[0]]:null, hot:s==='new',
+         act:s==='ack'?null:'Read and acknowledge', actCls:s==='new'?'pri':'',
+         onAct:function(){ hubOpen='d:'+p[0]; go('pa-hub'); }}); });
+     var order=items.map(function(it,i){return i}).sort(function(a,b){ var r=function(x){return x.stc==='wa'?0:x.stc==='nt'?1:2}; return r(items[a])-r(items[b]) });
+     host.innerHTML='<div style="margin-top:26px">'+ruleBlocks(order.map(function(i){return items[i]}))+'</div>'
+      +'<div class="txtwo" style="margin-top:38px">'
+      +'<div class="note plain"><div class="k">Why we ask again</div><p>Acknowledgement is recorded against a version, not a document. When one changes we ask for that document only, which is why '+(6-todo)+' of these '+(6-todo===1?'is':'are')+' still good and '+(todo||'none')+' '+(todo===1?'is':'are')+' not.</p></div>'
+      +'<div class="note plain"><div class="k">What acknowledging means</div><p>That the named person has read the version shown and the account is bound by it. The button sits at the end of the document, so it cannot be reached without passing the text.</p></div></div>';
+     items=order.map(function(i){return items[i]});
+   }
+   $$('#paRules [data-act]').forEach(function(b){ b.addEventListener('click',function(){ var it=items[+b.dataset.act]; if(it&&it.onAct) it.onAct(); }) });
+   $$('#paRules [data-open]').forEach(function(a){ a.addEventListener('click',function(){ var it=items[+a.dataset.open]; hubOpen='d:'+it.p[0]; go('pa-hub'); }) });
+ };
+ PDRAW['pa-rules']=drawRules;
+
+ /* ── DOCUMENTATION HUB · a list to navigate, a pane to read ───── */
+ var hubOpen=null;
+ function docBody(d){
+   var chg=CHANGED[d.n], pol=d.kind==='Policy', pi=POLICY.map(function(p){return p[0]}).indexOf(d.n);
+   var st=pol?((FIRST&&acc==='rf')?(POLST0[pi]==='ack'?'ack':POLST0[pi]==='todo'?'todo':'later'):POLST[acc][pi]):null;
+   if(pol && FIRST && acc==='rf' && pi===2){ d={n:d.n, v:'v5.4', when:'1 March 2026', kind:d.kind, what:'No change this month'}; chg=null; }
+   var secs={
+     Policy:['Scope and definitions','Obligations of the participant','Obligations of the network','Timings and clocks','Breach and remedy','Schedule of changes'],
+     Specification:['Message types','Data elements','Response codes','Reversals and adjustments','Fuel and partial approval','Test vectors'],
+     Reference:['Authentication','Authorizations','Cards and tokens','Settlement','Disputes','Webhooks','Errors'],
+     Notes:['In force this month','Coming next month','Deprecations','Sandbox changes'],
+     Guide:[]
+   }[d.kind]||[];
+   return '<div class="doc-h"><div class="k">'+esc(d.kind)+' · '+esc(d.v)+' · changed '+esc(d.when)+'</div><h2>'+esc(d.n)+'</h2><p class="deck">'+esc(DESC[d.n]||d.what)+'</p></div>'
+    +(chg?'<div class="note"><div class="k">What changed · '+esc(chg[0])+'</div><p>'+esc(chg[1])+'</p></div>':'<div class="note plain"><div class="k">This version</div><p>'+esc(d.what)+'.</p></div>')
+    +(secs.length?'<div class="gd"><h2>In this document</h2><ol>'+secs.map(function(s){ return '<li>'+esc(s)+'</li>' }).join('')+'</ol>'
+      +'<p>In the working product the document reads here in full, at the width of this pane, with the redline as the first thing on the page. The prototype carries the shape and the change; the text is the network’s.</p></div>':'')
+    +(pol&&st==='later'?'<p class="t13" style="color:var(--g550); margin-top:30px">Not required yet. It opens for acknowledgement when integration is scheduled.</p>':'')
+    +(pol&&st&&st!=='ack'&&st!=='later'?'<div class="act" style="margin-top:30px; display:flex; gap:16px; align-items:center"><button class="btn pri" id="docAck">Acknowledge '+esc(d.v)+'</button><span class="t13" style="color:var(--g550)">as '+esc(POLWHO[acc])+' · recorded against this version</span></div>':'')
+    +(pol&&st==='ack'?'<p class="t13" style="color:var(--g550); margin-top:30px">Acknowledged by '+esc(POLWHO[acc])+'. Reading it again changes nothing on the account.</p>':'')
+    +'<div class="act" style="margin-top:26px"><span class="lnk" id="docDl">Download</span></div>';
+ }
+ drawHub=function(){
+   var all=hubRows();
+   POLICY.forEach(function(pp){ if(!all.some(function(d){return d.n===pp[0]})) all.push({n:pp[0], v:pp[1], when:pp[2], kind:'Policy', what:'No change this month', guide:null}); });
+   var changed=all.filter(function(d){ return !d.guide && d.what.indexOf('No change')!==0 });
+   $('#hubSeg').innerHTML='';
+   var groups=[['Changed this month',changed],['Policies',all.filter(function(d){return d.kind==='Policy'})],['Specification and reference',all.filter(function(d){return d.kind==='Specification'||d.kind==='Reference'})],['Guides',all.filter(function(d){return d.kind==='Guide'})],['Release notes',all.filter(function(d){return d.kind==='Notes'})]];
+   var key=function(d){ return d.guide?'g:'+d.guide:'d:'+d.n };
+   if(!hubOpen || !all.some(function(d){return key(d)===hubOpen})) hubOpen=key(changed[0]||all[0]);
+   var cur=all.filter(function(d){return key(d)===hubOpen})[0];
+   var nav=groups.filter(function(g){return g[1].length}).map(function(g){ return '<h6>'+esc(g[0])+'</h6>'+g[1].map(function(d){ return '<a data-k="'+esc(key(d))+'" class="'+(key(d)===hubOpen?'on':'')+'"><span class="t">'+esc(d.n)+'</span><span class="m">'+esc(d.guide?d.what:(d.what.indexOf('No change')===0?d.v:d.when))+'</span></a>' }).join('') }).join('');
+   var body = cur.guide ? (function(){ var g=GUIDES[cur.guide], i=GUIDE_ORDER.indexOf(cur.guide), nx=GUIDE_ORDER[(i+1)%GUIDE_ORDER.length];
+       return '<div class="doc-h"><div class="k">'+esc(g.crumb.join(' · '))+' · '+(i+1)+' of '+GUIDE_ORDER.length+'</div><h2>'+esc(g.t)+'</h2><p class="deck">'+esc(g.deck)+'</p></div>'+guideBody(g)
+        +'<div class="act" style="margin-top:30px"><span class="lnk" data-next="'+nx+'">Next: '+esc(GUIDES[nx].t)+' →</span></div>' })() : docBody(cur);
+   $('#hubBody').innerHTML='<div class="rp"><div class="nav">'+nav+'<div class="foot"><span class="lnk" id="hubSub">Email me when one changes</span></div></div><div class="pane">'+body+'</div></div>';
+   $$('#hubBody .nav a').forEach(function(a){ a.addEventListener('click',function(){ hubOpen=a.dataset.k; drawHub(); window.scrollTo(0,0); }) });
+   var nx=$('#hubBody [data-next]'); if(nx) nx.addEventListener('click',function(){ hubOpen='g:'+nx.dataset.next; drawHub(); window.scrollTo(0,0); });
+   $('#hubSub').addEventListener('click',function(){ toast('One email a month, and one within the hour when a policy changes.') });
+   var dl=$('#docDl'); if(dl) dl.addEventListener('click',function(){ toast('Sent to your downloads, with the version in the file name.') });
+   var ak=$('#docAck'); if(ak) ak.addEventListener('click',function(){ var i=POLICY.map(function(p){return p[0]}).indexOf(cur.n);
+     if(FIRST && acc==='rf'){ POLST0[i]='ack'; drawHub(); refreshNav(); toast(cur.n+' acknowledged by Elena Ridge.',function(){ POLST0[i]='todo'; drawHub(); refreshNav(); }); return; }
+     var was=POLST[acc][i]; ackPolicy(i); drawHub(); refreshNav(); toast(cur.n+' '+cur.v+' acknowledged by '+POLWHO[acc]+'.',function(){ POLST[acc][i]=was; POLDATE[acc][i]=null; drawHub(); refreshNav(); }); });
+ };
+ PDRAW['pa-hub']=drawHub;
+ openGuide=function(k){ hubOpen='g:'+k; go('pa-hub'); };
+
+ /* ── CONFIGURATION · the row is the setting ───────────────────── */
+ var _drawConfig_detail=drawConfig;
+ drawConfig=function(){
+   _drawConfig_detail();
+   $$('#cfBody tr[data-s]').forEach(function(tr){ var c=tr.cloneNode(true); tr.parentNode.replaceChild(c,tr);
+     var l=c.querySelector('.lnk'); if(l) l.addEventListener('click',function(){ var v=c.querySelector('td').childNodes[0].textContent;
+       toast(ws==='cw'?v+' — change opened. It takes effect on the next cycle, and Northgate is told.':v+' — request sent to Priya Raman. Changes take effect on the next cycle.'); }); });
+ };
+ PDRAW['pa-config']=drawConfig;
+
+ /* ── A DEAL IS A RECORD ───────────────────────────────────────── */
+ openDeal=function(k){
+   var d=DEALS.filter(function(x){return x.k===k})[0]; if(!d) return;
+   var idx=A.map(function(p){return p.n}).indexOf(d.n);
+   if(idx<0){ toast(d.n+' has no record yet.'); return; }
+   openRecord(idx);
+ };
+ var _drawRecord_detail=drawRecord;
+ drawRecord=function(){
+   _drawRecord_detail();
+   var p=A[rec]; if(!p || p.cat!=='enr' || rtab!=='over') return;
+   var d=(typeof DEALS!=='undefined')?DEALS.filter(function(x){return x.n===p.n})[0]:null;
+   var stage=d?d.stage:stageOf(p), days=d?d.days:daysIn(p), med=STGMED[stage]||STGMED[stageOf(p)]||9, vol=d?d.vol:proj(p);
+   var anchor=[].slice.call(document.querySelectorAll('#record .psec')).filter(function(s){ var h=s.querySelector('h3'); return h && /Where they are/.test(h.textContent) })[0]; if(!anchor) return;
+   var late=days>=med;
+   anchor.insertAdjacentHTML('afterend','<div class="psec"><div class="hd"><h3>The deal</h3><span class="ct">'+esc(stage)+' · '+days+' days</span></div>'
+    +'<div class="rec" style="margin-top:8px"><div class="rr"><span class="l">Days in stage</span><span class="v'+(late?' st wa':'')+'">'+days+' · median is '+med+'</span></div>'
+    +'<div class="rr"><span class="l">Projected volume</span><span class="v">'+esc(vol)+'</span></div>'
+    +'<div class="rr"><span class="l">Outstanding</span><span class="v" style="max-width:40ch">'+esc(d?d.note:(p.nextAct||'Nothing on their side'))+'</span></div>'
+    +(d?'<div class="rr"><span class="l">Next move</span><span class="v">'+esc(d.next)+'</span></div>':'')+'</div>'
+    +(d?'<p style="font-size:15px; color:var(--g650); line-height:1.6; margin-top:14px; max-width:70ch">'+esc(d.detail)+'</p>':'')
+    +(d&&d.next!=='Nothing — it is with Priya'?'<div class="act" style="margin-top:14px"><span class="lnk" id="dealNext">'+esc(d.next)+'</span></div>':'')+'</div>');
+   var b=$('#dealNext'); if(b) b.addEventListener('click',function(){ toast(d.next+' · '+p.n+'.') });
+ };
