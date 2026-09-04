@@ -170,7 +170,7 @@
     +(cur.st==='confirm'&&!confirmed0[cur.k]?'<div class="act" style="margin-top:24px; display:flex; gap:18px; align-items:center"><button class="btn go" id="fm0ok">This is right</button><span class="lnk" id="fm0edit">Something is wrong</span></div>':'')
     +(cur.k==='people'?'<div class="note plain" style="margin-top:26px"><div class="k">Why the roles are named now</div><p>Each role is introduced to the person doing the same job on our side, so the first checkpoint has the right people on both ends. The specification goes to all four the day the confidentiality agreement is signed; the sandbox key goes to the integration lead the afternoon the participation agreement is in force. One person can hold more than one role.</p><div class="act"><span class="lnk" id="fm0eng">Name a role</span></div></div>':'')
     +(cur.k==='bank'?'<div class="note plain" style="margin-top:26px"><div class="k">Due 11 September</div><p>The bank letter is due 11 September and nothing waits on it before then. It is listed now so the date is known.</p></div>':'')
-    +(cur.k==='docs'?'<div class="note plain" style="margin-top:26px"><div class="k">Most common rejection</div><p>Beneficial ownership declarations fail on the address check more than anything else: the proof of address must be issued inside the last thirty days. Pick the utility bill on the day you send it, not the one you have to hand.</p></div>':'')
+    +(cur.k==='docs'?'<div class="note plain" style="margin-top:26px"><div class="k">The one that usually comes back</div><p>Beneficial ownership declarations fail on the address check more than anything else: the proof of address must be issued inside the last thirty days. Pick the utility bill on the day you send it, not the one you have to hand.</p></div>':'')
     +'</div></div>';
    $$('#fmBody [data-f]').forEach(function(a){ a.addEventListener('click',function(){ anchored($('#fmBody'), function(){ formSec=a.dataset.f; drawForm(); }) }) });
    if($('#fm0ok')) $('#fm0ok').addEventListener('click',function(){ confirmed0[cur.k]=1; drawForm(); refreshNav(); toast(cur.s+' confirmed. Nothing to retype.',function(){ delete confirmed0[cur.k]; drawForm(); refreshNav(); }); });
@@ -187,10 +187,10 @@
      return '<tr data-p0="'+i+'"'+(s==='later'?' style="color:var(--g550)"':'')+'><td>'+esc(p[0])+'<span class="s2">'+(s==='ack'?'Acknowledged today by Elena Ridge':s==='todo'?'Read it before the pack goes in':'Opens when integration is scheduled')+'</span></td>'
       +'<td class="opt2">'+esc(p[1])+'</td><td class="opt mute">'+esc(p[2])+'</td><td class="n opt2 mute">'+p[3]+'</td><td>'+lab+'</td><td class="n"><span class="lnk">'+(s==='ack'?'Open':s==='todo'?'Read':'Preview')+'</span></td></tr>' };
    $('#paRules').innerHTML='<div class="sech"><h2>Before risk review</h2><span class="t13">two documents · about seventy pages between them</span></div>'
-    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.slice(0,2).map(row).join('')+'</tbody></table>'
     +'<div class="sech" style="margin-top:40px"><h2>Before integration</h2><span class="t13">four documents · not yet · we will ask when they matter</span></div>'
-    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
+    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
     +'<div class="txtwo" style="margin-top:38px"><div class="note plain"><div class="k">Why two now and four later</div><p>Acknowledgement is recorded against a version. If we asked for all six today, at least one would change before you went live and you would read it twice. The two that govern risk review are the two that cannot move.</p></div>'
     +'<div class="note plain"><div class="k">What acknowledging means</div><p>That the named person has read the version shown and the account is bound by it. The button is at the end of the document, so it cannot be reached without passing the text.</p></div></div>';
    $$('#paRules tr[data-p0]').forEach(function(tr){ tr.addEventListener('click',function(){
@@ -255,7 +255,7 @@
     +'<div class="rt"><span class="t13" style="color:var(--g550)">Synthetic money, synthetic cards, no network behind it</span></div>';
    $$('#tkEnv [data-l]').forEach(function(b){ b.addEventListener('click',function(){ toast('Opens after your first clean run in the sandbox.') }) });
    $('#tkNow').style.display=''; $('#tkNow').className='now';
-   $('#tkNow').innerHTML='<div><div class="k">Suite not yet run</div>'
+   $('#tkNow').innerHTML='<div><div class="k">Nothing has run yet</div>'
     +'<h2>61 cases, generated from Northgate’s configuration <span>· none run yet</span></h2>'
     +'<p class="why">The plan came from what Northgate told us — fuel, prepaid, network tokens, one settlement currency — so nothing in it is generic. Your key and host are below. A first request usually gets a 200 inside ten minutes; a full run takes about four.</p>'
     +'<div class="act"><button class="btn pri" id="tkRun0">Run the suite</button><span class="lnk" id="tkCurl">Send a first request from here</span></div>'
@@ -286,7 +286,7 @@
     +'<div class="rr"><span class="l">Rate limit</span><span class="v">50 a second</span></div></div>'
     +'<div class="sech" style="margin-top:40px"><h2>Your test plan</h2><span class="t13">61 cases, generated from your configuration · fuel, prepaid, network tokens, one settlement currency</span></div>'
     +'<div style="margin-top:18px">'+ptw(SUITE.map(function(s){ return [s.n, 0, true, '0 of '+s.tot] }),function(n){return n+'%'})+'</div>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Every case names the field it checks and the value it expects, so a failure states what was wrong. The first run shows which cases need work.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Every case names the field it checks and the value it expects, so a failure reads as a sentence about your code, not a stack trace. The first run tells you which sentences are yours.</p>';
    $('#tkCopyKey').addEventListener('click',function(){ toast('Key copied. Sandbox keys show in full; production keys are shown once.') });
  }
  function firstRun(){
@@ -310,7 +310,7 @@
      return;
    }
    $('#lgBody').innerHTML='<div class="facts" style="margin-top:26px"><div><div class="k">Requests</div><div class="v">1</div></div><div><div class="k">Answered 2xx</div><div class="v">100<small>%</small></div></div><div><div class="k">4xx</div><div class="v">0</div></div><div><div class="k">Latency</div><div class="v">41<small>ms</small></div></div></div>'
-    +'<table class="tb dense" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
     +'<tr><td style="width:120px">14:31:08</td><td><span class="key">POST /v1/authorizations</span><span class="s2">pm_card_fuel_approve · $42.00 · approved</span></td><td class="st ok">200</td><td class="opt"><span class="lat"><i><b style="width:68%"></b></i>41 ms</span></td><td class="n opt2 mute">req_a41f0001</td></tr>'
     +'</tbody></table>'
     +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">That is the first 200. The next thing worth proving is that we can reach you: add a webhook endpoint and fire a signed test event at it.</p>'
@@ -323,7 +323,7 @@
    $('#ky0live').addEventListener('click',function(){ toast('Production keys are generated at activation, not before.') });
    $('#kyNew').addEventListener('click',function(){ toast('A second key holder is on the go-live checklist. One person with the only key is an audit finding.') });
    $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">1 active</span></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
     +'<tr><td>Host, authorization service<span class="s2">Ravi Kapoor</span></td><td><span class="key">gpn_sand_a41f…9d2c</span></td><td class="opt2 mute">Today, 14:22</td><td class="opt mute">'+(HOUR.req?'14:31 today':'Never')+'</td><td class="n"><span class="lnk" id="ky0rev">Reveal</span></td></tr>'
     +'</tbody></table>'
     +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span></div>'
@@ -357,7 +357,7 @@
         ['Backup circuit','Not ordered','<span class="st nt">Kick-off first</span>'],
         ['Heartbeat','Starts with the first circuit','<span class="st nt">Not started</span>']].map(function(r){ return '<tr><td>'+r[0]+'<span class="s2">'+r[1]+'</span></td><td class="n">'+r[2]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<div class="note" style="margin-top:34px"><div class="k">Found by the connectivity check</div><p>Your mutual TLS certificate expires on 21 September — fifteen days before the target activation. We read that from the handshake this afternoon. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
+      +'<div class="note" style="margin-top:34px"><div class="k">Found on day one</div><p>Your mutual TLS certificate expires on 21 September — fifteen days before the target activation. We read that from the handshake this afternoon. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
      $('#pfCsr').addEventListener('click',function(){ toast('CSR instructions sent to ravi.kapoor@northgate.example and to Priya Raman.') });
      return;
    }
@@ -365,7 +365,7 @@
      $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">'+(HOUR.req?'One request is not a distribution.':'No traffic yet.')+'</div><p>Latency and error rate by endpoint appear after the first hundred requests, which the first full run of the suite produces on its own.</p><div class="act"><span class="lnk" id="pf0run">Go and run it</span></div></div>';
      $('#pf0run').addEventListener('click',function(){ go('dv-tool') }); return;
    }
-   $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">None during your time here.</div><p>Incidents are recorded against traffic, and you have not sent any. The history stays here once you have, including the days with nothing in them.</p></div>';
+   $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">None during your time here.</div><p>Incidents are recorded against traffic, and you have not sent any. The history stays here once you have. A status page that is green every day teaches you to stop looking at it; this one keeps the record instead.</p></div>';
  }
 
  /* ── the sandbox side of reporting is empty until Ravi sends something ── */

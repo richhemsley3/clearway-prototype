@@ -417,30 +417,39 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 .sbar .track i.none{background:var(--g200)}
 .sbar .lbls{display:flex; gap:3px; margin-top:12px}
 .sbar .lbls > div{min-width:0; padding:0 4px 0 0; cursor:pointer; line-height:1.3}
-.sbar .lbls .n{font-size:22px; letter-spacing:-.02em; margin-right:8px}
+.sbar .lbls .n{font-size:15px; margin-right:6px}
 .sbar .lbls .s{font-size:14px; white-space:nowrap}
 .sbar .lbls .m{display:block; font-size:13px; color:var(--g550); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .sbar .lbls .none .n, .sbar .lbls .none .s{color:var(--g400)}
 .grpsec + .grpsec{margin-top:34px}
 
 /* the live control panel: rows that carry a fortnight */
-.row.srow{grid-template-columns:1fr 140px 220px; gap:36px; cursor:pointer}
-.row.srow .sp{width:140px; height:30px}
-.spark{display:block}
-@media (max-width:900px){ .row.srow .sp{display:none} }
 
-/* a brief with nothing outstanding stays grounded, but takes less room */
-.now.quiet{padding:22px 28px; gap:36px}
-.now.quiet h2{font-size:22px; letter-spacing:-.015em}
-.now.quiet .why{margin-top:6px; max-width:64ch}
-.now.quiet .also{margin-top:14px; padding-top:12px}
-.now.quiet .rec .rr{padding:5px 0}
-.now.quiet::before{top:24px; bottom:24px}
 
-/* two densities, by what the table holds: records get two lines, ledgers get one */
-.tb.dense td{padding:9px 16px; height:auto}
-.tb.dense .s2{display:inline; margin:0 0 0 10px}
-.tb.dense th{padding:8px 16px 10px}
+
+/* ── lift ─────────────────────────────────────────────────────── */
+.inst2{min-width:0}
+.inst2 .fig{font-size:40px; letter-spacing:-.025em; line-height:1; color:var(--g900)}
+.inst2 .fig small{font-size:15px; letter-spacing:0; color:var(--g550); margin-left:8px}
+.inst2 .cap{font-size:13px; color:var(--g550); margin-top:8px; line-height:1.4}
+.inst2 .bar{display:flex; gap:3px; height:10px; margin-top:16px}
+.inst2 .bar i{display:block; border-radius:2px; min-width:3px}
+.inst2 .leg{display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:10px; font-size:13px; color:var(--g550)}
+.inst2 .leg i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:6px; vertical-align:0}
+.inst2 .leg b{color:var(--g900)}
+.now .col{min-width:0; display:flex; flex-direction:column; gap:22px}
+.now .col .rec{margin-top:0}
+.surface.set{padding:8px 24px 12px; margin-top:16px; background:#FAF8F5}   /* a half-step lighter than the brief, so the two grounds read as two */
+.surface.set .tb th{padding-top:14px}
+.surface.set .tb tr:last-child td{border-bottom:0}
+.surface.set .ms{margin-top:0}
+.surface.set .ms .m:last-child{border-bottom:0}
+.surface.set .ptw{padding:11px 0}
+.tb tr.hot td:first-child{box-shadow:inset 3px 0 0 var(--sig)}   /* the flagged row is the needs-you marker again */
+#wsmenu .when{border-top:1px solid var(--g100); margin-top:6px; padding-top:6px}
+#wsmenu .when a i{background:none; color:var(--navy); font-size:12px; min-width:24px; flex:none}
+#wsmenu .when a.on span{color:var(--g900)}
+.mode{display:none}
 
 /* ── developer reference, ported from the public site and scoped ── */
 .rf{display:grid; grid-template-columns:230px minmax(0,1fr); gap:44px; margin-top:30px; align-items:start}
@@ -839,7 +848,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       <div class="ph"><div><h1>Authorizations</h1><p>Every message as it crossed the wire · last 7 days · 61,412 messages</p></div>
         <div class="act"><button class="btn">Export</button></div></div>
       <p class="fs fsbar">Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span></p>
-      <table class="tb dense" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th class="opt2">Entry</th><th class="n">Amount</th><th class="opt">Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
+      <table class="tb" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th class="opt2">Entry</th><th class="n">Amount</th><th class="opt">Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
       <div class="tfoot"><span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span></div>
     </section>
 
@@ -854,7 +863,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
         <div><div class="sech" style="margin-top:0"><h2>Exceptions</h2><span class="t13">this cycle</span></div><div class="row" style="margin-top:6px"><div>3 reversals after cut-off<div class="d">Carried to 3 September</div></div><span class="st nt">Carried</span></div><div class="row"><div>1 cycle held<div class="d">29 August · document expiry</div></div><span class="st wa">Held</span></div><div class="row"><div>Interchange variance<div class="d">$212 against scheme file</div></div><span class="st ok">Within tolerance</span></div></div>
       </div>
       <div class="sech"><h2>Cycles</h2><span class="t13">last five</span></div>
-      <table class="tb dense" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
+      <table class="tb" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
     </section>
 
     <!-- DISPUTES -->
@@ -1269,11 +1278,11 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      else if(vsub==='m') h+='<div class="cols2" style="margin-top:26px"><div class="inst"><div class="cap t13">Monthly volume, last fourteen months</div>'
        +line((rp?rp.spark:[60,62,64,66,68,70,72,74,76,78,80,82,84,86]),{w:cwidth(720,0.62),h:210,min:40,max:100,fmt:function(n){return '$'+(n/10).toFixed(1)+'M'}})
        +'<div class="ax"><span>Jul 2025</span><span>Feb 2026</span><span>Sep 2026</span></div></div>'
-       +'<div class="note plain"><div class="k">Reading the trend</div><p>'+esc(rp?rp.volNote:'Steady month on month, with no seasonality worth planning around yet.')+'</p></div></div>';
+       +'<div class="note plain"><div class="k">What to read into it</div><p>'+esc(rp?rp.volNote:'Steady month on month, with no seasonality worth planning around yet.')+'</p></div></div>';
      else if(vsub==='d') h+='<div style="margin-top:26px" class="inst"><div class="cap t13">Daily volume, last thirty days · weekends sit low by design</div>'
        +line([62,64,61,66,68,40,38,70,72,69,74,76,44,41,78,80,77,82,84,46,43,86,88,85,90,92,50,47,94,96],{w:cwidth(1080),h:230,min:30,max:100,fmt:function(n){return '$'+(n/100).toFixed(1)+'M'}})
        +'<div class="ax"><span>4 Aug</span><span>19 Aug</span><span>3 Sep</span></div></div>'
-       +'<div class="note plain" style="margin-top:26px; max-width:620px"><div class="k">Context for the dip</div><p>The five troughs are Saturdays and Sundays. Fleet fuel is a weekday business, so a flat weekend would be the anomaly, not the drop.</p></div>';
+       +'<div class="note plain" style="margin-top:26px; max-width:620px"><div class="k">Before you read the dip</div><p>The five troughs are Saturdays and Sundays. Fleet fuel is a weekday business, so a flat weekend would be the anomaly, not the drop.</p></div>';
      else h+='<div style="margin-top:26px" id="progptw"></div>'
        +'<p class="t13" style="color:var(--g550); margin-top:18px; max-width:60ch">One program carries the account. That is normal at this stage and worth revisiting once the second BIN is live, because concentration is the thing that turns a good month into a bad quarter.</p>';
    }
@@ -1306,7 +1315,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      else if(csub==='cert'){
        var of=openFails(), tot=suiteTot('tot'), ps=suiteTot('pass'), nr=suiteTot('nr');
        h+=(of.length
-         ? '<div class="note" style="margin-top:24px"><div class="k">Blocking go-live</div><p>'+(of.length===1?'One case is failing':of.length+' cases are failing')+' and the testing team will not open a window against a failing partial approval. '+esc(of[0].id)+': '+esc(of[0].n.toLowerCase())+'. '+ps+' of '+tot+' pass; '+nr+' have not been run.</p><div class="act"><button class="btn pri" data-fail="'+of[0].id+'">Open '+of[0].id+' with them</button><span class="lnk" data-x="pd-integr">See the board</span></div></div>'
+         ? '<div class="note" style="margin-top:24px"><div class="k">Needs you first</div><p>'+(of.length===1?'One case is failing':of.length+' cases are failing')+' and the testing team will not open a window against a failing partial approval. '+esc(of[0].id)+': '+esc(of[0].n.toLowerCase())+'. '+ps+' of '+tot+' pass; '+nr+' have not been run.</p><div class="act"><button class="btn pri" data-fail="'+of[0].id+'">Open '+of[0].id+' with them</button><span class="lnk" data-x="pd-integr">See the board</span></div></div>'
          : '<div class="note plain" style="margin-top:24px"><div class="k">Ready for the window</div><p>Every case that has run passes. '+nr+' have not been run yet; the testing team runs those inside the window itself.</p><div class="act"><span class="lnk" data-x="pd-integr">See the board</span></div></div>')
         +'<table class="tb" style="margin-top:26px"><tbody>'
         +SUITE.map(function(su){ return '<tr><td>'+esc(su.n)+'<span class="s2">'+su.tot+' cases</span></td><td class="st '+(su.fail?'no':su.nr?'wa':'ok')+'" style="width:190px">'+(su.fail?su.fail+' failing':su.nr?su.nr+' not run':'All pass')+'</td><td class="n mute" style="width:150px">'+su.pass+' of '+su.tot+'</td></tr>' }).join('')
@@ -1323,7 +1332,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
        +rp.con.map(function(c,ci){ var CAN=['Everything, including closing the membership','Everything except closing','Filings and screening results','Keys, endpoints, certification'];
          return '<tr><td><span class="av">'+esc(c[0].split(' ').map(function(w){return w[0]}).join('').slice(0,2))+'</span>'+esc(c[0])+'</td><td>'+esc(c[1])+'</td><td class="t13">'+esc(CAN[ci%4])+'</td><td>'+esc(c[2]||'—')+'</td><td class="n"><span class="lnk">Email</span></td></tr>' }).join('')+'</tbody></table>'
        +(p.rich===0 ? '<div class="psec"><div class="hd"><h3>Access we can see</h3><div class="rt"><span class="lnk">Full audit trail</span></div></div>'
-         +'<div class="note"><div class="k">Audit exposure</div><p>One person holds the only production key. Every examiner asks about this, and it is easier to fix now than to explain later.</p><div class="act"><button class="btn pri">Raise it with Idris</button><span class="lnk">Read the control</span></div></div></div>' : '')
+         +'<div class="note"><div class="k">Worth raising</div><p>One person holds the only production key. Every examiner asks about this, and it is easier to fix now than to explain later.</p><div class="act"><button class="btn pri">Raise it with Idris</button><span class="lnk">Read the control</span></div></div></div>' : '')
        : '<div class="blank"><div class="t">Nobody on file.</div><p>Add the people you actually deal with, so the next person covering this account is not starting from a switchboard number.</p><div class="act"><span class="lnk">Add a contact</span></div></div>';
    }
    else if(rtab==='file'){
@@ -1463,7 +1472,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
        var C=[['Introduced → Risk review',92],['Risk review → Contracting',78],['Contracting → Integration',85],['Integration → Live',74]];
        host2.innerHTML='<div class="sech" style="margin-top:34px"><h2>Stage to stage</h2><span class="t13">last twelve months · 31 partners</span></div>'
         +'<div style="margin-top:16px">'+ptw(C.map(function(c){ return [c[0], c[1], c[1]<75, c[1]+'%'] }),function(n){ return '' })+'</div>'
-        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where applications stall</div><p>Integration to live is the leak: three in four make it, and the ones who do not are almost always a host team that ran out of time before certification rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
+        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where we lose people</div><p>Integration to live is the leak: three in four make it, and the ones who do not are almost always a host team that ran out of time before certification rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
         +'<div><div class="sech" style="margin-top:0"><h2>Time in each stage</h2><span class="t13">median days</span></div>'
         +'<table class="tb" style="margin-top:14px"><tbody>'
         +[['Introduced','4 days'],['Risk review','9 days'],['Contracting','6 days'],['Integration','52 days']].map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n" style="width:140px">'+r[1]+'</td></tr>' }).join('')
@@ -2301,13 +2310,13 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 
    if(contractingClosed() && !open.length){
      $('#paNow').className='now calm';
-     $('#paNow').innerHTML='<div><div class="k">Nothing outstanding</div>'
+     $('#paNow').innerHTML='<div><div class="k">Nothing needs you</div>'
       +'<h2>Agreement signed <span>· integration can start</span></h2>'
       +'<p class="why">Both signatures and our risk sign-off are in. Priya Raman picks this up as your integration manager, and your engineers get sandbox keys this afternoon.</p>'
       +'<div class="act"><button class="btn go" id="paAct">See the integration plan</button><span class="lnk" id="paWhy">What happens in week one</span></div>'
       +'<div class="also"><span>Behind you</span><span><b>'+QUEUE.length+'</b> items cleared</span><span><b>30</b> days from introduction</span></div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
-      +'<div class="rr"><span class="l">Approval to join</span><span class="v st ok">Approved 28 August</span></div>'
+      +'<div class="rr"><span class="l">Approval</span><span class="v st ok">Approved 28 August</span></div>'
       +'<div class="rr"><span class="l">Agreement</span><span class="v st ok">In force, 3 September</span></div>'
       +'<div class="rr"><span class="l">Ready to serve</span><span class="v">Starts this week</span></div>'
       +'<div class="rr"><span class="l">Your agent</span><span class="v">Dara Whitfield</span></div></div>';
@@ -2316,7 +2325,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    } else {
      var s=soonest();
      $('#paNow').className='now';
-     $('#paNow').innerHTML='<div><div class="k">Next deadline</div>'
+     $('#paNow').innerHTML='<div><div class="k">What bites first</div>'
       +'<h2>'+esc(s.t)+' <span>· '+esc(s.due.toLowerCase().indexOf('was')===0?s.due.charAt(0).toLowerCase()+s.due.slice(1):s.who==='cw'?'with us until '+s.due.toLowerCase():'due '+s.due)+'</span></h2>'
       +'<p class="why">'+esc(s.gates)+'</p>'
       +'<div class="act"><button class="btn pri" id="paAct">'+esc(actionFor(s))+'</button>'
@@ -2324,7 +2333,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       +'<div class="also"><span>Also open</span><span><b>'+mine.length+'</b> with you</span><span><b>'+ours.length+'</b> with GPN</span>'
       +(over.length?'<span><b>'+over.length+'</b> overdue</span>':'')+'</div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
-      +'<div class="rr"><span class="l">Approval to join</span><span class="v st '+(riskDone()?'ok':'wa')+'">'+(riskDone()?'Approved':'First line passed 28 August · second line pending')+'</span></div>'
+      +'<div class="rr"><span class="l">Approval</span><span class="v st '+(riskDone()?'ok':'wa')+'">'+(riskDone()?'Approved':'First line passed 28 August · second line pending')+'</span></div>'
       +'<div class="rr"><span class="l">Agreement</span><span class="v st '+(contractingClosed()?'ok':'wa')+'">'+(contractingClosed()?'In force, 3 September':agrState())+'</span></div>'
       +'<div class="rr"><span class="l">Ready to serve</span><span class="v st nt">Not started</span></div>'
       +'<div class="rr"><span class="l">Your agent</span><span class="v">Dara Whitfield</span></div></div>';
@@ -2419,7 +2428,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    if(q.k==='pci') h+='<div class="note plain"><div class="k">What we accept</div><p>The AOC signed by your QSA, dated inside the last twelve months. A ROC summary or a self-assessment questionnaire will come straight back, because the certification team will not book a window against either.</p></div>';
    if(q.k==='bank') h+='<div class="note plain"><div class="k">What we accept</div><p>On bank letterhead, naming the legal entity and the account that will receive settlement, signed and dated inside ninety days. A screenshot of online banking will come back.</p></div>';
    if(q.k==='ubo') h+='<div class="note plain"><div class="k">What cleared and what did not</div><p>Both owners matched the register, so the ownership side is done and does not need sending again. Only the address failed: the utility bill is dated 3 June and we need one issued inside thirty days. July or August will clear it.</p></div>';
-   if(q.k==='risk') h+='<div class="note plain"><div class="k">Current position</div><p>Second-line review, queued behind two other files. Median turnaround is four working days and this one is on day six, which is why your agent is chasing it rather than waiting.</p></div>';
+   if(q.k==='risk') h+='<div class="note plain"><div class="k">Where it actually is</div><p>Second-line review, queued behind two other files. Median turnaround is four working days and this one is on day six, which is why your agent is chasing it rather than waiting.</p></div>';
    if(q.k==='bin') h+='<div class="note plain"><div class="k">Why this one takes weeks</div><p>The range is allocated by the network, not by us. Twelve working days is normal and we cannot shorten it, but nothing else in your integration waits on it until connectivity starts.</p></div>';
    if(q.sig) h+='<div class="sech" style="margin-top:26px"><h2>Signatures</h2><span class="t13">issued 28 August</span></div>'
     +'<table class="tb" style="margin-top:10px"><tbody>'+q.sig.map(function(s){
@@ -2452,7 +2461,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    var last=POLDATE[acc].filter(Boolean).slice(-1)[0]||POLWHEN[acc];
    $('#paRulesSub').textContent=POLICY.length+' documents · '+(todo?todo+' to acknowledge':'all acknowledged')
      +' · last acknowledged by '+who+' on '+last;
-   $('#paRules').innerHTML='<table class="tb dense" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+   $('#paRules').innerHTML='<table class="tb" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.map(function(p,i){
       var s=st[i], lab=s==='ack'?'<span class="st ok">Acknowledged</span>':s==='new'?'<span class="st wa">New version</span>':'<span class="st nt">To read</span>';
       var sub = s==='ack' ? 'Acknowledged '+(POLDATE[acc][i]||POLWHEN[acc])+' by '+who
@@ -2505,13 +2514,13 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    $('#paBoardSub').textContent=a.n+' · approved 18 August · target go live 6 October · '+done+' of '+MILE.length+' milestones behind you';
 
    if(fail===0){
-     $('#paBoardNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#paBoardNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Your certificate expires before go live <span>· 21 September</span></h2>'
       +'<p class="why">Certification is clear now that AUTH-14 passes, and the window on the 15th holds. The mutual TLS certificate is the next thing that can stop you: it expires fifteen days before activation and nothing renews it automatically.</p>'
       +'<div class="act"><button class="btn pri" id="bdGo">Ask Ravi to renew it</button><span class="lnk" id="bdMsg">Confirm the window with Dara</span></div>'
       +'<div class="also"><span>Also open</span><span><b>'+nr+'</b> cases not yet run</span><span><b>'+PREP.filter(function(x){return x[2]!=='done'}).length+'</b> readiness items open</span></div></div>';
    } else {
-     $('#paBoardNow').innerHTML='<div><div class="k">Blocking certification</div>'
+     $('#paBoardNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>'+(fail===1?'One certification case is failing':fail+' certification cases are failing')+' <span>· the window opens in twelve days</span></h2>'
       +'<p class="why">AUTH-14 is the one that decides it: the testing team will not open a window against a failing partial approval, and partial approval is mandatory for fuel. Your engineering team can see the expected and actual response.</p>'
       +'<div class="act"><button class="btn pri" id="bdGo">Open the failing cases</button><span class="lnk" id="bdMsg">Reply to Dara about the window</span></div>'
@@ -2525,7 +2534,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 
    $('#paBoard').innerHTML=milestones(false)
     +'<div class="txtwo" style="margin-top:46px; align-items:start">'
-    +'<div class="note"><div class="k">Outside the plan · risk to go-live</div><p>Halvard Ruiz’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be your first cycle. A receipt from the passport office holds the file open for thirty days.</p><div class="act"><span class="lnk" id="bdPass">Send the receipt</span></div></div>'
+    +'<div class="note"><div class="k">Outside the plan, and the likeliest thing to move go-live</div><p>Halvard Ruiz’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be your first cycle. A receipt from the passport office holds the file open for thirty days.</p><div class="act"><span class="lnk" id="bdPass">Send the receipt</span></div></div>'
     +'<div><div class="sech" style="margin-top:0"><h2>Go-live week</h2><span class="t13">6 to 9 October</span></div>'
     +'<table class="tb" style="margin-top:12px"><tbody>'
     +[['6 October, 06:00','BIN 471288 activates'],
@@ -2573,7 +2582,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    $('#panelSub').textContent=a.n+' · live since 4 March · $96.7M a month across four programs';
    $('#panelBanner').innerHTML = agentView
     ? '<div class="note plain" style="margin-top:26px"><div class="k">Agent view</div><p>You are looking at Meridian Trust’s own control panel, as their agent. Read only: nothing here changes their account, and they are not told that you looked.</p></div>' : '';
-   $('#panelNow').innerHTML='<div><div class="k">Next deadline</div>'
+   $('#panelNow').innerHTML='<div><div class="k">What bites first</div>'
     +'<h2>Nine disputes need a response <span>· by Friday 5 September</span></h2>'
     +'<p class="why">Four hit day thirty of their representment window on Friday. The other five were raised on the 25th and have until the 24th. Under dispute rules v6.0 a lapsed dispute is a loss by default, with no appeal.</p>'
     +'<div class="act">'+(agentView
@@ -2604,7 +2613,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     +'<table class="tb" style="margin-top:12px"><tbody>'+INCID.map(function(r){
        return '<tr><td>'+esc(r[1])+'<span class="s2">'+esc(r[0])+'</span></td><td class="n mute">'+esc(r[3])+'</td><td class="n st ok">'+esc(r[4])+'</td></tr>' }).join('')
     +'</tbody></table><p class="t13" style="color:var(--g550); margin-top:14px">Both were ours. Neither touched the authorization path, so no payment was declined because of them.</p></div>'
-    +'<div class="note plain"><div class="k">Rule changes ahead</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With nine open and more arriving every week, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
+    +'<div class="note plain"><div class="k">Coming, and worth knowing</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With nine open and more arriving every week, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
    $('#cpAlerts').addEventListener('click',function(){ toast('Three categories: outages, disputes about to lapse, and settlement changes. All three are on for Lena.') });
    $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
    $('#cpHub').addEventListener('click',function(){ go('pa-hub') });
@@ -2735,14 +2744,14 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       +'<div class="also"><span>Cleared</span><span><b>'+QUEUE.filter(function(q){return q.dstate==="done"}).length+'</b> of '+QUEUE.length+' items</span><span><b>30</b> days from introduction</span></div></div>';
    } else if(handed){
      $('#obNow').className='now calm';
-     $('#obNow').innerHTML='<div><div class="k">Nothing outstanding</div>'
+     $('#obNow').innerHTML='<div><div class="k">Nothing needs you</div>'
       +'<h2>Ridgeline is with operations <span>· Priya Raman picked it up</span></h2>'
       +'<p class="why">You stay on the account commercially and you will see the milestones, but the integration is not yours to chase. The next thing on your desk is Wrenfield Cards, nine days into risk review with nothing moving.</p>'
       +'<div class="act"><button class="btn pri" id="obChase">Open Wrenfield Cards</button><span class="lnk" id="obSee">See the integration board</span></div>'
       +'<div class="also"><span>Your book</span><span><b>4</b> still pre-integration</span><span><b>1</b> handed over today</span></div></div>';
    } else {
      $('#obNow').className='now';
-     $('#obNow').innerHTML='<div><div class="k">Blocking contracting</div>'
+     $('#obNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Marcus Ridge has not signed <span>· four days, and he is the second of two</span></h2>'
       +'<p class="why">Elena signed on 1 September. He has opened the pack twice and not signed it. Nothing moves until he does, and October integration slots close on the 12th.</p>'
       +'<div class="act"><button class="btn pri" id="obChase">Chase the signature</button><span class="lnk" id="obSee">See what Ridgeline sees</span></div>'
@@ -2854,13 +2863,13 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      +MILE.filter(function(m){return m.st==='done'}).length+' of '+MILE.length+' milestones done';
 
    if(fail){
-     $('#inNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#inNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>The certification window is at risk <span>· 15 to 19 September</span></h2>'
       +'<p class="why">'+fail+(fail===1?' case is':' cases are')+' failing and the testing team will not open a window against AUTH-14. Separately, Northgate’s mutual TLS certificate expires on 21 September, fifteen days before go live, and nobody there has raised it.</p>'
       +'<div class="act"><button class="btn pri" id="inMsg">Tell Idris about the certificate</button><span class="lnk" id="inSee">See what Northgate sees</span></div>'
       +'<div class="also"><span>Also on this board</span><span><b>'+nr+'</b> cases not run</span><span><b>'+prepOpen+'</b> readiness items open</span><span><b>1</b> variance granted</span></div></div>';
    } else {
-     $('#inNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#inNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Certification is clear, the certificate is not <span>· expires 21 September</span></h2>'
       +'<p class="why">All 61 cases pass, so the window on the 15th holds and 6 October is still real. The mutual TLS certificate is now the only dated thing that can stop it, and it expires fifteen days before activation.</p>'
       +'<div class="act"><button class="btn pri" id="inMsg">Tell Idris about the certificate</button><span class="lnk" id="inSee">See what Northgate sees</span></div>'
@@ -3001,7 +3010,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    if(of.length){
      var f=of[0];
      $('#tkNow').className='now';
-     $('#tkNow').innerHTML='<div><div class="k">Blocking certification</div>'
+     $('#tkNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>'+f.id+' <span>· '+esc(f.n.toLowerCase())+'</span></h2>'
       +'<p class="why">'+esc(f.why)+'</p>'
       +'<div class="act"><button class="btn pri" id="tkRun">Re-run '+f.id+'</button><span class="lnk" id="tkOpen">See the request and response</span></div>'
@@ -3011,7 +3020,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      $('#tkRun').addEventListener('click',function(){ rerun(f.id) });
    } else {
      $('#tkNow').className='now calm';
-     $('#tkNow').innerHTML='<div><div class="k">Certification clear</div>'
+     $('#tkNow').innerHTML='<div><div class="k">Nothing is failing</div>'
       +'<h2>All '+tot+' cases pass <span>· the window on the 15th holds</span></h2>'
       +'<p class="why">Certification is clear. The next dated thing on your side is the mutual TLS certificate: it expires on 21 September, fifteen days before activation, and nothing renews it for you.</p>'
       +'<div class="act"><button class="btn pri" id="tkRun">Run the '+nr+' not yet run</button><span class="lnk" id="tkOpen">Open the go-live checklist</span></div>'
@@ -3062,7 +3071,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       +'</tbody></table>'
       +'<div class="txtwo" style="margin-top:40px">'
       +'<div class="note plain"><div class="k">Use the token in scripts</div><p>A sixteen-digit constant in a test file tells the next engineer nothing. <span class="key">pm_card_fuel_partial</span> tells them what the case is for, and it resolves to the same card.</p></div>'
-      +'<div class="note plain"><div class="k">Cases without a trigger value</div><p>An expiry month of 13 is an invalid expiry. A number that fails Luhn is an invalid number. We do not issue a card for a case your own validation should catch before it reaches us.</p></div></div>';
+      +'<div class="note plain"><div class="k">Cases with no special value</div><p>An expiry month of 13 is an invalid expiry. A number that fails Luhn is an invalid number. We do not issue a card for a case your own validation should catch before it reaches us.</p></div></div>';
      return;
    }
 
@@ -3074,7 +3083,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       return '<tr><td><span class="cb'+(g[2]==='done'?' done':'')+'"></span><span style="margin-left:12px">'+esc(g[0])+'</span><span class="s2" style="margin-left:30px">'+esc(g[3])+'</span></td>'
        +'<td class="opt mute">'+(g[1]==='auto'?'From your traffic':'You tell us')+'</td><td>'+lab+'</td></tr>' }).join('')
     +'</tbody></table>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Most go-live checklists are ticked in one browser on one machine, where nobody else can see them. We can see your certificate, your deliveries and your retries, so five of these are facts with a timestamp. The three that are promises say so.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Most go-live checklists are boxes ticked in one browser on one machine, where nobody else can see them. We can see your certificate, your deliveries and your retries, so five of these are facts with a timestamp. The three that are promises say so.</p>';
  }
  function GOLIVE(){
    return [['Idempotency key on every write','auto','done','Keys on 100% of writes for 14 days.'],
@@ -3095,7 +3104,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      running=false;
      if(id==='AUTH-14' && f && !f.passed){
        passCase(id);
-       toast('AUTH-14 passes. '+(suiteTot('fail')?suiteTot('fail')+' still failing.':'Every case passes.'), function(){
+       toast('AUTH-14 passes. '+(suiteTot('fail')?suiteTot('fail')+' still failing.':'Nothing is failing now.'), function(){
          var s=SUITE.filter(function(x){return x.k===f.suite})[0]; s.pass--; s.fail++;
          f.passed=false; f.act='responseCode 51, no approvalCode'; f.run='2 September at 14:22';
          drawTool(); refreshNav();
@@ -3126,12 +3135,12 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
       +line([31,30,32,33,31,30,29,31,34,36,33,31],{w:cwidth(1160),h:230,min:20,max:120,prev:[62,60,64,68,66,63,61,66,74,110,80,68],fmt:function(n){return Math.round(n)+' ms'}})
       +'<div class="ax"><span>24 hours ago</span><span>12 hours</span><span>now</span></div></div>'
       +'<div class="sech" style="margin-top:44px"><h2>By endpoint</h2><span class="t13">budget is 400 ms at p95 on everything except file upload</span></div>'
-      +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
+      +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
       +ENDP.map(function(e){
         return '<tr'+(e[5]?' class="hot"':'')+'><td><span class="key">'+esc(e[0])+'</span>'+(e[5]?'<span class="s2">over budget · 1,240 ms against 400</span>':'')+'</td>'
          +'<td class="n mute">'+e[1]+'</td><td class="n">'+e[2]+'</td><td class="n'+(e[5]?' st wa':'')+'">'+e[3]+'</td><td class="n opt mute">'+e[4]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Evidence upload is a file, not a message, and it sits outside the authorization path — so a slow one delays a dispute response and nothing else. It is listed because it is yours to fix, not because the authorization path is affected.</p>';
+      +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Evidence upload is a file, not a message, and it sits outside the authorization path — so a slow one delays a dispute response and nothing else. It is here because it is yours to know about, not because anything is broken.</p>';
      return;
    }
    if(pfTab==='conn'){
@@ -3144,7 +3153,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
         ['Heartbeat','Every 30 seconds','<span class="st ok">Last one 12 seconds ago</span>']].map(function(r){
         return '<tr><td>'+r[0]+'<span class="s2">'+r[1]+'</span></td><td class="n">'+r[2]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<div class="note" style="margin-top:34px"><div class="k">Expiring before go-live</div><p>Your mutual TLS certificate expires on 21 September, fifteen days before activation. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
+      +'<div class="note" style="margin-top:34px"><div class="k">The one that will stop you</div><p>Your mutual TLS certificate expires on 21 September, fifteen days before activation. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
      $('#pfCsr').addEventListener('click',function(){ toast('CSR instructions sent to ravi.kapoor@northgate.example and to Priya Raman.') });
      return;
    }
@@ -3257,7 +3266,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     ['ol',['Decide. Your rules, your funds, your call — we do not second-guess an approve or a decline.',
            'Answer <b>approve</b>, <b>decline</b> with a code, or approve with an <b>approved_amount</b> lower than the request for a partial.',
            'Return inside 500 ms, measured from our socket write to your first byte.']],
-    ['callout','The field that fails certification','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
+    ['callout','The field everyone gets wrong','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
     ['h2','The 500 millisecond budget','budget'],
     ['p','The budget is generous on purpose: our own half of the round trip is 29 ms at the median and 131 ms at p99, so the rest is yours. Spend it on your own risk checks, not on a cold cache.'],
     ['ul',['Keep a warm connection pool — we reuse the same mTLS session across authorizations.','Do not call a third party inline unless it is inside your budget on its worst day.','Return a decline rather than nothing. A decline is a correct answer; silence is not.']],
@@ -3577,7 +3586,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    $('#lgSub').textContent='8,214 requests in 24 hours · 99.1% answered 2xx · '+bad+' worth looking at';
    var h='<div class="facts" style="margin-top:26px">'
     +[['Requests','8,214',''],['Answered 2xx','99.1','%'],['4xx','0.7','%'],['p95 latency','68','ms']].map(function(f){ return '<div><div class="k">'+f[0]+'</div><div class="v">'+f[1]+'<small>'+f[2]+'</small></div></div>' }).join('')+'</div>'
-    +'<table class="tb dense" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>';
+    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>';
    rows.forEach(function(r){
      var st=r[4]<300?(r[4]===202?'wa':'ok'):'no', on=logOpen===r[6];
      h+='<tr data-id="'+r[6]+'"'+(on?' class="sel"':'')+'><td style="width:96px" class="mute">'+r[0]+'</td>'
@@ -3620,12 +3629,12 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    }
    var live=KEYS.filter(function(k){return k[5]}).length;
    $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">'+live+' active · one revoked</span><div class="rt"><span class="lnk" id="kyRot">Rotate all</span></div></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
     +KEYS.map(function(k){ var d=k[5]?'':' style="color:var(--g400)"';
       return '<tr'+d+'><td'+d+'>'+esc(k[0])+'<span class="s2">'+esc(k[1])+'</span></td><td><span class="key"'+d+'>'+k[2]+'</span></td><td class="opt2 mute">'+k[3]+'</td><td class="opt mute">'+k[4]+'</td><td class="n">'+(k[5]?'<span class="lnk" data-rev="'+k[2]+'">Reveal</span>':'')+'</td></tr>' }).join('')
     +'</tbody></table>'
     +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span><div class="rt"><span class="lnk" id="whAdd">Add an endpoint</span><span class="lnk" id="whTest">Send a test event</span></div></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="opt">Events</th><th>Delivered, 24h</th><th>State</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="opt">Events</th><th>Delivered, 24h</th><th>State</th><th class="n"></th></tr></thead><tbody>'
     +HOOKS.map(function(w){ return '<tr'+(w.st==='no'?' class="hot"':'')+'><td><span class="key" style="background:none; padding:0">'+esc(w.u)+'</span><span class="s2">'+esc(w.s)+'</span></td><td class="opt mute">'+esc(w.ev)+'</td>'
       +'<td><span class="lat"><i><b style="width:'+w.ok+'%"></b></i>'+w.ok+'%</span></td><td class="st '+w.st+'">'+w.lab+'</td>'
       +'<td class="n">'+(w.st==='no'?'<span class="lnk" data-retry="1">Retry the 412</span>':'<span class="lnk" data-deliv="1">Recent deliveries</span>')+'</td></tr>' }).join('')
@@ -3940,7 +3949,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    var mv=movesNow(), host=$('#tasks');
    var top=mv.filter(function(x){return x.d==='wa'})[0]||mv[0];
    var openT=TASKS.reduce(function(a,g){return a+g[1].filter(function(x){return !x[3]}).length},0);
-   $('#tsub').textContent=mv.length+' moves derived from the book · '+openT+' tasks of your own · '+mv.filter(function(x){return x.d==='wa'}).length+' due this week';
+   $('#tsub').textContent=mv.length+' moves read from the book · '+openT+' tasks of your own · '+mv.filter(function(x){return x.d==='wa'}).length+' due this week';
    if(top){
      $('#tnow').className='now';
      $('#tnow').innerHTML='<div><div class="k">Next action</div><h2>'+esc(top.t)+'</h2><p class="why">'+esc(top.why||top.s)+'</p>'
@@ -3954,7 +3963,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      $('#mvRun').addEventListener('click',function(){ if(top.run) top.run(); else top.go(); });
      $('#mvGo').addEventListener('click',function(){ top.go() });
    }
-   var h='<div class="sech" style="margin-top:34px"><h2>Your moves</h2><span class="t13">'+mv.length+' across the book · derived from the accounts</span></div>'
+   var h='<div class="sech" style="margin-top:34px"><h2>Your moves</h2><span class="t13">'+mv.length+' across the book</span></div>'
     +'<table class="tb" style="margin-top:12px"><thead><tr><th>Move</th><th class="opt2">Kind</th><th>When</th><th class="n"></th></tr></thead><tbody>'
     +mv.map(function(x,i){ return '<tr data-mv="'+i+'"><td>'+esc(x.t)+'<span class="s2" style="max-width:64ch">'+esc(x.s)+'</span></td><td class="opt2 mute">'+x.kind+'</td><td class="st '+x.d+'">'+esc(x.due)+'</td><td class="n"><span class="lnk" data-run="'+i+'">'+esc(x.act||'Open')+'</span></td></tr>' }).join('')
     +'</tbody></table>';
@@ -4200,7 +4209,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     +(cur.st==='confirm'&&!confirmed0[cur.k]?'<div class="act" style="margin-top:24px; display:flex; gap:18px; align-items:center"><button class="btn go" id="fm0ok">This is right</button><span class="lnk" id="fm0edit">Something is wrong</span></div>':'')
     +(cur.k==='people'?'<div class="note plain" style="margin-top:26px"><div class="k">Why the roles are named now</div><p>Each role is introduced to the person doing the same job on our side, so the first checkpoint has the right people on both ends. The specification goes to all four the day the confidentiality agreement is signed; the sandbox key goes to the integration lead the afternoon the participation agreement is in force. One person can hold more than one role.</p><div class="act"><span class="lnk" id="fm0eng">Name a role</span></div></div>':'')
     +(cur.k==='bank'?'<div class="note plain" style="margin-top:26px"><div class="k">Due 11 September</div><p>The bank letter is due 11 September and nothing waits on it before then. It is listed now so the date is known.</p></div>':'')
-    +(cur.k==='docs'?'<div class="note plain" style="margin-top:26px"><div class="k">Most common rejection</div><p>Beneficial ownership declarations fail on the address check more than anything else: the proof of address must be issued inside the last thirty days. Pick the utility bill on the day you send it, not the one you have to hand.</p></div>':'')
+    +(cur.k==='docs'?'<div class="note plain" style="margin-top:26px"><div class="k">The one that usually comes back</div><p>Beneficial ownership declarations fail on the address check more than anything else: the proof of address must be issued inside the last thirty days. Pick the utility bill on the day you send it, not the one you have to hand.</p></div>':'')
     +'</div></div>';
    $$('#fmBody [data-f]').forEach(function(a){ a.addEventListener('click',function(){ anchored($('#fmBody'), function(){ formSec=a.dataset.f; drawForm(); }) }) });
    if($('#fm0ok')) $('#fm0ok').addEventListener('click',function(){ confirmed0[cur.k]=1; drawForm(); refreshNav(); toast(cur.s+' confirmed. Nothing to retype.',function(){ delete confirmed0[cur.k]; drawForm(); refreshNav(); }); });
@@ -4217,10 +4226,10 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      return '<tr data-p0="'+i+'"'+(s==='later'?' style="color:var(--g550)"':'')+'><td>'+esc(p[0])+'<span class="s2">'+(s==='ack'?'Acknowledged today by Elena Ridge':s==='todo'?'Read it before the pack goes in':'Opens when integration is scheduled')+'</span></td>'
       +'<td class="opt2">'+esc(p[1])+'</td><td class="opt mute">'+esc(p[2])+'</td><td class="n opt2 mute">'+p[3]+'</td><td>'+lab+'</td><td class="n"><span class="lnk">'+(s==='ack'?'Open':s==='todo'?'Read':'Preview')+'</span></td></tr>' };
    $('#paRules').innerHTML='<div class="sech"><h2>Before risk review</h2><span class="t13">two documents · about seventy pages between them</span></div>'
-    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.slice(0,2).map(row).join('')+'</tbody></table>'
     +'<div class="sech" style="margin-top:40px"><h2>Before integration</h2><span class="t13">four documents · not yet · we will ask when they matter</span></div>'
-    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
+    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
     +'<div class="txtwo" style="margin-top:38px"><div class="note plain"><div class="k">Why two now and four later</div><p>Acknowledgement is recorded against a version. If we asked for all six today, at least one would change before you went live and you would read it twice. The two that govern risk review are the two that cannot move.</p></div>'
     +'<div class="note plain"><div class="k">What acknowledging means</div><p>That the named person has read the version shown and the account is bound by it. The button is at the end of the document, so it cannot be reached without passing the text.</p></div></div>';
    $$('#paRules tr[data-p0]').forEach(function(tr){ tr.addEventListener('click',function(){
@@ -4285,7 +4294,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     +'<div class="rt"><span class="t13" style="color:var(--g550)">Synthetic money, synthetic cards, no network behind it</span></div>';
    $$('#tkEnv [data-l]').forEach(function(b){ b.addEventListener('click',function(){ toast('Opens after your first clean run in the sandbox.') }) });
    $('#tkNow').style.display=''; $('#tkNow').className='now';
-   $('#tkNow').innerHTML='<div><div class="k">Suite not yet run</div>'
+   $('#tkNow').innerHTML='<div><div class="k">Nothing has run yet</div>'
     +'<h2>61 cases, generated from Northgate’s configuration <span>· none run yet</span></h2>'
     +'<p class="why">The plan came from what Northgate told us — fuel, prepaid, network tokens, one settlement currency — so nothing in it is generic. Your key and host are below. A first request usually gets a 200 inside ten minutes; a full run takes about four.</p>'
     +'<div class="act"><button class="btn pri" id="tkRun0">Run the suite</button><span class="lnk" id="tkCurl">Send a first request from here</span></div>'
@@ -4316,7 +4325,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     +'<div class="rr"><span class="l">Rate limit</span><span class="v">50 a second</span></div></div>'
     +'<div class="sech" style="margin-top:40px"><h2>Your test plan</h2><span class="t13">61 cases, generated from your configuration · fuel, prepaid, network tokens, one settlement currency</span></div>'
     +'<div style="margin-top:18px">'+ptw(SUITE.map(function(s){ return [s.n, 0, true, '0 of '+s.tot] }),function(n){return n+'%'})+'</div>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Every case names the field it checks and the value it expects, so a failure states what was wrong. The first run shows which cases need work.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Every case names the field it checks and the value it expects, so a failure reads as a sentence about your code, not a stack trace. The first run tells you which sentences are yours.</p>';
    $('#tkCopyKey').addEventListener('click',function(){ toast('Key copied. Sandbox keys show in full; production keys are shown once.') });
  }
  function firstRun(){
@@ -4340,7 +4349,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      return;
    }
    $('#lgBody').innerHTML='<div class="facts" style="margin-top:26px"><div><div class="k">Requests</div><div class="v">1</div></div><div><div class="k">Answered 2xx</div><div class="v">100<small>%</small></div></div><div><div class="k">4xx</div><div class="v">0</div></div><div><div class="k">Latency</div><div class="v">41<small>ms</small></div></div></div>'
-    +'<table class="tb dense" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
     +'<tr><td style="width:120px">14:31:08</td><td><span class="key">POST /v1/authorizations</span><span class="s2">pm_card_fuel_approve · $42.00 · approved</span></td><td class="st ok">200</td><td class="opt"><span class="lat"><i><b style="width:68%"></b></i>41 ms</span></td><td class="n opt2 mute">req_a41f0001</td></tr>'
     +'</tbody></table>'
     +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">That is the first 200. The next thing worth proving is that we can reach you: add a webhook endpoint and fire a signed test event at it.</p>'
@@ -4353,7 +4362,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    $('#ky0live').addEventListener('click',function(){ toast('Production keys are generated at activation, not before.') });
    $('#kyNew').addEventListener('click',function(){ toast('A second key holder is on the go-live checklist. One person with the only key is an audit finding.') });
    $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">1 active</span></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
     +'<tr><td>Host, authorization service<span class="s2">Ravi Kapoor</span></td><td><span class="key">gpn_sand_a41f…9d2c</span></td><td class="opt2 mute">Today, 14:22</td><td class="opt mute">'+(HOUR.req?'14:31 today':'Never')+'</td><td class="n"><span class="lnk" id="ky0rev">Reveal</span></td></tr>'
     +'</tbody></table>'
     +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span></div>'
@@ -4387,7 +4396,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
         ['Backup circuit','Not ordered','<span class="st nt">Kick-off first</span>'],
         ['Heartbeat','Starts with the first circuit','<span class="st nt">Not started</span>']].map(function(r){ return '<tr><td>'+r[0]+'<span class="s2">'+r[1]+'</span></td><td class="n">'+r[2]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<div class="note" style="margin-top:34px"><div class="k">Found by the connectivity check</div><p>Your mutual TLS certificate expires on 21 September — fifteen days before the target activation. We read that from the handshake this afternoon. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
+      +'<div class="note" style="margin-top:34px"><div class="k">Found on day one</div><p>Your mutual TLS certificate expires on 21 September — fifteen days before the target activation. We read that from the handshake this afternoon. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
      $('#pfCsr').addEventListener('click',function(){ toast('CSR instructions sent to ravi.kapoor@northgate.example and to Priya Raman.') });
      return;
    }
@@ -4395,7 +4404,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">'+(HOUR.req?'One request is not a distribution.':'No traffic yet.')+'</div><p>Latency and error rate by endpoint appear after the first hundred requests, which the first full run of the suite produces on its own.</p><div class="act"><span class="lnk" id="pf0run">Go and run it</span></div></div>';
      $('#pf0run').addEventListener('click',function(){ go('dv-tool') }); return;
    }
-   $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">None during your time here.</div><p>Incidents are recorded against traffic, and you have not sent any. The history stays here once you have, including the days with nothing in them.</p></div>';
+   $('#pfBody').innerHTML='<div class="blank" style="margin-top:22px"><div class="t">None during your time here.</div><p>Incidents are recorded against traffic, and you have not sent any. The history stays here once you have. A status page that is green every day teaches you to stop looking at it; this one keeps the record instead.</p></div>';
  }
 
  /* ── the sandbox side of reporting is empty until Ravi sends something ── */
@@ -4463,11 +4472,13 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     +'<circle cx="'+x(v.length-1).toFixed(1)+'" cy="'+y(v[v.length-1]).toFixed(1)+'" r="2.5" fill="'+col+'"/></svg>';
  }
  function hbars(v,opts){
-   opts=opts||{}; var W=opts.w||380, H=opts.h||120, top=6, base=H-22, mx=Math.max.apply(null,v), n=v.length, slot=W/n, bw=slot*0.62, out='';
+   opts=opts||{}; var W=opts.w||380, H=opts.h||150, L=36, top=8, base=H-22, mx=Math.max.apply(null,v), n=v.length, slot=(W-L)/n, bw=slot*0.62, out='';
    var cv=function(k){ return getComputedStyle(document.documentElement).getPropertyValue(k).trim() };
-   v.forEach(function(val,i){ var h=val/mx*(base-top), x=i*slot+(slot-bw)/2, hot=opts.hot&&opts.hot(i);
-     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+(hot?cv('--warn'):cv('--navy'))+'" opacity="'+(hot?1:(i>opts.nowIdx?0.18:0.85))+'"/>'; });
-   [0,6,12,18,23].forEach(function(i){ out+='<text x="'+(i*slot+slot/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+cv('--g400')+'">'+(i<10?'0'+i:i)+':00</text>' });
+   for(var g=0;g<3;g++){ var val=mx-g*mx/2, yy=top+(1-val/mx)*(base-top);
+     out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+(opts.fmt?opts.fmt(val):Math.round(val))+'</text>'; }
+   v.forEach(function(val,i){ var h=val/mx*(base-top), x=L+i*slot+(slot-bw)/2, hot=opts.hot&&opts.hot(i);
+     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+(hot?cv('--warn'):cv('--navy'))+'" opacity="'+(hot?1:(i>opts.nowIdx?0.2:0.9))+'"/>'; });
+   [0,6,12,18,23].forEach(function(i){ out+='<text x="'+(L+i*slot+slot/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+cv('--g400')+'">'+(i<10?'0'+i:i)+':00</text>' });
    return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; display:block; font-family:var(--ui)" aria-hidden="true">'+out+'</svg>';
  }
 
@@ -4479,8 +4490,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    if(cur && cur.id!==o.open) o.onOpen(cur.id);
    var list=rows.map(function(t){ var s=o.status(t);
      return '<a data-t="'+t.id+'" class="'+(cur&&t.id===cur.id?'on':'')+'"><span class="t">'+esc(t.t)+'</span>'
-      +'<span class="m"><span class="st '+s[0]+'">'+esc(s[1])+'</span><span class="mute nw">'+esc(t.last)+'</span></span>'
-      +'<span class="a mute">'+esc(o.who2?o.who2(t):(t.about||''))+'</span></a>' }).join('');
+      +'<span class="m"><span>'+(o.who2?'<span class="mute">'+esc(o.who2(t))+' · </span>':'')+'<span class="st '+s[0]+'">'+esc(s[1])+'</span></span><span class="mute nw">'+esc(t.last)+'</span></span></a>' }).join('');
    var thread='';
    if(cur){
      var s=o.status(cur);
@@ -4530,7 +4540,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    if(!agentMsgOpen || !rows.some(function(t){return t.id===agentMsgOpen})) agentMsgOpen=(rows.filter(awaiting)[0]||rows[0]||{}).id;
    threadPane({ rows:rows, host:$('#amBody'), open:agentMsgOpen, who:'Dara Whitfield',
      status:function(t){ return t.st==='done'?['ok','Resolved']:awaiting(t)?['wa','Awaiting your reply']:['nt','With '+ACC[t.a].n.split(' ')[0]] },
-     who2:function(t){ return ACC[t.a].n+' · '+(t.about||t.id) },
+     who2:function(t){ return ACC[t.a].n },
      emptyT:'Nothing here.', empty:'Every thread is with the participant or closed.',
      onOpen:function(id){ agentMsgOpen=id }, redraw:function(){ drawAgentMsgs() },
      reply:function(t,v){ t.msgs.unshift(['Dara Whitfield','Global Payment Network','Just now',v]); t.st='you'; t.last='Just now'; drawAgentMsgs(); refreshNav();
@@ -4586,7 +4596,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
           +'<td style="width:170px">'+d+' days'+(d>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2" style="width:150px">'+esc(proj(p))+'</td><td class="opt" style="width:170px">'+esc(p.own)+'</td>'
           +'<td class="n" style="width:110px"><span class="menu2"><span class="lnk" data-mm="'+idx+'">Move ▾</span><div class="pop" data-pp="'+idx+'">'+STG.map(function(s){ return '<a data-to="'+s+'" data-i="'+idx+'">'+s+'</a>' }).join('')+'</div></span></td></tr>' }).join('')
       +'</tbody></table></div>' }).join('')
-    +'<p class="t13" style="margin-top:26px; color:var(--g550)">'+(STG.length-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
+;
    $$('#stages [data-st]').forEach(function(el){ el.addEventListener('click',function(){ var g=$('#grp-'+el.dataset.st.replace(/\s/g,'-')); if(g) g.scrollIntoView({behavior:'smooth', block:'start'}); }) });
    $$('#pipegrp [data-mm]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); $$('#pipegrp .pop').forEach(function(p){ p.classList.toggle('on', p.dataset.pp===a.dataset.mm && !p.classList.contains('on')) }); }) });
    $$('#pipegrp [data-to]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); var i=+a.dataset.i, was=A[i].stage, wasc=A[i].cat;
@@ -4608,27 +4618,150 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    /* the brief's right column: today, by hour */
    var rec=$('#panelNow .rec'); if(rec){
      var nowIdx=9;
-     rec.outerHTML='<div class="inst sm"><div class="cap t13">Authorizations today, by hour · 09:00 to 11:00 is the decline spike</div>'+hbars(HOURLY,{w:380,h:130,hot:function(i){return i>=9&&i<=11},nowIdx:11})
+     rec.outerHTML='<div class="inst sm"><div class="cap t13">Authorizations today, by hour · 09:00 to 11:00 is the decline spike</div>'+hbars(HOURLY,{w:380,h:150,hot:function(i){return i>=9&&i<=11},nowIdx:11,fmt:function(n){return Math.round(n)+'k'}})
       +'<div class="ax" style="padding-left:0"><span>Cut-off 17:00 · next cycle 06:00 tomorrow</span><span>$4.21M ready to pay out</span></div></div>';
    }
-   /* servicing rows carry the last fourteen days */
-   var MOD=MODULE.map(function(m){ return m.k==='pa-msgs' ? {k:m.k,n:m.n,v:un+' thread'+(un===1?'':'s'),s:'awaiting your reply',act:'',hot:false} : m });
-   var host=$('#panelBody > div:nth-of-type(2)') || $('#panelBody .row').parentNode;
-   host.innerHTML=MOD.map(function(m){ var sp=SPARK[m.k];
-     return '<div class="row srow" data-m="'+m.k+'"><div><b style="font-size:16px">'+esc(m.n)+'</b>'+(m.act?'<div class="d"'+(m.hot?' style="color:var(--warn)"':'')+'>'+esc(m.act)+'</div>':'')+'</div>'
-      +'<div class="sp">'+(sp?spark(sp,140,30):'')+'</div>'
-      +'<div style="text-align:right"><b style="font-size:16px">'+esc(m.v)+'</b><div class="d">'+esc(m.s)+'</div></div></div>' }).join('');
    $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
  };
  PDRAW['pa-panel']=drawPanel;
 
- /* ── quiet briefs: nothing outstanding takes one line, not a box of prose ── */
- var _drawApply_ui2=drawApply;
- drawApply=function(){ _drawApply_ui2(); var n=$('#paNow'); if(n && n.classList.contains('calm') && !FIRST) n.classList.add('quiet'); };
+
+ /* ══════════════════════════════════════════════════════════════════
+    LIFT — every brief carries an instrument: one figure, one bar,
+    one caption. Working sets sit on a ground; ledgers stay bare.
+    The first-day control lives in the switcher, not beside it.
+    ══════════════════════════════════════════════════════════════════ */
+
+ /* ── the instrument ───────────────────────────────────────────── */
+ /* o: {fig, unit, cap, segs:[[label, value, tone]], legend:true} · tones: navy | warn | bad | good | rest */
+ function instrument(o){
+   var tot=o.segs.reduce(function(a,s){return a+s[1]},0)||1;
+   var TONE={navy:'var(--navy)', warn:'var(--warn)', bad:'var(--bad)', good:'var(--good)', rest:'var(--g200)'};
+   return '<div class="inst2">'
+    +'<div class="fig">'+esc(String(o.fig))+(o.unit?'<small>'+esc(o.unit)+'</small>':'')+'</div>'
+    +(o.cap?'<div class="cap">'+esc(o.cap)+'</div>':'')
+    +'<div class="bar">'+o.segs.map(function(s){ return s[1]?'<i style="flex:'+s[1]+' 1 0; background:'+TONE[s[2]||'rest']+'" title="'+esc(s[0])+' · '+s[1]+'"></i>':'' }).join('')+'</div>'
+    +'<div class="leg">'+o.segs.filter(function(s){return s[1]>0}).map(function(s){ return '<span><i style="background:'+TONE[s[2]||'rest']+'"></i>'+esc(s[0])+' <b>'+s[1]+'</b></span>' }).join('')+'</div>'
+    +'</div>';
+ }
+ /* put an instrument at the head of a brief's right column, keeping whatever record was there */
+ function liftBrief(sel, html, replace, dropAlso){
+   var now=$(sel); if(!now) return;
+   var right=now.children[1]; if(!right) return;
+   if(dropAlso){ var al=now.querySelector('.also'); if(al) al.remove(); }
+   if(replace || right.classList.contains('inst')) right.outerHTML='<div class="col">'+html+'</div>';
+   else right.outerHTML='<div class="col">'+html+right.outerHTML+'</div>';
+ }
+ /* a working set gets a ground; the element keeps its place */
+ function panelize(el, cls){
+   if(!el || el.closest('.surface')) return;
+   var p=document.createElement('div'); p.className='surface set'+(cls?' '+cls:''); el.parentNode.insertBefore(p, el); p.appendChild(el);
+   el.style.marginTop='0';
+ }
+
+ /* ── the applicant ────────────────────────────────────────────── */
+ var _drawApply_lift=drawApply;
+ drawApply=function(){
+   _drawApply_lift();
+   var n=$('#paNow'); if(n) n.classList.remove('quiet');
+   if(FIRST && acc==='rf'){
+     liftBrief('#paNow', instrument({fig:11, unit:'items', cap:'over five weeks · the whole list, on day one',
+       segs:[['This week',4,'navy'],['Next week',2,'navy'],['Week three',1,'navy'],['Before risk review',1,'navy'],['September',3,'rest']]}), false, true);
+   } else {
+     var done=QUEUE.filter(function(q){return q.dstate==='done'}).length, open=QUEUE.length-done;
+     liftBrief('#paNow', instrument({fig:30, unit:'days in', cap:'78 is the median from introduction to live · '+done+' of '+QUEUE.length+' items accepted',
+       segs:[['Accepted',done,'navy'],['With you',QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='you'}).length,'warn'],['With GPN',QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='cw'}).length,'rest']]}), false, true);
+   }
+   var t=$('#paQueue table'); if(t) panelize(t);
+ };
  PDRAW['pa-apply']=drawApply;
- var _drawOnboard_ui2=drawOnboard;
- drawOnboard=function(){ _drawOnboard_ui2(); var n=$('#obNow'); if(n && handed) n.classList.add('quiet'); };
+
+ /* ── the boarding participant ─────────────────────────────────── */
+ var _drawBoard_lift=drawBoard;
+ drawBoard=function(){
+   _drawBoard_lift();
+   var tot=suiteTot('tot'), pass=suiteTot('pass'), fail=suiteTot('fail'), nr=tot-pass-fail;
+   if(FIRST){
+     liftBrief('#paBoardNow', instrument({fig:61, unit:'cases generated', cap:'from what you told us · none has run', segs:[['Passing',0,'navy'],['Failing',0,'warn'],['Not run',61,'rest']]}));
+   } else {
+     liftBrief('#paBoardNow', instrument({fig:pass, unit:'of '+tot+' passing', cap:(fail?fail+' failing · ':'nothing failing · ')+nr+' not run · window 15 to 19 September', segs:[['Passing',pass,'navy'],['Failing',fail,'warn'],['Not run',nr,'rest']]}), true);
+   }
+   var ms=$('#paBoard .ms'); if(ms) panelize(ms);
+ };
+ PDRAW['pa-board']=drawBoard;
+
+ /* ── the agent's integration board and deal record ─────────────── */
+ var _drawIntegr_lift=drawIntegr;
+ drawIntegr=function(){
+   _drawIntegr_lift();
+   var done=MILE.filter(function(m){return m.st==='done'}).length, now=MILE.filter(function(m){return m.st==='now'}).length, rest=MILE.length-done-now;
+   liftBrief('#inNow', instrument({fig:12, unit:'days to the window', cap:done+' of '+MILE.length+' milestones done · target go-live 6 October', segs:[['Done',done,'navy'],['In progress',now,'warn'],['Ahead',rest,'rest']]}));
+   var ms=$('#inBody .ms'); if(ms) panelize(ms);
+   var tb=$('#inBody table'); if(tb && !ms) panelize(tb);
+ };
+ PDRAW['pd-integr']=drawIntegr;
+ var _drawOnboard_lift=drawOnboard;
+ drawOnboard=function(){
+   _drawOnboard_lift();
+   var n=$('#obNow'); if(n) n.classList.remove('quiet');
+   var done=QUEUE.filter(function(q){return q.dstate==='done'}).length, you=QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='you'}).length, us=QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='cw'}).length;
+   liftBrief('#obNow', instrument({fig:handed?0:7, unit:handed?'days with operations':'days in contracting', cap:handed?'handed today · Priya Raman':'6 is the median · '+you+' items with them, '+us+' with us',
+     segs:[['Accepted',done,'navy'],['With them',you,'warn'],['With us',us,'rest']]}), false, true);
+   var tb=$('#obBody table'); if(tb) panelize(tb);
+ };
  PDRAW['pd-onboard']=drawOnboard;
+
+ /* ── the agent's day ──────────────────────────────────────────── */
+ var _drawTasks_lift=drawTasks;
+ drawTasks=function(){
+   _drawTasks_lift();
+   if(taskView!=='mine') return;
+   var mv=movesNow(), kinds={};
+   mv.forEach(function(x){ kinds[x.kind]=(kinds[x.kind]||0)+1 });
+   var today=mv.filter(function(x){return x.due==='Today'}).length;
+   liftBrief('#tnow', instrument({fig:mv.length, unit:'moves', cap:today+' due today · read from the accounts, not typed in',
+     segs:[['Chase',kinds.Chase||0,'warn'],['Reply',kinds.Reply||0,'navy'],['Watch',(kinds.Watch||0)+(kinds.Tell||0),'rest'],['Move',kinds.Move||0,'navy']]}), true, true);
+   var t=$('#tasks table'); if(t) panelize(t);
+ };
+
+ /* ── the developer ────────────────────────────────────────────── */
+ var _drawTool_lift=drawTool;
+ drawTool=function(){
+   _drawTool_lift();
+   if(env==='live') return;
+   var tot=suiteTot('tot'), pass=HOUR.run||!FIRST?suiteTot('pass'):0, fail=HOUR.run||!FIRST?suiteTot('fail'):0, nr=tot-pass-fail;
+   var envRec=$('#tkNow .rec');
+   var keepEnv = envRec && /This environment/.test(envRec.textContent);
+   var html=instrument({fig:pass, unit:'of '+tot+' pass', cap:(fail?fail+' failing · ':(pass?'nothing failing · ':''))+nr+' not run · one case re-runs in nine seconds', segs:[['Passing',pass,'navy'],['Failing',fail,'warn'],['Not run',nr,'rest']]});
+   liftBrief('#tkNow', html, keepEnv, true);
+   if(keepEnv && tkTab==='cases' && $('#tkBody') && !$('#tkBody .rec')){
+     $('#tkBody').insertAdjacentHTML('afterbegin', envRec.outerHTML.replace('class="rec"','class="rec envrec" style="max-width:640px; margin:28px 0 36px"'));
+   }
+   var plan=$('#tkBody .ptw'); if(plan) panelize(plan.parentNode);
+   var chk=$('#tkBody table.chk'); if(chk) panelize(chk);
+ };
+ PDRAW['dv-tool']=drawTool;
+
+ /* ── the first-day control belongs to the switcher ────────────── */
+ paintMode=function(){
+   var el=$('#mode'); if(el) el.style.display='none';
+   var menu=$('#wsmenu'); if(!menu) return;
+   var old=menu.querySelector('.when'); if(old) old.remove();
+   if(!FIRSTWS[ws]) return;
+   var h='<div class="when"><h6>When</h6>'
+    +'<a data-when="1" class="'+(FIRST?'on':'')+'"><i>'+(FIRST?'✓':'')+'</i><span>First day<span>'+esc(FIRSTWS[ws])+'</span></span></a>'
+    +'<a data-when="0" class="'+(!FIRST?'on':'')+'"><i>'+(!FIRST?'✓':'')+'</i><span>Day to day<span>'+esc(BAUWS[ws])+'</span></span></a></div>';
+   menu.insertAdjacentHTML('beforeend', h);
+   $$('#wsmenu [data-when]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation();
+     var want=a.dataset.when==='1'; menu.classList.remove('on'); if(want===FIRST) return;
+     FIRST=want; paintMode(); refreshNav();
+     var home=WS[ws].nav[0][0];
+     if(curView!==home && !WS[ws].nav.some(function(n){return n[0]===curView})) go(home); else go(curView);
+     var cur=$('#wscur .nm span'); if(cur) cur.textContent=WS[ws].s+(FIRST?' · first day':'');
+   }) });
+   var cur=$('#wscur .nm span'); if(cur) cur.textContent=WS[ws].s+(FIRST?' · first day':'');
+ };
+ paintMode();
 
  $('#pnlX').addEventListener('click',closePanel);
  $('#scrim').addEventListener('click',closePanel);

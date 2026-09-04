@@ -514,11 +514,11 @@
      else if(vsub==='m') h+='<div class="cols2" style="margin-top:26px"><div class="inst"><div class="cap t13">Monthly volume, last fourteen months</div>'
        +line((rp?rp.spark:[60,62,64,66,68,70,72,74,76,78,80,82,84,86]),{w:cwidth(720,0.62),h:210,min:40,max:100,fmt:function(n){return '$'+(n/10).toFixed(1)+'M'}})
        +'<div class="ax"><span>Jul 2025</span><span>Feb 2026</span><span>Sep 2026</span></div></div>'
-       +'<div class="note plain"><div class="k">Reading the trend</div><p>'+esc(rp?rp.volNote:'Steady month on month, with no seasonality worth planning around yet.')+'</p></div></div>';
+       +'<div class="note plain"><div class="k">What to read into it</div><p>'+esc(rp?rp.volNote:'Steady month on month, with no seasonality worth planning around yet.')+'</p></div></div>';
      else if(vsub==='d') h+='<div style="margin-top:26px" class="inst"><div class="cap t13">Daily volume, last thirty days · weekends sit low by design</div>'
        +line([62,64,61,66,68,40,38,70,72,69,74,76,44,41,78,80,77,82,84,46,43,86,88,85,90,92,50,47,94,96],{w:cwidth(1080),h:230,min:30,max:100,fmt:function(n){return '$'+(n/100).toFixed(1)+'M'}})
        +'<div class="ax"><span>4 Aug</span><span>19 Aug</span><span>3 Sep</span></div></div>'
-       +'<div class="note plain" style="margin-top:26px; max-width:620px"><div class="k">Context for the dip</div><p>The five troughs are Saturdays and Sundays. Fleet fuel is a weekday business, so a flat weekend would be the anomaly, not the drop.</p></div>';
+       +'<div class="note plain" style="margin-top:26px; max-width:620px"><div class="k">Before you read the dip</div><p>The five troughs are Saturdays and Sundays. Fleet fuel is a weekday business, so a flat weekend would be the anomaly, not the drop.</p></div>';
      else h+='<div style="margin-top:26px" id="progptw"></div>'
        +'<p class="t13" style="color:var(--g550); margin-top:18px; max-width:60ch">One program carries the account. That is normal at this stage and worth revisiting once the second BIN is live, because concentration is the thing that turns a good month into a bad quarter.</p>';
    }
@@ -551,7 +551,7 @@
      else if(csub==='cert'){
        var of=openFails(), tot=suiteTot('tot'), ps=suiteTot('pass'), nr=suiteTot('nr');
        h+=(of.length
-         ? '<div class="note" style="margin-top:24px"><div class="k">Blocking go-live</div><p>'+(of.length===1?'One case is failing':of.length+' cases are failing')+' and the testing team will not open a window against a failing partial approval. '+esc(of[0].id)+': '+esc(of[0].n.toLowerCase())+'. '+ps+' of '+tot+' pass; '+nr+' have not been run.</p><div class="act"><button class="btn pri" data-fail="'+of[0].id+'">Open '+of[0].id+' with them</button><span class="lnk" data-x="pd-integr">See the board</span></div></div>'
+         ? '<div class="note" style="margin-top:24px"><div class="k">Needs you first</div><p>'+(of.length===1?'One case is failing':of.length+' cases are failing')+' and the testing team will not open a window against a failing partial approval. '+esc(of[0].id)+': '+esc(of[0].n.toLowerCase())+'. '+ps+' of '+tot+' pass; '+nr+' have not been run.</p><div class="act"><button class="btn pri" data-fail="'+of[0].id+'">Open '+of[0].id+' with them</button><span class="lnk" data-x="pd-integr">See the board</span></div></div>'
          : '<div class="note plain" style="margin-top:24px"><div class="k">Ready for the window</div><p>Every case that has run passes. '+nr+' have not been run yet; the testing team runs those inside the window itself.</p><div class="act"><span class="lnk" data-x="pd-integr">See the board</span></div></div>')
         +'<table class="tb" style="margin-top:26px"><tbody>'
         +SUITE.map(function(su){ return '<tr><td>'+esc(su.n)+'<span class="s2">'+su.tot+' cases</span></td><td class="st '+(su.fail?'no':su.nr?'wa':'ok')+'" style="width:190px">'+(su.fail?su.fail+' failing':su.nr?su.nr+' not run':'All pass')+'</td><td class="n mute" style="width:150px">'+su.pass+' of '+su.tot+'</td></tr>' }).join('')
@@ -568,7 +568,7 @@
        +rp.con.map(function(c,ci){ var CAN=['Everything, including closing the membership','Everything except closing','Filings and screening results','Keys, endpoints, certification'];
          return '<tr><td><span class="av">'+esc(c[0].split(' ').map(function(w){return w[0]}).join('').slice(0,2))+'</span>'+esc(c[0])+'</td><td>'+esc(c[1])+'</td><td class="t13">'+esc(CAN[ci%4])+'</td><td>'+esc(c[2]||'—')+'</td><td class="n"><span class="lnk">Email</span></td></tr>' }).join('')+'</tbody></table>'
        +(p.rich===0 ? '<div class="psec"><div class="hd"><h3>Access we can see</h3><div class="rt"><span class="lnk">Full audit trail</span></div></div>'
-         +'<div class="note"><div class="k">Audit exposure</div><p>One person holds the only production key. Every examiner asks about this, and it is easier to fix now than to explain later.</p><div class="act"><button class="btn pri">Raise it with Idris</button><span class="lnk">Read the control</span></div></div></div>' : '')
+         +'<div class="note"><div class="k">Worth raising</div><p>One person holds the only production key. Every examiner asks about this, and it is easier to fix now than to explain later.</p><div class="act"><button class="btn pri">Raise it with Idris</button><span class="lnk">Read the control</span></div></div></div>' : '')
        : '<div class="blank"><div class="t">Nobody on file.</div><p>Add the people you actually deal with, so the next person covering this account is not starting from a switchboard number.</p><div class="act"><span class="lnk">Add a contact</span></div></div>';
    }
    else if(rtab==='file'){
@@ -708,7 +708,7 @@
        var C=[['Introduced → Risk review',92],['Risk review → Contracting',78],['Contracting → Integration',85],['Integration → Live',74]];
        host2.innerHTML='<div class="sech" style="margin-top:34px"><h2>Stage to stage</h2><span class="t13">last twelve months · 31 partners</span></div>'
         +'<div style="margin-top:16px">'+ptw(C.map(function(c){ return [c[0], c[1], c[1]<75, c[1]+'%'] }),function(n){ return '' })+'</div>'
-        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where applications stall</div><p>Integration to live is the leak: three in four make it, and the ones who do not are almost always a host team that ran out of time before certification rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
+        +'<div class="txtwo" style="margin-top:44px"><div class="note plain" style="margin-top:0"><div class="k">Where we lose people</div><p>Integration to live is the leak: three in four make it, and the ones who do not are almost always a host team that ran out of time before certification rather than one that could not pass. The fix is scheduling, not engineering.</p></div>'
         +'<div><div class="sech" style="margin-top:0"><h2>Time in each stage</h2><span class="t13">median days</span></div>'
         +'<table class="tb" style="margin-top:14px"><tbody>'
         +[['Introduced','4 days'],['Risk review','9 days'],['Contracting','6 days'],['Integration','52 days']].map(function(r){ return '<tr><td>'+r[0]+'</td><td class="n" style="width:140px">'+r[1]+'</td></tr>' }).join('')
@@ -1018,6 +1018,7 @@
 /*IAJS*/
 /*FIRSTJS*/
 /*UI2JS*/
+/*LIFTJS*/
  $('#pnlX').addEventListener('click',closePanel);
  $('#scrim').addEventListener('click',closePanel);
  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePanel() });

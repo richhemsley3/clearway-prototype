@@ -40,7 +40,7 @@
    var mv=movesNow(), host=$('#tasks');
    var top=mv.filter(function(x){return x.d==='wa'})[0]||mv[0];
    var openT=TASKS.reduce(function(a,g){return a+g[1].filter(function(x){return !x[3]}).length},0);
-   $('#tsub').textContent=mv.length+' moves derived from the book · '+openT+' tasks of your own · '+mv.filter(function(x){return x.d==='wa'}).length+' due this week';
+   $('#tsub').textContent=mv.length+' moves read from the book · '+openT+' tasks of your own · '+mv.filter(function(x){return x.d==='wa'}).length+' due this week';
    if(top){
      $('#tnow').className='now';
      $('#tnow').innerHTML='<div><div class="k">Next action</div><h2>'+esc(top.t)+'</h2><p class="why">'+esc(top.why||top.s)+'</p>'
@@ -54,7 +54,7 @@
      $('#mvRun').addEventListener('click',function(){ if(top.run) top.run(); else top.go(); });
      $('#mvGo').addEventListener('click',function(){ top.go() });
    }
-   var h='<div class="sech" style="margin-top:34px"><h2>Your moves</h2><span class="t13">'+mv.length+' across the book · derived from the accounts</span></div>'
+   var h='<div class="sech" style="margin-top:34px"><h2>Your moves</h2><span class="t13">'+mv.length+' across the book</span></div>'
     +'<table class="tb" style="margin-top:12px"><thead><tr><th>Move</th><th class="opt2">Kind</th><th>When</th><th class="n"></th></tr></thead><tbody>'
     +mv.map(function(x,i){ return '<tr data-mv="'+i+'"><td>'+esc(x.t)+'<span class="s2" style="max-width:64ch">'+esc(x.s)+'</span></td><td class="opt2 mute">'+x.kind+'</td><td class="st '+x.d+'">'+esc(x.due)+'</td><td class="n"><span class="lnk" data-run="'+i+'">'+esc(x.act||'Open')+'</span></td></tr>' }).join('')
     +'</tbody></table>';

@@ -16,11 +16,13 @@
     +'<circle cx="'+x(v.length-1).toFixed(1)+'" cy="'+y(v[v.length-1]).toFixed(1)+'" r="2.5" fill="'+col+'"/></svg>';
  }
  function hbars(v,opts){
-   opts=opts||{}; var W=opts.w||380, H=opts.h||120, top=6, base=H-22, mx=Math.max.apply(null,v), n=v.length, slot=W/n, bw=slot*0.62, out='';
+   opts=opts||{}; var W=opts.w||380, H=opts.h||150, L=36, top=8, base=H-22, mx=Math.max.apply(null,v), n=v.length, slot=(W-L)/n, bw=slot*0.62, out='';
    var cv=function(k){ return getComputedStyle(document.documentElement).getPropertyValue(k).trim() };
-   v.forEach(function(val,i){ var h=val/mx*(base-top), x=i*slot+(slot-bw)/2, hot=opts.hot&&opts.hot(i);
-     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+(hot?cv('--warn'):cv('--navy'))+'" opacity="'+(hot?1:(i>opts.nowIdx?0.18:0.85))+'"/>'; });
-   [0,6,12,18,23].forEach(function(i){ out+='<text x="'+(i*slot+slot/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+cv('--g400')+'">'+(i<10?'0'+i:i)+':00</text>' });
+   for(var g=0;g<3;g++){ var val=mx-g*mx/2, yy=top+(1-val/mx)*(base-top);
+     out+='<line x1="'+L+'" x2="'+W+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+cv('--g150')+'" stroke-dasharray="2 4"/><text x="0" y="'+(yy+4).toFixed(1)+'" font-size="11" fill="'+cv('--g400')+'">'+(opts.fmt?opts.fmt(val):Math.round(val))+'</text>'; }
+   v.forEach(function(val,i){ var h=val/mx*(base-top), x=L+i*slot+(slot-bw)/2, hot=opts.hot&&opts.hot(i);
+     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+(hot?cv('--warn'):cv('--navy'))+'" opacity="'+(hot?1:(i>opts.nowIdx?0.2:0.9))+'"/>'; });
+   [0,6,12,18,23].forEach(function(i){ out+='<text x="'+(L+i*slot+slot/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+cv('--g400')+'">'+(i<10?'0'+i:i)+':00</text>' });
    return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; display:block; font-family:var(--ui)" aria-hidden="true">'+out+'</svg>';
  }
 
@@ -32,8 +34,7 @@
    if(cur && cur.id!==o.open) o.onOpen(cur.id);
    var list=rows.map(function(t){ var s=o.status(t);
      return '<a data-t="'+t.id+'" class="'+(cur&&t.id===cur.id?'on':'')+'"><span class="t">'+esc(t.t)+'</span>'
-      +'<span class="m"><span class="st '+s[0]+'">'+esc(s[1])+'</span><span class="mute nw">'+esc(t.last)+'</span></span>'
-      +'<span class="a mute">'+esc(o.who2?o.who2(t):(t.about||''))+'</span></a>' }).join('');
+      +'<span class="m"><span>'+(o.who2?'<span class="mute">'+esc(o.who2(t))+' · </span>':'')+'<span class="st '+s[0]+'">'+esc(s[1])+'</span></span><span class="mute nw">'+esc(t.last)+'</span></span></a>' }).join('');
    var thread='';
    if(cur){
      var s=o.status(cur);
@@ -83,7 +84,7 @@
    if(!agentMsgOpen || !rows.some(function(t){return t.id===agentMsgOpen})) agentMsgOpen=(rows.filter(awaiting)[0]||rows[0]||{}).id;
    threadPane({ rows:rows, host:$('#amBody'), open:agentMsgOpen, who:'Dara Whitfield',
      status:function(t){ return t.st==='done'?['ok','Resolved']:awaiting(t)?['wa','Awaiting your reply']:['nt','With '+ACC[t.a].n.split(' ')[0]] },
-     who2:function(t){ return ACC[t.a].n+' · '+(t.about||t.id) },
+     who2:function(t){ return ACC[t.a].n },
      emptyT:'Nothing here.', empty:'Every thread is with the participant or closed.',
      onOpen:function(id){ agentMsgOpen=id }, redraw:function(){ drawAgentMsgs() },
      reply:function(t,v){ t.msgs.unshift(['Dara Whitfield','Global Payment Network','Just now',v]); t.st='you'; t.last='Just now'; drawAgentMsgs(); refreshNav();
@@ -139,7 +140,7 @@
           +'<td style="width:170px">'+d+' days'+(d>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2" style="width:150px">'+esc(proj(p))+'</td><td class="opt" style="width:170px">'+esc(p.own)+'</td>'
           +'<td class="n" style="width:110px"><span class="menu2"><span class="lnk" data-mm="'+idx+'">Move ▾</span><div class="pop" data-pp="'+idx+'">'+STG.map(function(s){ return '<a data-to="'+s+'" data-i="'+idx+'">'+s+'</a>' }).join('')+'</div></span></td></tr>' }).join('')
       +'</tbody></table></div>' }).join('')
-    +'<p class="t13" style="margin-top:26px; color:var(--g550)">'+(STG.length-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
+;
    $$('#stages [data-st]').forEach(function(el){ el.addEventListener('click',function(){ var g=$('#grp-'+el.dataset.st.replace(/\s/g,'-')); if(g) g.scrollIntoView({behavior:'smooth', block:'start'}); }) });
    $$('#pipegrp [data-mm]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); $$('#pipegrp .pop').forEach(function(p){ p.classList.toggle('on', p.dataset.pp===a.dataset.mm && !p.classList.contains('on')) }); }) });
    $$('#pipegrp [data-to]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); var i=+a.dataset.i, was=A[i].stage, wasc=A[i].cat;
@@ -161,24 +162,10 @@
    /* the brief's right column: today, by hour */
    var rec=$('#panelNow .rec'); if(rec){
      var nowIdx=9;
-     rec.outerHTML='<div class="inst sm"><div class="cap t13">Authorizations today, by hour · 09:00 to 11:00 is the decline spike</div>'+hbars(HOURLY,{w:380,h:130,hot:function(i){return i>=9&&i<=11},nowIdx:11})
+     rec.outerHTML='<div class="inst sm"><div class="cap t13">Authorizations today, by hour · 09:00 to 11:00 is the decline spike</div>'+hbars(HOURLY,{w:380,h:150,hot:function(i){return i>=9&&i<=11},nowIdx:11,fmt:function(n){return Math.round(n)+'k'}})
       +'<div class="ax" style="padding-left:0"><span>Cut-off 17:00 · next cycle 06:00 tomorrow</span><span>$4.21M ready to pay out</span></div></div>';
    }
-   /* servicing rows carry the last fourteen days */
-   var MOD=MODULE.map(function(m){ return m.k==='pa-msgs' ? {k:m.k,n:m.n,v:un+' thread'+(un===1?'':'s'),s:'awaiting your reply',act:'',hot:false} : m });
-   var host=$('#panelBody > div:nth-of-type(2)') || $('#panelBody .row').parentNode;
-   host.innerHTML=MOD.map(function(m){ var sp=SPARK[m.k];
-     return '<div class="row srow" data-m="'+m.k+'"><div><b style="font-size:16px">'+esc(m.n)+'</b>'+(m.act?'<div class="d"'+(m.hot?' style="color:var(--warn)"':'')+'>'+esc(m.act)+'</div>':'')+'</div>'
-      +'<div class="sp">'+(sp?spark(sp,140,30):'')+'</div>'
-      +'<div style="text-align:right"><b style="font-size:16px">'+esc(m.v)+'</b><div class="d">'+esc(m.s)+'</div></div></div>' }).join('');
    $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
  };
  PDRAW['pa-panel']=drawPanel;
 
- /* ── quiet briefs: nothing outstanding takes one line, not a box of prose ── */
- var _drawApply_ui2=drawApply;
- drawApply=function(){ _drawApply_ui2(); var n=$('#paNow'); if(n && n.classList.contains('calm') && !FIRST) n.classList.add('quiet'); };
- PDRAW['pa-apply']=drawApply;
- var _drawOnboard_ui2=drawOnboard;
- drawOnboard=function(){ _drawOnboard_ui2(); var n=$('#obNow'); if(n && handed) n.classList.add('quiet'); };
- PDRAW['pd-onboard']=drawOnboard;

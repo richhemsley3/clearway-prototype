@@ -6,7 +6,7 @@ const {chromium}=require('playwright');
   await p.goto('file://'+require('path').join(__dirname,'..','docs','index.html')+''); await p.waitForTimeout(500);
   for(const k of ['pa1','pa2','dev']){
     await p.evaluate(k=>{document.querySelectorAll('#wsmenu a').forEach(a=>{if(a.dataset.w===k)a.click()})},k); await p.waitForTimeout(400);
-    await p.evaluate(()=>document.querySelector('#mode [data-m="1"]').click()); await p.waitForTimeout(400);
+    await p.evaluate(()=>document.querySelector('#wsmenu [data-when="1"]').click()); await p.waitForTimeout(400);
     const navs=await p.evaluate(()=>[...document.querySelectorAll('#nav a')].map(x=>x.dataset.go));
     for(const v of navs){
       await p.evaluate(v=>{document.querySelectorAll('#nav a').forEach(a=>{if(a.dataset.go===v)a.click()})},v); await p.waitForTimeout(450);
@@ -16,7 +16,7 @@ const {chromium}=require('playwright');
         out.over=[...new Set(out.over)].slice(0,4); return out;});
       if(r.hs||r.over.length) console.log(w,k,v,r.hs?'HSCROLL':'',r.over.join(' | '));
     }
-    await p.evaluate(()=>document.querySelector('#mode [data-m="0"]').click()); await p.waitForTimeout(300);
+    await p.evaluate(()=>document.querySelector('#wsmenu [data-when="0"]').click()); await p.waitForTimeout(300);
   }
   if(errs.length) console.log(w, errs.join('\n'));
   await p.close();

@@ -119,13 +119,13 @@
 
    if(contractingClosed() && !open.length){
      $('#paNow').className='now calm';
-     $('#paNow').innerHTML='<div><div class="k">Nothing outstanding</div>'
+     $('#paNow').innerHTML='<div><div class="k">Nothing needs you</div>'
       +'<h2>Agreement signed <span>· integration can start</span></h2>'
       +'<p class="why">Both signatures and our risk sign-off are in. Priya Raman picks this up as your integration manager, and your engineers get sandbox keys this afternoon.</p>'
       +'<div class="act"><button class="btn go" id="paAct">See the integration plan</button><span class="lnk" id="paWhy">What happens in week one</span></div>'
       +'<div class="also"><span>Behind you</span><span><b>'+QUEUE.length+'</b> items cleared</span><span><b>30</b> days from introduction</span></div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
-      +'<div class="rr"><span class="l">Approval to join</span><span class="v st ok">Approved 28 August</span></div>'
+      +'<div class="rr"><span class="l">Approval</span><span class="v st ok">Approved 28 August</span></div>'
       +'<div class="rr"><span class="l">Agreement</span><span class="v st ok">In force, 3 September</span></div>'
       +'<div class="rr"><span class="l">Ready to serve</span><span class="v">Starts this week</span></div>'
       +'<div class="rr"><span class="l">Your agent</span><span class="v">Dara Whitfield</span></div></div>';
@@ -134,7 +134,7 @@
    } else {
      var s=soonest();
      $('#paNow').className='now';
-     $('#paNow').innerHTML='<div><div class="k">Next deadline</div>'
+     $('#paNow').innerHTML='<div><div class="k">What bites first</div>'
       +'<h2>'+esc(s.t)+' <span>· '+esc(s.due.toLowerCase().indexOf('was')===0?s.due.charAt(0).toLowerCase()+s.due.slice(1):s.who==='cw'?'with us until '+s.due.toLowerCase():'due '+s.due)+'</span></h2>'
       +'<p class="why">'+esc(s.gates)+'</p>'
       +'<div class="act"><button class="btn pri" id="paAct">'+esc(actionFor(s))+'</button>'
@@ -142,7 +142,7 @@
       +'<div class="also"><span>Also open</span><span><b>'+mine.length+'</b> with you</span><span><b>'+ours.length+'</b> with GPN</span>'
       +(over.length?'<span><b>'+over.length+'</b> overdue</span>':'')+'</div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
-      +'<div class="rr"><span class="l">Approval to join</span><span class="v st '+(riskDone()?'ok':'wa')+'">'+(riskDone()?'Approved':'First line passed 28 August · second line pending')+'</span></div>'
+      +'<div class="rr"><span class="l">Approval</span><span class="v st '+(riskDone()?'ok':'wa')+'">'+(riskDone()?'Approved':'First line passed 28 August · second line pending')+'</span></div>'
       +'<div class="rr"><span class="l">Agreement</span><span class="v st '+(contractingClosed()?'ok':'wa')+'">'+(contractingClosed()?'In force, 3 September':agrState())+'</span></div>'
       +'<div class="rr"><span class="l">Ready to serve</span><span class="v st nt">Not started</span></div>'
       +'<div class="rr"><span class="l">Your agent</span><span class="v">Dara Whitfield</span></div></div>';
@@ -237,7 +237,7 @@
    if(q.k==='pci') h+='<div class="note plain"><div class="k">What we accept</div><p>The AOC signed by your QSA, dated inside the last twelve months. A ROC summary or a self-assessment questionnaire will come straight back, because the certification team will not book a window against either.</p></div>';
    if(q.k==='bank') h+='<div class="note plain"><div class="k">What we accept</div><p>On bank letterhead, naming the legal entity and the account that will receive settlement, signed and dated inside ninety days. A screenshot of online banking will come back.</p></div>';
    if(q.k==='ubo') h+='<div class="note plain"><div class="k">What cleared and what did not</div><p>Both owners matched the register, so the ownership side is done and does not need sending again. Only the address failed: the utility bill is dated 3 June and we need one issued inside thirty days. July or August will clear it.</p></div>';
-   if(q.k==='risk') h+='<div class="note plain"><div class="k">Current position</div><p>Second-line review, queued behind two other files. Median turnaround is four working days and this one is on day six, which is why your agent is chasing it rather than waiting.</p></div>';
+   if(q.k==='risk') h+='<div class="note plain"><div class="k">Where it actually is</div><p>Second-line review, queued behind two other files. Median turnaround is four working days and this one is on day six, which is why your agent is chasing it rather than waiting.</p></div>';
    if(q.k==='bin') h+='<div class="note plain"><div class="k">Why this one takes weeks</div><p>The range is allocated by the network, not by us. Twelve working days is normal and we cannot shorten it, but nothing else in your integration waits on it until connectivity starts.</p></div>';
    if(q.sig) h+='<div class="sech" style="margin-top:26px"><h2>Signatures</h2><span class="t13">issued 28 August</span></div>'
     +'<table class="tb" style="margin-top:10px"><tbody>'+q.sig.map(function(s){
@@ -270,7 +270,7 @@
    var last=POLDATE[acc].filter(Boolean).slice(-1)[0]||POLWHEN[acc];
    $('#paRulesSub').textContent=POLICY.length+' documents · '+(todo?todo+' to acknowledge':'all acknowledged')
      +' · last acknowledged by '+who+' on '+last;
-   $('#paRules').innerHTML='<table class="tb dense" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+   $('#paRules').innerHTML='<table class="tb" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.map(function(p,i){
       var s=st[i], lab=s==='ack'?'<span class="st ok">Acknowledged</span>':s==='new'?'<span class="st wa">New version</span>':'<span class="st nt">To read</span>';
       var sub = s==='ack' ? 'Acknowledged '+(POLDATE[acc][i]||POLWHEN[acc])+' by '+who
@@ -323,13 +323,13 @@
    $('#paBoardSub').textContent=a.n+' · approved 18 August · target go live 6 October · '+done+' of '+MILE.length+' milestones behind you';
 
    if(fail===0){
-     $('#paBoardNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#paBoardNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Your certificate expires before go live <span>· 21 September</span></h2>'
       +'<p class="why">Certification is clear now that AUTH-14 passes, and the window on the 15th holds. The mutual TLS certificate is the next thing that can stop you: it expires fifteen days before activation and nothing renews it automatically.</p>'
       +'<div class="act"><button class="btn pri" id="bdGo">Ask Ravi to renew it</button><span class="lnk" id="bdMsg">Confirm the window with Dara</span></div>'
       +'<div class="also"><span>Also open</span><span><b>'+nr+'</b> cases not yet run</span><span><b>'+PREP.filter(function(x){return x[2]!=='done'}).length+'</b> readiness items open</span></div></div>';
    } else {
-     $('#paBoardNow').innerHTML='<div><div class="k">Blocking certification</div>'
+     $('#paBoardNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>'+(fail===1?'One certification case is failing':fail+' certification cases are failing')+' <span>· the window opens in twelve days</span></h2>'
       +'<p class="why">AUTH-14 is the one that decides it: the testing team will not open a window against a failing partial approval, and partial approval is mandatory for fuel. Your engineering team can see the expected and actual response.</p>'
       +'<div class="act"><button class="btn pri" id="bdGo">Open the failing cases</button><span class="lnk" id="bdMsg">Reply to Dara about the window</span></div>'
@@ -343,7 +343,7 @@
 
    $('#paBoard').innerHTML=milestones(false)
     +'<div class="txtwo" style="margin-top:46px; align-items:start">'
-    +'<div class="note"><div class="k">Outside the plan · risk to go-live</div><p>Halvard Ruiz’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be your first cycle. A receipt from the passport office holds the file open for thirty days.</p><div class="act"><span class="lnk" id="bdPass">Send the receipt</span></div></div>'
+    +'<div class="note"><div class="k">Outside the plan, and the likeliest thing to move go-live</div><p>Halvard Ruiz’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be your first cycle. A receipt from the passport office holds the file open for thirty days.</p><div class="act"><span class="lnk" id="bdPass">Send the receipt</span></div></div>'
     +'<div><div class="sech" style="margin-top:0"><h2>Go-live week</h2><span class="t13">6 to 9 October</span></div>'
     +'<table class="tb" style="margin-top:12px"><tbody>'
     +[['6 October, 06:00','BIN 471288 activates'],
@@ -391,7 +391,7 @@
    $('#panelSub').textContent=a.n+' · live since 4 March · $96.7M a month across four programs';
    $('#panelBanner').innerHTML = agentView
     ? '<div class="note plain" style="margin-top:26px"><div class="k">Agent view</div><p>You are looking at Meridian Trust’s own control panel, as their agent. Read only: nothing here changes their account, and they are not told that you looked.</p></div>' : '';
-   $('#panelNow').innerHTML='<div><div class="k">Next deadline</div>'
+   $('#panelNow').innerHTML='<div><div class="k">What bites first</div>'
     +'<h2>Nine disputes need a response <span>· by Friday 5 September</span></h2>'
     +'<p class="why">Four hit day thirty of their representment window on Friday. The other five were raised on the 25th and have until the 24th. Under dispute rules v6.0 a lapsed dispute is a loss by default, with no appeal.</p>'
     +'<div class="act">'+(agentView
@@ -422,7 +422,7 @@
     +'<table class="tb" style="margin-top:12px"><tbody>'+INCID.map(function(r){
        return '<tr><td>'+esc(r[1])+'<span class="s2">'+esc(r[0])+'</span></td><td class="n mute">'+esc(r[3])+'</td><td class="n st ok">'+esc(r[4])+'</td></tr>' }).join('')
     +'</tbody></table><p class="t13" style="color:var(--g550); margin-top:14px">Both were ours. Neither touched the authorization path, so no payment was declined because of them.</p></div>'
-    +'<div class="note plain"><div class="k">Rule changes ahead</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With nine open and more arriving every week, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
+    +'<div class="note plain"><div class="k">Coming, and worth knowing</div><p>Dispute handling moves to v6.0 on 1 September: retrieval requests must be acknowledged inside twenty-four hours instead of forty-eight. With nine open and more arriving every week, that is the change most likely to catch you. From 1 October the settlement cut-off moves from 17:00 to 16:30.</p><div class="act"><span class="lnk" id="cpHub">Read the release notes</span></div></div></div>';
    $('#cpAlerts').addEventListener('click',function(){ toast('Three categories: outages, disputes about to lapse, and settlement changes. All three are on for Lena.') });
    $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
    $('#cpHub').addEventListener('click',function(){ go('pa-hub') });
@@ -553,14 +553,14 @@
       +'<div class="also"><span>Cleared</span><span><b>'+QUEUE.filter(function(q){return q.dstate==="done"}).length+'</b> of '+QUEUE.length+' items</span><span><b>30</b> days from introduction</span></div></div>';
    } else if(handed){
      $('#obNow').className='now calm';
-     $('#obNow').innerHTML='<div><div class="k">Nothing outstanding</div>'
+     $('#obNow').innerHTML='<div><div class="k">Nothing needs you</div>'
       +'<h2>Ridgeline is with operations <span>· Priya Raman picked it up</span></h2>'
       +'<p class="why">You stay on the account commercially and you will see the milestones, but the integration is not yours to chase. The next thing on your desk is Wrenfield Cards, nine days into risk review with nothing moving.</p>'
       +'<div class="act"><button class="btn pri" id="obChase">Open Wrenfield Cards</button><span class="lnk" id="obSee">See the integration board</span></div>'
       +'<div class="also"><span>Your book</span><span><b>4</b> still pre-integration</span><span><b>1</b> handed over today</span></div></div>';
    } else {
      $('#obNow').className='now';
-     $('#obNow').innerHTML='<div><div class="k">Blocking contracting</div>'
+     $('#obNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Marcus Ridge has not signed <span>· four days, and he is the second of two</span></h2>'
       +'<p class="why">Elena signed on 1 September. He has opened the pack twice and not signed it. Nothing moves until he does, and October integration slots close on the 12th.</p>'
       +'<div class="act"><button class="btn pri" id="obChase">Chase the signature</button><span class="lnk" id="obSee">See what Ridgeline sees</span></div>'
@@ -672,13 +672,13 @@
      +MILE.filter(function(m){return m.st==='done'}).length+' of '+MILE.length+' milestones done';
 
    if(fail){
-     $('#inNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#inNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>The certification window is at risk <span>· 15 to 19 September</span></h2>'
       +'<p class="why">'+fail+(fail===1?' case is':' cases are')+' failing and the testing team will not open a window against AUTH-14. Separately, Northgate’s mutual TLS certificate expires on 21 September, fifteen days before go live, and nobody there has raised it.</p>'
       +'<div class="act"><button class="btn pri" id="inMsg">Tell Idris about the certificate</button><span class="lnk" id="inSee">See what Northgate sees</span></div>'
       +'<div class="also"><span>Also on this board</span><span><b>'+nr+'</b> cases not run</span><span><b>'+prepOpen+'</b> readiness items open</span><span><b>1</b> variance granted</span></div></div>';
    } else {
-     $('#inNow').innerHTML='<div><div class="k">Blocking go-live</div>'
+     $('#inNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>Certification is clear, the certificate is not <span>· expires 21 September</span></h2>'
       +'<p class="why">All 61 cases pass, so the window on the 15th holds and 6 October is still real. The mutual TLS certificate is now the only dated thing that can stop it, and it expires fifteen days before activation.</p>'
       +'<div class="act"><button class="btn pri" id="inMsg">Tell Idris about the certificate</button><span class="lnk" id="inSee">See what Northgate sees</span></div>'
@@ -819,7 +819,7 @@
    if(of.length){
      var f=of[0];
      $('#tkNow').className='now';
-     $('#tkNow').innerHTML='<div><div class="k">Blocking certification</div>'
+     $('#tkNow').innerHTML='<div><div class="k">Needs you first</div>'
       +'<h2>'+f.id+' <span>· '+esc(f.n.toLowerCase())+'</span></h2>'
       +'<p class="why">'+esc(f.why)+'</p>'
       +'<div class="act"><button class="btn pri" id="tkRun">Re-run '+f.id+'</button><span class="lnk" id="tkOpen">See the request and response</span></div>'
@@ -829,7 +829,7 @@
      $('#tkRun').addEventListener('click',function(){ rerun(f.id) });
    } else {
      $('#tkNow').className='now calm';
-     $('#tkNow').innerHTML='<div><div class="k">Certification clear</div>'
+     $('#tkNow').innerHTML='<div><div class="k">Nothing is failing</div>'
       +'<h2>All '+tot+' cases pass <span>· the window on the 15th holds</span></h2>'
       +'<p class="why">Certification is clear. The next dated thing on your side is the mutual TLS certificate: it expires on 21 September, fifteen days before activation, and nothing renews it for you.</p>'
       +'<div class="act"><button class="btn pri" id="tkRun">Run the '+nr+' not yet run</button><span class="lnk" id="tkOpen">Open the go-live checklist</span></div>'
@@ -880,7 +880,7 @@
       +'</tbody></table>'
       +'<div class="txtwo" style="margin-top:40px">'
       +'<div class="note plain"><div class="k">Use the token in scripts</div><p>A sixteen-digit constant in a test file tells the next engineer nothing. <span class="key">pm_card_fuel_partial</span> tells them what the case is for, and it resolves to the same card.</p></div>'
-      +'<div class="note plain"><div class="k">Cases without a trigger value</div><p>An expiry month of 13 is an invalid expiry. A number that fails Luhn is an invalid number. We do not issue a card for a case your own validation should catch before it reaches us.</p></div></div>';
+      +'<div class="note plain"><div class="k">Cases with no special value</div><p>An expiry month of 13 is an invalid expiry. A number that fails Luhn is an invalid number. We do not issue a card for a case your own validation should catch before it reaches us.</p></div></div>';
      return;
    }
 
@@ -892,7 +892,7 @@
       return '<tr><td><span class="cb'+(g[2]==='done'?' done':'')+'"></span><span style="margin-left:12px">'+esc(g[0])+'</span><span class="s2" style="margin-left:30px">'+esc(g[3])+'</span></td>'
        +'<td class="opt mute">'+(g[1]==='auto'?'From your traffic':'You tell us')+'</td><td>'+lab+'</td></tr>' }).join('')
     +'</tbody></table>'
-    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Most go-live checklists are ticked in one browser on one machine, where nobody else can see them. We can see your certificate, your deliveries and your retries, so five of these are facts with a timestamp. The three that are promises say so.</p>';
+    +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Most go-live checklists are boxes ticked in one browser on one machine, where nobody else can see them. We can see your certificate, your deliveries and your retries, so five of these are facts with a timestamp. The three that are promises say so.</p>';
  }
  function GOLIVE(){
    return [['Idempotency key on every write','auto','done','Keys on 100% of writes for 14 days.'],
@@ -913,7 +913,7 @@
      running=false;
      if(id==='AUTH-14' && f && !f.passed){
        passCase(id);
-       toast('AUTH-14 passes. '+(suiteTot('fail')?suiteTot('fail')+' still failing.':'Every case passes.'), function(){
+       toast('AUTH-14 passes. '+(suiteTot('fail')?suiteTot('fail')+' still failing.':'Nothing is failing now.'), function(){
          var s=SUITE.filter(function(x){return x.k===f.suite})[0]; s.pass--; s.fail++;
          f.passed=false; f.act='responseCode 51, no approvalCode'; f.run='2 September at 14:22';
          drawTool(); refreshNav();
@@ -944,12 +944,12 @@
       +line([31,30,32,33,31,30,29,31,34,36,33,31],{w:cwidth(1160),h:230,min:20,max:120,prev:[62,60,64,68,66,63,61,66,74,110,80,68],fmt:function(n){return Math.round(n)+' ms'}})
       +'<div class="ax"><span>24 hours ago</span><span>12 hours</span><span>now</span></div></div>'
       +'<div class="sech" style="margin-top:44px"><h2>By endpoint</h2><span class="t13">budget is 400 ms at p95 on everything except file upload</span></div>'
-      +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
+      +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
       +ENDP.map(function(e){
         return '<tr'+(e[5]?' class="hot"':'')+'><td><span class="key">'+esc(e[0])+'</span>'+(e[5]?'<span class="s2">over budget · 1,240 ms against 400</span>':'')+'</td>'
          +'<td class="n mute">'+e[1]+'</td><td class="n">'+e[2]+'</td><td class="n'+(e[5]?' st wa':'')+'">'+e[3]+'</td><td class="n opt mute">'+e[4]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Evidence upload is a file, not a message, and it sits outside the authorization path — so a slow one delays a dispute response and nothing else. It is listed because it is yours to fix, not because the authorization path is affected.</p>';
+      +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">Evidence upload is a file, not a message, and it sits outside the authorization path — so a slow one delays a dispute response and nothing else. It is here because it is yours to know about, not because anything is broken.</p>';
      return;
    }
    if(pfTab==='conn'){
@@ -962,7 +962,7 @@
         ['Heartbeat','Every 30 seconds','<span class="st ok">Last one 12 seconds ago</span>']].map(function(r){
         return '<tr><td>'+r[0]+'<span class="s2">'+r[1]+'</span></td><td class="n">'+r[2]+'</td></tr>' }).join('')
       +'</tbody></table>'
-      +'<div class="note" style="margin-top:34px"><div class="k">Expiring before go-live</div><p>Your mutual TLS certificate expires on 21 September, fifteen days before activation. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
+      +'<div class="note" style="margin-top:34px"><div class="k">The one that will stop you</div><p>Your mutual TLS certificate expires on 21 September, fifteen days before activation. Renew it before certification rather than after, or you will pass the window on a certificate you are about to replace and have to demonstrate the handshake again.</p><div class="act"><span class="lnk" id="pfCsr">Start the renewal</span></div></div>';
      $('#pfCsr').addEventListener('click',function(){ toast('CSR instructions sent to ravi.kapoor@northgate.example and to Priya Raman.') });
      return;
    }

@@ -54,7 +54,7 @@
     ['ol',['Decide. Your rules, your funds, your call — we do not second-guess an approve or a decline.',
            'Answer <b>approve</b>, <b>decline</b> with a code, or approve with an <b>approved_amount</b> lower than the request for a partial.',
            'Return inside 500 ms, measured from our socket write to your first byte.']],
-    ['callout','The field that fails certification','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
+    ['callout','The field everyone gets wrong','On a partial approval you return code 10, and DE 4 must carry the amount <b>you approved</b> — not the amount we asked for. This is certification case 14, and about a third of hosts fail it on the first run.'],
     ['h2','The 500 millisecond budget','budget'],
     ['p','The budget is generous on purpose: our own half of the round trip is 29 ms at the median and 131 ms at p99, so the rest is yours. Spend it on your own risk checks, not on a cold cache.'],
     ['ul',['Keep a warm connection pool — we reuse the same mTLS session across authorizations.','Do not call a third party inline unless it is inside your budget on its worst day.','Return a decline rather than nothing. A decline is a correct answer; silence is not.']],
@@ -374,7 +374,7 @@
    $('#lgSub').textContent='8,214 requests in 24 hours · 99.1% answered 2xx · '+bad+' worth looking at';
    var h='<div class="facts" style="margin-top:26px">'
     +[['Requests','8,214',''],['Answered 2xx','99.1','%'],['4xx','0.7','%'],['p95 latency','68','ms']].map(function(f){ return '<div><div class="k">'+f[0]+'</div><div class="v">'+f[1]+'<small>'+f[2]+'</small></div></div>' }).join('')+'</div>'
-    +'<table class="tb dense" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>';
+    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>';
    rows.forEach(function(r){
      var st=r[4]<300?(r[4]===202?'wa':'ok'):'no', on=logOpen===r[6];
      h+='<tr data-id="'+r[6]+'"'+(on?' class="sel"':'')+'><td style="width:96px" class="mute">'+r[0]+'</td>'
@@ -417,12 +417,12 @@
    }
    var live=KEYS.filter(function(k){return k[5]}).length;
    $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">'+live+' active · one revoked</span><div class="rt"><span class="lnk" id="kyRot">Rotate all</span></div></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
     +KEYS.map(function(k){ var d=k[5]?'':' style="color:var(--g400)"';
       return '<tr'+d+'><td'+d+'>'+esc(k[0])+'<span class="s2">'+esc(k[1])+'</span></td><td><span class="key"'+d+'>'+k[2]+'</span></td><td class="opt2 mute">'+k[3]+'</td><td class="opt mute">'+k[4]+'</td><td class="n">'+(k[5]?'<span class="lnk" data-rev="'+k[2]+'">Reveal</span>':'')+'</td></tr>' }).join('')
     +'</tbody></table>'
     +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span><div class="rt"><span class="lnk" id="whAdd">Add an endpoint</span><span class="lnk" id="whTest">Send a test event</span></div></div>'
-    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="opt">Events</th><th>Delivered, 24h</th><th>State</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="opt">Events</th><th>Delivered, 24h</th><th>State</th><th class="n"></th></tr></thead><tbody>'
     +HOOKS.map(function(w){ return '<tr'+(w.st==='no'?' class="hot"':'')+'><td><span class="key" style="background:none; padding:0">'+esc(w.u)+'</span><span class="s2">'+esc(w.s)+'</span></td><td class="opt mute">'+esc(w.ev)+'</td>'
       +'<td><span class="lat"><i><b style="width:'+w.ok+'%"></b></i>'+w.ok+'%</span></td><td class="st '+w.st+'">'+w.lab+'</td>'
       +'<td class="n">'+(w.st==='no'?'<span class="lnk" data-retry="1">Retry the 412</span>':'<span class="lnk" data-deliv="1">Recent deliveries</span>')+'</td></tr>' }).join('')

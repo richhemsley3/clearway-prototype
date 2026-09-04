@@ -1,0 +1,136 @@
+ /* ══════════════════════════════════════════════════════════════════
+    LIFT — every brief carries an instrument: one figure, one bar,
+    one caption. Working sets sit on a ground; ledgers stay bare.
+    The first-day control lives in the switcher, not beside it.
+    ══════════════════════════════════════════════════════════════════ */
+
+ /* ── the instrument ───────────────────────────────────────────── */
+ /* o: {fig, unit, cap, segs:[[label, value, tone]], legend:true} · tones: navy | warn | bad | good | rest */
+ function instrument(o){
+   var tot=o.segs.reduce(function(a,s){return a+s[1]},0)||1;
+   var TONE={navy:'var(--navy)', warn:'var(--warn)', bad:'var(--bad)', good:'var(--good)', rest:'var(--g200)'};
+   return '<div class="inst2">'
+    +'<div class="fig">'+esc(String(o.fig))+(o.unit?'<small>'+esc(o.unit)+'</small>':'')+'</div>'
+    +(o.cap?'<div class="cap">'+esc(o.cap)+'</div>':'')
+    +'<div class="bar">'+o.segs.map(function(s){ return s[1]?'<i style="flex:'+s[1]+' 1 0; background:'+TONE[s[2]||'rest']+'" title="'+esc(s[0])+' · '+s[1]+'"></i>':'' }).join('')+'</div>'
+    +'<div class="leg">'+o.segs.filter(function(s){return s[1]>0}).map(function(s){ return '<span><i style="background:'+TONE[s[2]||'rest']+'"></i>'+esc(s[0])+' <b>'+s[1]+'</b></span>' }).join('')+'</div>'
+    +'</div>';
+ }
+ /* put an instrument at the head of a brief's right column, keeping whatever record was there */
+ function liftBrief(sel, html, replace, dropAlso){
+   var now=$(sel); if(!now) return;
+   var right=now.children[1]; if(!right) return;
+   if(dropAlso){ var al=now.querySelector('.also'); if(al) al.remove(); }
+   if(replace || right.classList.contains('inst')) right.outerHTML='<div class="col">'+html+'</div>';
+   else right.outerHTML='<div class="col">'+html+right.outerHTML+'</div>';
+ }
+ /* a working set gets a ground; the element keeps its place */
+ function panelize(el, cls){
+   if(!el || el.closest('.surface')) return;
+   var p=document.createElement('div'); p.className='surface set'+(cls?' '+cls:''); el.parentNode.insertBefore(p, el); p.appendChild(el);
+   el.style.marginTop='0';
+ }
+
+ /* ── the applicant ────────────────────────────────────────────── */
+ var _drawApply_lift=drawApply;
+ drawApply=function(){
+   _drawApply_lift();
+   var n=$('#paNow'); if(n) n.classList.remove('quiet');
+   if(FIRST && acc==='rf'){
+     liftBrief('#paNow', instrument({fig:11, unit:'items', cap:'over five weeks · the whole list, on day one',
+       segs:[['This week',4,'navy'],['Next week',2,'navy'],['Week three',1,'navy'],['Before risk review',1,'navy'],['September',3,'rest']]}), false, true);
+   } else {
+     var done=QUEUE.filter(function(q){return q.dstate==='done'}).length, open=QUEUE.length-done;
+     liftBrief('#paNow', instrument({fig:30, unit:'days in', cap:'78 is the median from introduction to live · '+done+' of '+QUEUE.length+' items accepted',
+       segs:[['Accepted',done,'navy'],['With you',QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='you'}).length,'warn'],['With GPN',QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='cw'}).length,'rest']]}), false, true);
+   }
+   var t=$('#paQueue table'); if(t) panelize(t);
+ };
+ PDRAW['pa-apply']=drawApply;
+
+ /* ── the boarding participant ─────────────────────────────────── */
+ var _drawBoard_lift=drawBoard;
+ drawBoard=function(){
+   _drawBoard_lift();
+   var tot=suiteTot('tot'), pass=suiteTot('pass'), fail=suiteTot('fail'), nr=tot-pass-fail;
+   if(FIRST){
+     liftBrief('#paBoardNow', instrument({fig:61, unit:'cases generated', cap:'from what you told us · none has run', segs:[['Passing',0,'navy'],['Failing',0,'warn'],['Not run',61,'rest']]}));
+   } else {
+     liftBrief('#paBoardNow', instrument({fig:pass, unit:'of '+tot+' passing', cap:(fail?fail+' failing · ':'nothing failing · ')+nr+' not run · window 15 to 19 September', segs:[['Passing',pass,'navy'],['Failing',fail,'warn'],['Not run',nr,'rest']]}), true);
+   }
+   var ms=$('#paBoard .ms'); if(ms) panelize(ms);
+ };
+ PDRAW['pa-board']=drawBoard;
+
+ /* ── the agent's integration board and deal record ─────────────── */
+ var _drawIntegr_lift=drawIntegr;
+ drawIntegr=function(){
+   _drawIntegr_lift();
+   var done=MILE.filter(function(m){return m.st==='done'}).length, now=MILE.filter(function(m){return m.st==='now'}).length, rest=MILE.length-done-now;
+   liftBrief('#inNow', instrument({fig:12, unit:'days to the window', cap:done+' of '+MILE.length+' milestones done · target go-live 6 October', segs:[['Done',done,'navy'],['In progress',now,'warn'],['Ahead',rest,'rest']]}));
+   var ms=$('#inBody .ms'); if(ms) panelize(ms);
+   var tb=$('#inBody table'); if(tb && !ms) panelize(tb);
+ };
+ PDRAW['pd-integr']=drawIntegr;
+ var _drawOnboard_lift=drawOnboard;
+ drawOnboard=function(){
+   _drawOnboard_lift();
+   var n=$('#obNow'); if(n) n.classList.remove('quiet');
+   var done=QUEUE.filter(function(q){return q.dstate==='done'}).length, you=QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='you'}).length, us=QUEUE.filter(function(q){return q.dstate!=='done'&&q.who==='cw'}).length;
+   liftBrief('#obNow', instrument({fig:handed?0:7, unit:handed?'days with operations':'days in contracting', cap:handed?'handed today · Priya Raman':'6 is the median · '+you+' items with them, '+us+' with us',
+     segs:[['Accepted',done,'navy'],['With them',you,'warn'],['With us',us,'rest']]}), false, true);
+   var tb=$('#obBody table'); if(tb) panelize(tb);
+ };
+ PDRAW['pd-onboard']=drawOnboard;
+
+ /* ── the agent's day ──────────────────────────────────────────── */
+ var _drawTasks_lift=drawTasks;
+ drawTasks=function(){
+   _drawTasks_lift();
+   if(taskView!=='mine') return;
+   var mv=movesNow(), kinds={};
+   mv.forEach(function(x){ kinds[x.kind]=(kinds[x.kind]||0)+1 });
+   var today=mv.filter(function(x){return x.due==='Today'}).length;
+   liftBrief('#tnow', instrument({fig:mv.length, unit:'moves', cap:today+' due today · read from the accounts, not typed in',
+     segs:[['Chase',kinds.Chase||0,'warn'],['Reply',kinds.Reply||0,'navy'],['Watch',(kinds.Watch||0)+(kinds.Tell||0),'rest'],['Move',kinds.Move||0,'navy']]}), true, true);
+   var t=$('#tasks table'); if(t) panelize(t);
+ };
+
+ /* ── the developer ────────────────────────────────────────────── */
+ var _drawTool_lift=drawTool;
+ drawTool=function(){
+   _drawTool_lift();
+   if(env==='live') return;
+   var tot=suiteTot('tot'), pass=HOUR.run||!FIRST?suiteTot('pass'):0, fail=HOUR.run||!FIRST?suiteTot('fail'):0, nr=tot-pass-fail;
+   var envRec=$('#tkNow .rec');
+   var keepEnv = envRec && /This environment/.test(envRec.textContent);
+   var html=instrument({fig:pass, unit:'of '+tot+' pass', cap:(fail?fail+' failing · ':(pass?'nothing failing · ':''))+nr+' not run · one case re-runs in nine seconds', segs:[['Passing',pass,'navy'],['Failing',fail,'warn'],['Not run',nr,'rest']]});
+   liftBrief('#tkNow', html, keepEnv, true);
+   if(keepEnv && tkTab==='cases' && $('#tkBody') && !$('#tkBody .rec')){
+     $('#tkBody').insertAdjacentHTML('afterbegin', envRec.outerHTML.replace('class="rec"','class="rec envrec" style="max-width:640px; margin:28px 0 36px"'));
+   }
+   var plan=$('#tkBody .ptw'); if(plan) panelize(plan.parentNode);
+   var chk=$('#tkBody table.chk'); if(chk) panelize(chk);
+ };
+ PDRAW['dv-tool']=drawTool;
+
+ /* ── the first-day control belongs to the switcher ────────────── */
+ paintMode=function(){
+   var el=$('#mode'); if(el) el.style.display='none';
+   var menu=$('#wsmenu'); if(!menu) return;
+   var old=menu.querySelector('.when'); if(old) old.remove();
+   if(!FIRSTWS[ws]) return;
+   var h='<div class="when"><h6>When</h6>'
+    +'<a data-when="1" class="'+(FIRST?'on':'')+'"><i>'+(FIRST?'✓':'')+'</i><span>First day<span>'+esc(FIRSTWS[ws])+'</span></span></a>'
+    +'<a data-when="0" class="'+(!FIRST?'on':'')+'"><i>'+(!FIRST?'✓':'')+'</i><span>Day to day<span>'+esc(BAUWS[ws])+'</span></span></a></div>';
+   menu.insertAdjacentHTML('beforeend', h);
+   $$('#wsmenu [data-when]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation();
+     var want=a.dataset.when==='1'; menu.classList.remove('on'); if(want===FIRST) return;
+     FIRST=want; paintMode(); refreshNav();
+     var home=WS[ws].nav[0][0];
+     if(curView!==home && !WS[ws].nav.some(function(n){return n[0]===curView})) go(home); else go(curView);
+     var cur=$('#wscur .nm span'); if(cur) cur.textContent=WS[ws].s+(FIRST?' · first day':'');
+   }) });
+   var cur=$('#wscur .nm span'); if(cur) cur.textContent=WS[ws].s+(FIRST?' · first day':'');
+ };
+ paintMode();
