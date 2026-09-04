@@ -386,7 +386,7 @@
     ? '<div class="note plain" style="margin-top:26px"><div class="k">Agent view</div><p>You are looking at Meridian Trust’s own control panel, as their agent. Read only: nothing here changes their account, and they are not told that you looked.</p></div>' : '';
    $('#panelNow').innerHTML='<div><div class="k">Next thing with a clock on it</div>'
     +'<h2>Nine disputes need a response <span>· by Friday 5 September</span></h2>'
-    +'<p class="why">Four are Visa, at nine days from notice, and Friday is the ninth day. The other five are Mastercard at forty days and have until the 24th. A lapsed dispute is a loss by default, with no appeal.</p>'
+    +'<p class="why">Four hit day thirty of their representment window on Friday. The other five were raised on the 25th and have until the 24th. Under dispute rules v6.0 a lapsed dispute is a loss by default, with no appeal.</p>'
     +'<div class="act">'+(agentView
       ? '<button class="btn go" id="cpMsg">Send them a message</button><span class="lnk" id="cpConf">Confirm the relationship</span>'
       : '<button class="btn pri" id="cpGo">Open the four that lapse first</button><span class="lnk" id="cpSet">Settlement cuts off at 17:00 today</span>')+'</div>'

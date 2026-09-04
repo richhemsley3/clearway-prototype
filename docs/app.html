@@ -800,20 +800,20 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     <section class="view" data-v="tx-disp">
       <div class="ph"><div><h1>Disputes</h1><p>9 open cases · representment deadlines in calendar days</p></div>
         <div class="act"><button class="btn">Export</button></div></div>
-      <div class="now"><div><div class="k">Due tomorrow</div><h2>4 Visa representments <span>· day nine of nine</span></h2><p class="why">Four Visa cases reach their representment deadline tomorrow. A lapsed dispute is a loss by default and there is no appeal. Three have evidence gathered and can go now; Bayline Cafe has still not sent its receipt. The five Mastercard cases have until the 24th.</p><div class="act"><button class="btn pri" id="dsRev">File the three that are ready</button><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>
+      <div class="now"><div><div class="k">Due tomorrow</div><h2>4 representments <span>· day thirty of thirty</span></h2><p class="why">Four cases reach the end of their thirty-day representment window tomorrow. Under dispute rules v6.0 a lapsed dispute is a loss by default and there is no appeal. Three have evidence gathered and can go now; Bayline Cafe has still not sent its receipt. The other five were raised on the 25th and have until the 24th.</p><div class="act"><button class="btn pri" id="dsRev">File the three that are ready</button><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>
         <div><div class="sech" style="margin-top:0"><h2>Where the nine are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div></div>
       <div class="facts" style="margin-top:30px"><div><div class="k">Closed this quarter</div><div class="v">142</div></div><div><div class="k">Won</div><div class="v">61<small>%</small></div></div><div><div class="k">Recovered</div><div class="v">$48.2k</div></div><div><div class="k">Median days to close</div><div class="v">23</div></div></div>
-      <div class="sech"><h2>Open cases</h2><span class="t13">9 open · Visa gives nine calendar days, Mastercard thirty</span></div>
+      <div class="sech"><h2>Open cases</h2><span class="t13">9 open · thirty calendar days from notice to represent</span></div>
       <table class="tb" id="dtable" style="margin-top:14px"><thead><tr><th>Case</th><th>Merchant</th><th class="n">Amount</th><th>Stage</th><th>Deadline</th></tr></thead><tbody>
-        <tr class="hot"><td>CB-20831<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
-        <tr><td>CB-20829<span class="s2">Visa · reason 13.3 · not as described</span></td><td>Halcyon Home</td><td class="n">$389.00</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
-        <tr><td>CB-20826<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$512.40</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
-        <tr><td>CB-20819<span class="s2">Visa · reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st nt">Waiting on merchant</td><td class="st wa">Tomorrow</td></tr>
-        <tr><td>CB-20811<span class="s2">Mastercard · reason 4853 · goods not as described</span></td><td>Vantage Hotel Group</td><td class="n">$1,180.00</td><td>Chargeback received</td><td>24 Sep</td></tr>
-        <tr><td>CB-20807<span class="s2">Mastercard · reason 4837 · no cardholder authorization</span></td><td>Orpington Retail</td><td class="n">$64.20</td><td>Chargeback received</td><td>24 Sep</td></tr>
-        <tr><td>CB-20802<span class="s2">Mastercard · reason 4837 · no cardholder authorization</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td>Representment filed</td><td>24 Sep</td></tr>
-        <tr><td>CB-20796<span class="s2">Mastercard · reason 4855 · goods not received</span></td><td>Thornbury Sports</td><td class="n">$219.99</td><td>Representment filed</td><td>24 Sep</td></tr>
-        <tr><td>CB-20788<span class="s2">Mastercard · reason 4863 · cardholder does not recognise</span></td><td>Cordell Online</td><td class="n">$248.10</td><td>Pre-arbitration</td><td>24 Sep</td></tr>
+        <tr class="hot"><td>CB-20831<span class="s2">F2 · fraud, card not present</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
+        <tr><td>CB-20829<span class="s2">S3 · not as described</span></td><td>Halcyon Home</td><td class="n">$389.00</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
+        <tr><td>CB-20826<span class="s2">F2 · fraud, card not present</span></td><td>Cordell Online</td><td class="n">$512.40</td><td>Evidence gathered</td><td class="st wa">Tomorrow</td></tr>
+        <tr><td>CB-20819<span class="s2">S1 · goods not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st nt">Waiting on merchant</td><td class="st wa">Tomorrow</td></tr>
+        <tr><td>CB-20811<span class="s2">S3 · not as described</span></td><td>Vantage Hotel Group</td><td class="n">$1,180.00</td><td>Chargeback received</td><td>24 Sep</td></tr>
+        <tr><td>CB-20807<span class="s2">F1 · not authorised by the cardholder</span></td><td>Orpington Retail</td><td class="n">$64.20</td><td>Chargeback received</td><td>24 Sep</td></tr>
+        <tr><td>CB-20802<span class="s2">F1 · not authorised by the cardholder</span></td><td>Vantage Hotel Group</td><td class="n">$412.90</td><td>Representment filed</td><td>24 Sep</td></tr>
+        <tr><td>CB-20796<span class="s2">S1 · goods not received</span></td><td>Thornbury Sports</td><td class="n">$219.99</td><td>Representment filed</td><td>24 Sep</td></tr>
+        <tr><td>CB-20788<span class="s2">F4 · transaction not recognised</span></td><td>Cordell Online</td><td class="n">$248.10</td><td>Pre-arbitration</td><td>24 Sep</td></tr>
       </tbody></table>
     </section>
   </main>
@@ -1230,10 +1230,10 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      if(csub==='dis'){
        if(isMT) h+='<p class="t13" style="margin-top:22px; color:var(--g550)">These are the partner\u2019s own records: the four nearest their deadline. Opening one takes you into their account.</p>'
          +'<table class="tb" style="margin-top:12px"><tbody>'
-         +'<tr class="hot"><td>CB-20831<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td class="st wa" style="width:130px">Due tomorrow</td><td class="n" style="width:170px"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-         +'<tr><td>CB-20829<span class="s2">Visa · reason 13.3 · not as described</span></td><td>Halcyon Home</td><td class="n">$389.00</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-         +'<tr><td>CB-20826<span class="s2">Visa · reason 10.4 · other fraud, card absent</span></td><td>Cordell Online</td><td class="n">$512.40</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
-         +'<tr><td>CB-20819<span class="s2">Visa · reason 13.1 · merchandise not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st wa">Due tomorrow · waiting on merchant</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr class="hot"><td>CB-20831<span class="s2">F2 · fraud, card not present</span></td><td>Cordell Online</td><td class="n">$1,240.00</td><td class="st wa" style="width:130px">Due tomorrow</td><td class="n" style="width:170px"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20829<span class="s2">S3 · not as described</span></td><td>Halcyon Home</td><td class="n">$389.00</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20826<span class="s2">F2 · fraud, card not present</span></td><td>Cordell Online</td><td class="n">$512.40</td><td class="st wa">Due tomorrow</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
+         +'<tr><td>CB-20819<span class="s2">S1 · goods not received</span></td><td>Bayline Cafe 02</td><td class="n">$76.00</td><td class="st wa">Due tomorrow · waiting on merchant</td><td class="n"><span class="lnk" data-x="tx-disp">Open the case</span></td></tr>'
          +'</tbody></table>';
        else if(isLive) h+='<div class="blank" style="margin-top:22px"><div class="t">No open disputes.</div><p>'+esc(p.n)+' closed its last case on 19 August. New ones appear here the morning the network raises them, with the representment deadline.</p></div>';
        else h+='<div class="blank" style="margin-top:22px"><div class="t">Disputes start with live traffic.</div><p>'+esc(p.n)+' is not live yet, so there is nothing to dispute. Once the BIN activates this tab shows their open cases and deadlines, read only.</p></div>';
@@ -1857,7 +1857,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
  var MODULE = [
   {k:'tx-auth',  n:'Authorizations', v:'61,412 messages', s:'last seven days', act:'2 declines flagged for review', hot:false},
   {k:'tx-settle',n:'Settlement',     v:'$96.7M',          s:'this month',      act:'Next cycle 4 September 06:00 · cut-off 17:00 today', hot:true},
-  {k:'tx-disp',  n:'Disputes',       v:'9 open',          s:'four Visa, five Mastercard', act:'4 Visa cases lapse tomorrow', hot:true},
+  {k:'tx-disp',  n:'Disputes',       v:'9 open',          s:'thirty days from notice', act:'4 cases lapse tomorrow', hot:true},
   {k:'dv-perf',  n:'API performance',v:'99.98%',          s:'availability, thirty days', act:'One endpoint above its latency budget', hot:false},
   {k:'pa-hub',   n:'Documentation hub', v:'4 documents',  s:'changed this month', act:'Dispute handling moved to v6.0', hot:false},
   {k:'pa-msgs',  n:'Messages',       v:'2 threads',       s:'awaiting your reply', act:'', hot:false}
@@ -1898,8 +1898,8 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
    msgs:[['Dara Whitfield','Global Payment Network','22 August, 16:05','Not before, but the afternoon it closes. Keys are issued to a named engineer, so the fastest thing you can do now is add one under People. The reference and the guides are open to anyone in the meantime.'],
          ['Elena Ridge','Ridgeline','22 August, 15:20','Our developer would like to start looking at the API. Can she get sandbox keys before the agreement is signed?']]},
 
-  {a:'mt', id:'MSG-3120', about:'Disputes · 9 open', t:'Four Visa disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
-   msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
+  {a:'mt', id:'MSG-3120', about:'Disputes · 9 open', t:'Four disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
+   msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine hit day thirty on Friday. Under dispute rules v6.0 a lapsed dispute is a loss by default and there is no appeal. The other five were raised on the 25th and have until the 24th.']]},
 
   {a:'mt', id:'MSG-3114', about:'Settlement · daily cycle', t:'Settlement cut-off moves to 16:30 in October', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
    msgs:[['GPN operations','Global Payment Network','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
@@ -2488,7 +2488,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     ? '<div class="note plain" style="margin-top:26px"><div class="k">Agent view</div><p>You are looking at Meridian Trust’s own control panel, as their agent. Read only: nothing here changes their account, and they are not told that you looked.</p></div>' : '';
    $('#panelNow').innerHTML='<div><div class="k">Next thing with a clock on it</div>'
     +'<h2>Nine disputes need a response <span>· by Friday 5 September</span></h2>'
-    +'<p class="why">Four are Visa, at nine days from notice, and Friday is the ninth day. The other five are Mastercard at forty days and have until the 24th. A lapsed dispute is a loss by default, with no appeal.</p>'
+    +'<p class="why">Four hit day thirty of their representment window on Friday. The other five were raised on the 25th and have until the 24th. Under dispute rules v6.0 a lapsed dispute is a loss by default, with no appeal.</p>'
     +'<div class="act">'+(agentView
       ? '<button class="btn go" id="cpMsg">Send them a message</button><span class="lnk" id="cpConf">Confirm the relationship</span>'
       : '<button class="btn pri" id="cpGo">Open the four that lapse first</button><span class="lnk" id="cpSet">Settlement cuts off at 17:00 today</span>')+'</div>'
@@ -3354,7 +3354,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
     ['due_before','string','','RFC 3339. The filter to build your work queue on.',null],
     ['limit','integer','','1 to 100, default 25.',null]],
    errs:[['400','bad_stage','Unknown stage. The five above are the whole list.']],
-   resp:'{\n  "data": [\n    {\n      "id": "cb_20831",\n      "authorization": "auth_8f2c41e",\n      "reason": "10.4",\n      "amount": 124000,\n      "stage": "representment",\n      "due": "2026-09-05"\n    }\n  ]\n}'},
+   resp:'{\n  "data": [\n    {\n      "id": "cb_20831",\n      "authorization": "auth_8f2c41e",\n      "reason": "F2",\n      "amount": 124000,\n      "stage": "representment",\n      "due": "2026-09-05"\n    }\n  ]\n}'},
   'dis.rep':{m:'POST',p:'/v3/disputes/{id}/representment',t:'File a representment',sdk:['disputes','represent'],
    d:'Sends your evidence back to the acquirer before the deadline. Evidence is uploaded first and referenced here by id, so a retry never re-uploads a 40 MB PDF.',
    meta:['idempotent'],ex:{evidence:'ev_9f21c',note:'AVS and CVV both matched'},
@@ -3800,7 +3800,7 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
      });
      tb.dataset.orig=tb.innerHTML;
      now.classList.add('calm');
-     now.innerHTML='<div><div class="k">Filed</div><h2>Three representments <span>· Visa acknowledges inside the hour</span></h2><p class="why">Cordell Online twice and Halcyon Home went at 09:14. Bayline Cafe is still waiting on its receipt and lapses tomorrow at midnight; the five Mastercard cases have until the 24th.</p><div class="act"><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>'
+     now.innerHTML='<div><div class="k">Filed</div><h2>Three representments <span>· acknowledged inside the hour</span></h2><p class="why">Cordell Online twice and Halcyon Home went at 09:14. Bayline Cafe is still waiting on its receipt and lapses tomorrow at midnight; the other five have until the 24th.</p><div class="act"><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>'
        +'<div><div class="sech" style="margin-top:0"><h2>Where the nine are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div>';
      paintFunnel(); wire(); drawTxSub('tx-disp');
      toast('Three representments filed. $2,141.40 in play.',function(){

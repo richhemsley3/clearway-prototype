@@ -777,7 +777,7 @@ h2.d{font-size:38px; letter-spacing:-.025em; line-height:1.1; max-width:22ch}
     ['due_before','string','','RFC 3339. The filter to build your work queue on.',null],
     ['limit','integer','','1 to 100, default 25.',null]],
    errs:[['400','bad_stage','Unknown stage. The five above are the whole list.']],
-   resp:'{\n  "data": [\n    {\n      "id": "cb_20831",\n      "authorization": "auth_8f2c41e",\n      "reason": "10.4",\n      "amount": 124000,\n      "stage": "representment",\n      "due": "2026-09-05"\n    }\n  ]\n}'},
+   resp:'{\n  "data": [\n    {\n      "id": "cb_20831",\n      "authorization": "auth_8f2c41e",\n      "reason": "F2",\n      "amount": 124000,\n      "stage": "representment",\n      "due": "2026-09-05"\n    }\n  ]\n}'},
   'dis.rep':{m:'POST',p:'/v3/disputes/{id}/representment',t:'File a representment',sdk:['disputes','represent'],
    d:'Sends your evidence back to the acquirer before the deadline. Evidence is uploaded first and referenced here by id, so a retry never re-uploads a 40 MB PDF.',
    meta:['idempotent'],ex:{evidence:'ev_9f21c',note:'AVS and CVV both matched'},

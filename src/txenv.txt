@@ -140,7 +140,7 @@
      });
      tb.dataset.orig=tb.innerHTML;
      now.classList.add('calm');
-     now.innerHTML='<div><div class="k">Filed</div><h2>Three representments <span>· Visa acknowledges inside the hour</span></h2><p class="why">Cordell Online twice and Halcyon Home went at 09:14. Bayline Cafe is still waiting on its receipt and lapses tomorrow at midnight; the five Mastercard cases have until the 24th.</p><div class="act"><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>'
+     now.innerHTML='<div><div class="k">Filed</div><h2>Three representments <span>· acknowledged inside the hour</span></h2><p class="why">Cordell Online twice and Halcyon Home went at 09:14. Bayline Cafe is still waiting on its receipt and lapses tomorrow at midnight; the other five have until the 24th.</p><div class="act"><span class="lnk" id="dsChase">Chase Bayline Cafe</span></div></div>'
        +'<div><div class="sech" style="margin-top:0"><h2>Where the nine are</h2></div><div id="funnel" class="tight" style="margin-top:14px"></div></div>';
      paintFunnel(); wire(); drawTxSub('tx-disp');
      toast('Three representments filed. $2,141.40 in play.',function(){

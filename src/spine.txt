@@ -151,7 +151,7 @@
  var MODULE = [
   {k:'tx-auth',  n:'Authorizations', v:'61,412 messages', s:'last seven days', act:'2 declines flagged for review', hot:false},
   {k:'tx-settle',n:'Settlement',     v:'$96.7M',          s:'this month',      act:'Next cycle 4 September 06:00 · cut-off 17:00 today', hot:true},
-  {k:'tx-disp',  n:'Disputes',       v:'9 open',          s:'four Visa, five Mastercard', act:'4 Visa cases lapse tomorrow', hot:true},
+  {k:'tx-disp',  n:'Disputes',       v:'9 open',          s:'thirty days from notice', act:'4 cases lapse tomorrow', hot:true},
   {k:'dv-perf',  n:'API performance',v:'99.98%',          s:'availability, thirty days', act:'One endpoint above its latency budget', hot:false},
   {k:'pa-hub',   n:'Documentation hub', v:'4 documents',  s:'changed this month', act:'Dispute handling moved to v6.0', hot:false},
   {k:'pa-msgs',  n:'Messages',       v:'2 threads',       s:'awaiting your reply', act:'', hot:false}
@@ -192,8 +192,8 @@
    msgs:[['Dara Whitfield','Global Payment Network','22 August, 16:05','Not before, but the afternoon it closes. Keys are issued to a named engineer, so the fastest thing you can do now is add one under People. The reference and the guides are open to anyone in the meantime.'],
          ['Elena Ridge','Ridgeline','22 August, 15:20','Our developer would like to start looking at the API. Can she get sandbox keys before the agreement is signed?']]},
 
-  {a:'mt', id:'MSG-3120', about:'Disputes · 9 open', t:'Four Visa disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
-   msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine are Visa at nine days from notice, and the ninth day is Friday. A lapsed dispute is a loss by default and there is no appeal. The five Mastercard ones have until the 24th.']]},
+  {a:'mt', id:'MSG-3120', about:'Disputes · 9 open', t:'Four disputes lapse on Friday', w:'GPN disputes', r:'Global Payment Network', st:'you', last:'Today at 08:15',
+   msgs:[['GPN disputes','Global Payment Network','3 September, 08:15','Four of the nine hit day thirty on Friday. Under dispute rules v6.0 a lapsed dispute is a loss by default and there is no appeal. The other five were raised on the 25th and have until the 24th.']]},
 
   {a:'mt', id:'MSG-3114', about:'Settlement · daily cycle', t:'Settlement cut-off moves to 16:30 in October', w:'GPN operations', r:'Global Payment Network', st:'none', last:'28 August',
    msgs:[['GPN operations','Global Payment Network','28 August, 09:00','From 1 October the same-day cut-off moves from 17:00 to 16:30, to give the network a wider window after the clock change. Nothing else moves, and the cycle still lands at 06:00.']]},
