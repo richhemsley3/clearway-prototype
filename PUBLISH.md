@@ -8,7 +8,7 @@ only attaches credentials for repositories in the session's authorized set, and 
 refuses writes through that proxy outright. So the push runs from your machine, where your own
 credentials live.
 
-Everything is committed — one commit on `main`, 45 files. Nothing to stage.
+Everything is committed — several commits on `main`. Nothing to stage.
 
 ## Push
 

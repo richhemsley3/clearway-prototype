@@ -62,7 +62,7 @@
  $('#sett tbody').innerHTML=SET.map(function(r){ return '<tr'+(r[5]==='s-wa'?' class="hot"':'')+'><td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="st '+(r[5]==='s-ok'?'ok':'wa')+'">'+r[4]+'</td></tr>' }).join('');
 
  /* disputes */
- $('#funnel').innerHTML=ptw(FN.map(function(f){ return [f[0], f[1], false, null] }),function(n){return n+' cases'});
+ $('#funnel').innerHTML=ptw(FN.map(function(f){ return [f[0], f[1], false, null] }),function(n){return n+(n===1?' case':' cases')});
 
 
  /* views */

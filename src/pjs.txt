@@ -989,13 +989,13 @@
 
  $('#wsmenu').innerHTML=
    '<h6>Agent · inside the network</h6>'
-  +'<a data-w="cw"><i>GPN</i><span style="color:var(--g900); font-size:14.5px">Partner desk<span>Dara Whitfield · 24 accounts</span></span></a>'
+  +'<a data-w="cw"><i>GPN</i><span style="color:var(--g900); font-size:14px">Partner desk<span>Dara Whitfield · 24 accounts</span></span></a>'
   +'<h6>Participant · outside</h6>'
-  +'<a data-w="pa1"><i>RF</i><span style="color:var(--g900); font-size:14.5px">Ridgeline Freight<span>Applying · not yet a participant</span></span></a>'
-  +'<a data-w="pa2"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate Financial<span>Approved · boarding</span></span></a>'
-  +'<a data-w="pa3"><i>MT</i><span style="color:var(--g900); font-size:14.5px">Meridian Trust<span>Live · BIN 465088</span></span></a>'
+  +'<a data-w="pa1"><i>RF</i><span style="color:var(--g900); font-size:14px">Ridgeline Freight<span>Applying · not yet a participant</span></span></a>'
+  +'<a data-w="pa2"><i>NF</i><span style="color:var(--g900); font-size:14px">Northgate Financial<span>Approved · boarding</span></span></a>'
+  +'<a data-w="pa3"><i>MT</i><span style="color:var(--g900); font-size:14px">Meridian Trust<span>Live · BIN 465088</span></span></a>'
   +'<h6>Developer</h6>'
-  +'<a data-w="dev"><i>NF</i><span style="color:var(--g900); font-size:14.5px">Northgate sandbox<span>Ravi Kapoor · sandbox</span></span></a>';
+  +'<a data-w="dev"><i>NF</i><span style="color:var(--g900); font-size:14px">Northgate sandbox<span>Ravi Kapoor · sandbox</span></span></a>';
  $$('#wsmenu a').forEach(function(a){ a.addEventListener('click',function(){
    $('#wsmenu').classList.remove('on'); setWs(a.dataset.w); }) });
 
