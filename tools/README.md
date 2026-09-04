@@ -1,6 +1,6 @@
 # Harnesses
 
-Playwright scripts used while building. They read `docs/app.html`, so build first.
+Playwright scripts used while building. They read `docs/index.html`, so build first.
 
 - `jump-test.js` — parks every segmented control and chip row at two scroll depths, clicks each
   option, and fails if the control moves. A filter that shortens the page must not throw the thing

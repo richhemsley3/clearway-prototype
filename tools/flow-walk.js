@@ -2,7 +2,7 @@ const {chromium}=require('playwright');const fs=require('fs');
 (async()=>{
  const b=await chromium.launch(); const p=await b.newPage({viewport:{width:1440,height:1200}});
  const errs=[]; p.on('pageerror',e=>errs.push(String(e)));
- await p.setContent('<meta charset="utf-8">'+fs.readFileSync(require('path').join(__dirname,'..','docs','app.html'),'utf8'));
+ await p.setContent('<meta charset="utf-8">'+fs.readFileSync(require('path').join(__dirname,'..','docs','index.html'),'utf8'));
  await p.waitForTimeout(500);
  const ws=async k=>{await p.evaluate(k=>{document.querySelectorAll('#wsmenu a').forEach(a=>{if(a.dataset.w===k)a.click()})},k);await p.waitForTimeout(520)};
  const nav=async v=>{

@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
  const b=await chromium.launch();
  for(const w of [1440,1100,760]){
   const p=await b.newPage({viewport:{width:w,height:900}}); const errs=[]; p.on('pageerror',e=>errs.push(String(e).slice(0,200)));
-  await p.goto('file://'+require('path').join(__dirname,'..','docs','app.html')+''); await p.waitForTimeout(500);
+  await p.goto('file://'+require('path').join(__dirname,'..','docs','index.html')+''); await p.waitForTimeout(500);
   for(const k of ['pa1','pa2','dev']){
     await p.evaluate(k=>{document.querySelectorAll('#wsmenu a').forEach(a=>{if(a.dataset.w===k)a.click()})},k); await p.waitForTimeout(400);
     await p.evaluate(()=>document.querySelector('#mode [data-m="1"]').click()); await p.waitForTimeout(400);

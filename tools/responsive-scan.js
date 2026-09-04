@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs');
  const b=await chromium.launch();
  for(const w of [1440,1280,1100,900,760]){
   const p=await b.newPage({viewport:{width:w,height:900}});
-  await p.setContent('<meta charset="utf-8">'+fs.readFileSync(require('path').join(__dirname,'..','docs','app.html'),'utf8'));
+  await p.setContent('<meta charset="utf-8">'+fs.readFileSync(require('path').join(__dirname,'..','docs','index.html'),'utf8'));
   await p.waitForTimeout(500);
   const wss=await p.evaluate(()=>[...document.querySelectorAll('#wsmenu a')].map(a=>a.dataset.w));
   for(const k of wss){

@@ -1,8 +1,8 @@
 # Global Payment Network
 
-A design prototype for a card network's three audiences, built as single-file HTML.
+A design prototype for a card network's three audiences, built as a single HTML file.
 
-**[View the prototypes →](https://richhemsley3.github.io/clearway-prototype/)**
+**[Open the prototype →](https://richhemsley3.github.io/clearway-prototype/)**
 
 ---
 
@@ -30,7 +30,7 @@ material belonging to any organisation.
 
 ## The design rules it holds to
 
-The prototypes obey a small set of rules, and most of the decisions follow from them:
+The prototype obeys a small set of rules, and most of the decisions follow from them:
 
 - **One accent.** A single signal colour, used at most twice on a screen — the primary action and
   the marker on the thing that needs you. When nothing is urgent, the marker goes grey.
@@ -46,7 +46,7 @@ The prototypes obey a small set of rules, and most of the decisions follow from 
 ## Structure
 
 ```
-build.py            assembles a prototype from its parts
+build.py            assembles the prototype from its parts
 src/                the parts
   gpn.css             the design system: tokens, components, responsive rules
   app-body.html       the shell and views for the three-persona app
@@ -55,16 +55,16 @@ src/                the parts
   pviews.txt          view markup for the participant, agent and developer screens
   txviews.txt         transaction reporting views, reused as the live participant's modules
   txjs.txt            and their renderers
-  *-body.html         each earlier prototype
-docs/               the built pages, served by GitHub Pages
+  first.txt           the first-day state of each screen, behind the First day / Day to day control
+docs/index.html     the built page, served by GitHub Pages
 tools/              screenshot and QA harnesses used while building
 ```
 
-Nothing is compiled and there is no framework. `build.py` substitutes the parts into a body file and
+Nothing is compiled and there is no framework. `build.py` substitutes the parts into the body file and
 wraps the result in a document:
 
 ```
-python3 build.py src/app-body.html docs/app.html
+python3 build.py src/app-body.html docs/index.html
 ```
 
 Markers are filled in order — `/*FONTS*/`, `/*CSS*/`, then the data and view parts — and the order

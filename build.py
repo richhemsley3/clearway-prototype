@@ -5,7 +5,7 @@ Every prototype is a single self-contained HTML file. The parts live in src/
 and are stitched together here, in this order, because txjs.txt itself
 contains a /*DATA*/ marker and has to be inserted before that marker is filled.
 
-    python3 build.py src/app-body.html docs/app.html
+    python3 build.py src/app-body.html docs/index.html
     python3 build.py src/app-body.html app.html --embed-fonts
 
 By default the build links the open-licence typeface used for the public

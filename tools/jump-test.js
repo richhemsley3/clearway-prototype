@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');
 (async()=>{
  const b=await chromium.launch(); const p=await b.newPage({viewport:{width:1440,height:900}});
- await p.setContent('<meta charset="utf-8">'+require('fs').readFileSync(require('path').join(__dirname,'..','docs','app.html'),'utf8')); await p.waitForTimeout(300);
+ await p.setContent('<meta charset="utf-8">'+require('fs').readFileSync(require('path').join(__dirname,'..','docs','index.html'),'utf8')); await p.waitForTimeout(300);
  let bad=0;
  async function probe(tag, id, park){
    const n=await p.$$eval('#'+id+' button, #'+id+' .chip', bs=>bs.length);

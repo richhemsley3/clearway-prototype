@@ -31,12 +31,12 @@ gh api -X POST repos/richhemsley3/clearway-prototype/pages \
 ```
 
 The site appears at <https://richhemsley3.github.io/clearway-prototype/> a minute or two later.
-`docs/index.html` is the landing page; everything else in `docs/` is a prototype.
+`docs/index.html` is the prototype. There is nothing else to serve.
 
 ## Rebuilding
 
 After editing anything in `src/`:
 
 ```sh
-python3 build.py src/app-body.html docs/app.html
+python3 build.py src/app-body.html docs/index.html
 ```
