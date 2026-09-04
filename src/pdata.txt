@@ -1,5 +1,5 @@
  var P=[
- {n:'Northgate Financial',i:'NF',t:'Program manager · issuing',stage:'Enrolling · step 10 of 15',since:'18 Aug 2026',
+ {n:'Northgate Financial',i:'NF',t:'Program manager · issuing',stage:'Integration · certification',since:'18 Aug 2026',
   bin:'471288',vol:'$8.4M / mo',apr:'94.2%',lat:'41.7 ms',tier:'Tier 2',health:74,hs:'wa',hl:'Watch',dot:'--warn',
   next:'Halvard Ruiz’s passport expires 12 September. Without a replacement, settlement pauses on the first cycle after that date.',
   nextAct:'Chase the document',
@@ -38,7 +38,7 @@
   notes:[['Dara Whitfield', '26 Aug, 16:40', '3-DS migration signed off a week ahead. Priya ran it herself. Nothing needed from us beyond the test PANs.', 'Note']],
   con:[['Priya Raghunathan','Head of Payments','PR'],['Elena Marsh','Finance','EM']]},
 
- {n:'Vantage Hospitality',i:'VH',t:'Program manager · prepaid',stage:'Enrolling · step 4 of 15',since:'29 Aug 2026',
+ {n:'Vantage Hospitality',i:'VH',t:'Program manager · prepaid',stage:'Risk review',since:'29 Aug 2026',
   bin:'requested',vol:'—',apr:'—',lat:'—',tier:'Tier 1',health:66,hs:'wa',hl:'Slow start',dot:'--warn',
   next:'No movement for six days. They have not filed beneficial ownership, which is where most Tier 1 programs stall.',
   nextAct:'Call the sponsor bank',

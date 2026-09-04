@@ -221,26 +221,26 @@
  var MORE=[
   ['Halcyon Pay','HP','Program manager · issuing','Live','$14.2M','96.1%',88,'ok','Healthy','Dara Whitfield','Today'],
   ['Ridgeline Freight','RF','Fleet · issuing','Contracting','—','—',70,'nt','New','Dara Whitfield','Today'],
-  ['Kestrel Union','KU','Credit union · issuing','Live','$6.1M','95.4%',84,'ok','Healthy','Idris Vance','26 Aug'],
+  ['Kestrel Union','KU','Credit union · issuing','Live','$6.1M','95.4%',84,'ok','Healthy','Marta Okonjo','26 Aug'],
   ['Alder & Vane','AV','Acquirer','Live','$22.8M','93.8%',79,'ok','Healthy','Dara Whitfield','25 Aug'],
   ['Pemberton Bank','PB','Sponsor bank','Live','$31.4M','97.2%',91,'ok','Healthy','Sana Lindqvist','21 Aug'],
-  ['Lockridge Mutual','LM','Issuer','Live','$9.7M','94.9%',81,'ok','Healthy','Idris Vance','19 Aug'],
+  ['Lockridge Mutual','LM','Issuer','Live','$9.7M','94.9%',81,'ok','Healthy','Marta Okonjo','19 Aug'],
   ['Verity Spend','VS','Program manager · issuing','Risk review','—','—',66,'wa','Watch','Dara Whitfield','Today'],
   ['Orpington Retail','OR','Acquirer','Live','$4.4M','92.1%',72,'wa','Watch','Dara Whitfield','14 Aug'],
-  ['Stonecrop Labs','SL','Processor','Contracting','—','—',68,'nt','New','Ravi Kapoor','Yesterday'],
+  ['Stonecrop Labs','SL','Processor','Contracting','—','—',68,'nt','New','Sana Lindqvist','Yesterday'],
   ['Fennimore Group','FG','Acquirer','Live','$11.9M','95.8%',86,'ok','Healthy','Sana Lindqvist','12 Aug'],
-  ['Bright Harbour','BH','Issuer','Live','$7.2M','96.4%',89,'ok','Healthy','Idris Vance','9 Aug'],
+  ['Bright Harbour','BH','Issuer','Live','$7.2M','96.4%',89,'ok','Healthy','Marta Okonjo','9 Aug'],
   ['Calloway Freight','CF','Fleet · issuing','Live','$3.8M','91.7%',64,'wa','Watch','Dara Whitfield','8 Aug'],
   ['Marchmont Trust','MT','Sponsor bank','Live','$18.6M','96.9%',90,'ok','Healthy','Sana Lindqvist','5 Aug'],
-  ['Islay Payments','IP','Processor','Live','$5.5M','94.1%',77,'ok','Healthy','Ravi Kapoor','2 Aug'],
+  ['Islay Payments','IP','Processor','Live','$5.5M','94.1%',77,'ok','Healthy','Sana Lindqvist','2 Aug'],
   ['Dunmore Retail','DR','Acquirer','Dormant','$0.0M','—',41,'no','Dormant','Dara Whitfield','14 Jan'],
-  ['Thornbury Bank','TB','Issuer','Live','$13.1M','95.2%',83,'ok','Healthy','Idris Vance','29 Jul'],
+  ['Thornbury Bank','TB','Issuer','Live','$13.1M','95.2%',83,'ok','Healthy','Marta Okonjo','29 Jul'],
   ['Wrenfield Cards','WC','Program manager · issuing','Risk review','—','—',69,'nt','New','Dara Whitfield','Yesterday'],
-  ['Aveline Systems','AS','Processor','Live','$2.9M','93.3%',74,'ok','Healthy','Ravi Kapoor','24 Jul']
+  ['Aveline Systems','AS','Processor','Live','$2.9M','93.3%',74,'ok','Healthy','Sana Lindqvist','24 Jul']
  ];
  var CAT=['enr','risk','live','enr','live','dor'];
  var LAST=['Today','Today','26 Aug','28 Aug','29 Aug','14 Jan'];
- var OWN=['Dara Whitfield','Dara Whitfield','Idris Vance','Dara Whitfield','Sana Lindqvist','Dara Whitfield'];
+ var OWN=['Dara Whitfield','Dara Whitfield','Marta Okonjo','Dara Whitfield','Sana Lindqvist','Dara Whitfield'];
  var A=[];
  P.forEach(function(p,i){
    A.push({rich:i, n:p.n, i:p.i, t:p.t, stage:p.stage, vol:p.vol, apr:p.apr, health:p.health, hs:p.hs, hl:p.hl,
@@ -251,9 +251,11 @@
    A.push({rich:-1, n:m[0], i:m[1], t:m[2], stage:m[3], vol:m[4], apr:m[5], health:m[6], hs:m[7], hl:m[8],
      own:m[9], last:m[10],
      cat:/Live/.test(m[3])?(/Watch/.test(m[8])?'risk':'live'):/Dormant/.test(m[3])?'dor':'enr',
-     st:/Live/.test(m[3])||/Dormant/.test(m[3])?null:m[3].split(' ')[0]});
+     st:/^(Introduced|Risk review|Contracting|Integration)$/.test(m[3])?m[3]:null});
  });
  var num=function(v){ return v==='—'?-1:parseFloat(String(v).replace(/[^0-9.]/g,''))||0 };
+ var PROJ={'Northgate Financial':'$8.4M','Vantage Hospitality':'$2.0M','Verity Spend':'$1.8M','Stonecrop Labs':'$2.2M','Wrenfield Cards':'$3.1M','Ridgeline Freight':'$0.9M'};
+ var proj=function(p){ return p.vol&&p.vol!=='—' ? p.vol : (PROJ[p.n]||'$2.0M')+' est' };
  var dayRank=function(s){ return s==='Today'?0:s==='Yesterday'?1:{'29 Aug':5,'28 Aug':6,'26 Aug':8,'25 Aug':9,'24 Jul':41,'21 Aug':13,'19 Aug':15,'14 Aug':20,'12 Aug':22,'9 Aug':25,'8 Aug':26,'5 Aug':29,'2 Aug':32,'29 Jul':36,'14 Jan':230}[s]||99 };
 
  /* ── toast, used by anything reversible ── */
@@ -606,7 +608,7 @@
   0:[['Replacement passport for Halvard Ruiz','Idris Vance, Northgate','Thursday','them','wa'],
      ['Collateral ceiling confirmed in writing','Cascade Trust','Before certification','them','wa'],
      ['Pre-check their sandbox endpoint','Dara Whitfield','Before their first run','us','nt'],
-     ['Case 14 walkthrough with their host team','Ravi Kapoor','Booked for Monday','us','ok']],
+     ['Case 14 walkthrough with their host team','Priya Raman','Booked for Monday','us','ok']],
   1:[['Technical review of the decline spike','Dara Whitfield','This week','us','wa'],
      ['Acquirer routing change','Bayline engineering','Confirmed for 12 Sep','them','ok']],
   4:[['Quarterly volume pack','Dara Whitfield','Friday','us','nt']]
@@ -700,7 +702,7 @@
         +('<table class="tb" style="margin-top:10px"><tbody>'+in_.map(function(p){
             var idx=A.indexOf(p);
             return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+'</span></td>'
-             +'<td style="width:150px">'+daysIn(p)+' days here</td><td class="n" style="width:150px">'+(p.vol==='—'?'$2.0M est':esc(p.vol))+'</td><td style="width:170px">'+esc(p.own)+'</td></tr>';
+             +'<td style="width:150px">'+daysIn(p)+' days here</td><td class="n" style="width:150px">'+esc(proj(p))+'</td><td style="width:170px">'+esc(p.own)+'</td></tr>';
           }).join('')+'</tbody></table>')+'</div>';
      }).join('')
      + '<p class="t13" style="margin-top:30px; color:var(--g550)">'+(5-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
@@ -721,7 +723,7 @@
    $('#pipe tbody').innerHTML=inflight.map(function(p){
      var idx=A.indexOf(p);
      return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+'</span></td>'
-      +'<td>'+esc(p.stage)+'</td><td>'+daysIn(p)+' days'+(daysIn(p)>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2">'+(p.vol==='—'?'$2.0M est':esc(p.vol))+'</td><td class="opt">'+esc(p.own)+'</td>'
+      +'<td>'+esc(stageOf(p))+(p.n==='Northgate Financial'?'<span class="s2">certification · 3 cases failing</span>':p.n==='Ridgeline Freight'?'<span class="s2">one signature short</span>':p.n==='Stonecrop Labs'?'<span class="s2">signed · handed to ops today</span>':p.n==='Wrenfield Cards'?'<span class="s2">waiting on the AML pack</span>':p.n==='Verity Spend'?'<span class="s2">adverse media, second look</span>':p.n==='Vantage Hospitality'?'<span class="s2">UBO verification</span>':'')+'</td><td>'+daysIn(p)+' days'+(daysIn(p)>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2">'+esc(proj(p))+'</td><td class="opt">'+esc(p.own)+'</td>'
       +'<td class="n" style="width:150px"><span class="menu2"><span class="lnk" data-mm="'+idx+'">Move ▾</span><div class="pop" data-pp="'+idx+'">'
       +STG.map(function(s){ return '<a data-to="'+s+'" data-i="'+idx+'">'+s+'</a>' }).join('')+'</div></span></td></tr>';
    }).join('');
@@ -756,10 +758,10 @@
     ['Legal on the Halcyon addendum','Halcyon Pay','Low',0,0]]]
  ];
  var taskView='mine';
- var TEAM=[['Idris Vance','Walk Kestrel Union through the new advice event','Kestrel Union','Today'],
+ var TEAM=[['Marta Okonjo','Walk Kestrel Union through the new advice event','Kestrel Union','Today'],
            ['Sana Lindqvist','Collateral review, Pemberton','Pemberton Bank','Today'],
-           ['Ravi Kapoor','Route Stonecrop to the new BIN range','Stonecrop Labs','Tomorrow'],
-           ['Idris Vance','Quarterly pack, Bright Harbour','Bright Harbour','Friday']];
+           ['Sana Lindqvist','Route Stonecrop to the new BIN range','Stonecrop Labs','Tomorrow'],
+           ['Marta Okonjo','Quarterly pack, Bright Harbour','Bright Harbour','Friday']];
  function paintTaskSub(){
    var open=0,done=0; TASKS.forEach(function(g){ g[1].forEach(function(t){ t[3]?done++:open++ }) });
    var V=[['mine','Mine',open],['team','My team',TEAM.length],['done','Done today',done]];
