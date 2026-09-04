@@ -345,14 +345,14 @@
     +'<div class="txtwo" style="margin-top:46px; align-items:start">'
     +'<div class="note"><div class="k">Outside the plan, and the likeliest thing to move go-live</div><p>Halvard Ruiz’s passport expires on 12 September. Without a replacement on file, settlement pauses on the first cycle after that date — which would be your first cycle. A receipt from the passport office holds the file open for thirty days.</p><div class="act"><span class="lnk" id="bdPass">Send the receipt</span></div></div>'
     +'<div><div class="sech" style="margin-top:0"><h2>Go-live week</h2><span class="t13">6 to 9 October</span></div>'
-    +'<table class="tb" style="margin-top:12px"><tbody>'
+    +'<div class="tl" style="margin-top:8px">'
     +[['6 October, 06:00','BIN 471288 activates'],
       ['6 October, all day','Live traffic, watched by both sides'],
       ['7 October, 06:00','Your first settlement cycle'],
       ['9 October','First reconciliation with our operations team'],
       ['10 October','Handover to the servicing desk · a named contact, a case inbox, a hotline']].map(function(r){
-       return '<tr><td style="width:180px">'+r[0]+'</td><td>'+r[1]+'</td></tr>' }).join('')
-    +'</tbody></table>'
+       return '<div class="e"><span class="w">'+r[0]+'</span><span>'+r[1]+'</span></div>' }).join('')
+    +'</div>'
     +'<p class="t13" style="color:var(--g550); margin-top:16px">Activation is not reversible on the day. If certification slips past the 19th, the next window is the 29th and go live moves to late October.</p></div></div>';
    $('#bdPass').addEventListener('click',function(){ toast('Upload opened for the passport receipt.') });
    $$('#paBoard [data-cfg]').forEach(function(a){ a.addEventListener('click',function(){ go('pa-config') }) });

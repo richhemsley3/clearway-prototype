@@ -700,9 +700,9 @@
         +line([168,170,172,180,184,188],{w:cwidth(1160),h:220,min:160,max:195,fmt:function(n){return '$'+Math.round(n)+'M'}})
         +'<div class="ax"><span>Sep</span><span>Nov</span><span>Feb</span></div></div>'
         +'<div class="sech"><h2>What lands when</h2><span class="t13">confidence is ours, not theirs</span></div>'
-        +'<table class="tb" style="margin-top:14px"><thead><tr><th>Expected</th><th>Partner</th><th>Stage now</th><th class="n">Monthly volume</th><th class="n">Confidence</th></tr></thead><tbody>'
-        +F.map(function(r){ return '<tr><td style="width:150px">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td class="n">'+r[3]+'</td><td class="n st '+(parseInt(r[4])>60?'ok':parseInt(r[4])>34?'wa':'nt')+'">'+r[4]+'</td></tr>' }).join('')
-        +'</tbody></table>'
+        +'<div class="months">'+['October','November','December','January'].map(function(m){ var rows=F.filter(function(r){return r[0]===m}); var sum=rows.reduce(function(a,r){return a+num(r[3])},0);
+           return '<div class="month"><div class="mh"><span class="n">'+m+'</span><span class="s">'+(rows.length?rows.length+(rows.length===1?' partner':' partners')+' · $'+sum.toFixed(1)+'M':'nobody')+'</span></div>'
+            +rows.map(function(r){ return '<div class="mi"><span class="who">'+esc(r[1])+'<span class="s2">'+esc(r[2])+'</span></span><span class="vol">'+esc(r[3])+'</span><span class="st '+(parseInt(r[4])>60?'ok':parseInt(r[4])>34?'wa':'nt')+'">'+r[4]+'</span></div>' }).join('')+'</div>' }).join('')+'</div>'
         +'<p class="t13" style="margin-top:20px; color:var(--g550); max-width:70ch">Confidence is set by the stage, not by the partner. Nobody at risk review has ever been more than 30% likely to go live inside a quarter, whatever they told us on the call.</p>';
      } else {
        var C=[['Introduced → Risk review',92],['Risk review → Contracting',78],['Contracting → Integration',85],['Integration → Live',74]];

@@ -129,8 +129,8 @@
  var _drawConfig_detail=drawConfig;
  drawConfig=function(){
    _drawConfig_detail();
-   $$('#cfBody tr[data-s]').forEach(function(tr){ var c=tr.cloneNode(true); tr.parentNode.replaceChild(c,tr);
-     var l=c.querySelector('.lnk'); if(l) l.addEventListener('click',function(){ var v=c.querySelector('td').childNodes[0].textContent;
+   $$('#cfBody .setting[data-s]').forEach(function(tr){ var c=tr.cloneNode(true); tr.parentNode.replaceChild(c,tr);
+     var l=c.querySelector('.lnk'); if(l) l.addEventListener('click',function(){ var v=c.querySelector('.n').textContent;
        toast(ws==='cw'?v+' — change opened. It takes effect on the next cycle, and Northgate is told.':v+' — request sent to Priya Raman. Changes take effect on the next cycle.'); }); });
  };
  PDRAW['pa-config']=drawConfig;

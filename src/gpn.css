@@ -472,3 +472,24 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 .doc-h .deck{font-size:16px; line-height:1.5; color:var(--g650); margin-top:10px; max-width:60ch}
 .rp .pane .note{margin-top:24px}
 @media (max-width:1000px){ .rp{grid-template-columns:1fr} .rp .nav{display:flex; flex-wrap:wrap; gap:4px 18px} .rp .nav h6{width:100%; margin-top:14px} }
+
+/* ── settings are rows with a value, not a table with headers ─── */
+.settings{margin-top:6px}
+.setting{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 96px; gap:28px; padding:16px 0; border-bottom:1px solid var(--g100); align-items:start}
+.setting .n{font-size:15px}
+.setting .d{font-size:13px; color:var(--g550); margin-top:3px; max-width:52ch; line-height:1.45}
+.setting .v{font-size:15px; overflow-wrap:anywhere}
+.setting .v .m{font-size:13px; color:var(--g550); margin-top:4px}
+.setting .a{text-align:right; padding-top:1px}
+.setting.hot{box-shadow:inset 3px 0 0 var(--sig); padding-left:16px; margin-left:-16px}
+@media (max-width:900px){ .setting{grid-template-columns:1fr 96px} .setting .v{grid-column:1} .setting .a{grid-column:2; grid-row:1} }
+
+/* a forecast is a calendar: months, and what lands in each */
+.months{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0 28px; margin-top:16px}
+.month .mh{display:flex; align-items:baseline; gap:10px; padding-bottom:10px; border-bottom:1px solid var(--g150)}
+.month .mh .n{font-size:18px; letter-spacing:-.01em}
+.month .mh .s{font-size:13px; color:var(--g550); margin-left:auto; white-space:nowrap}
+.month .mi{display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:12px; padding:12px 0; border-bottom:1px solid var(--g100); font-size:14px; align-items:start}
+.month .mi .s2{display:block; font-size:13px; color:var(--g550); margin-top:2px}
+.month .mi .vol{white-space:nowrap}
+@media (max-width:1000px){ .months{grid-template-columns:repeat(2,minmax(0,1fr)); gap:26px 28px} }
