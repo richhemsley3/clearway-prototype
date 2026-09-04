@@ -1,0 +1,184 @@
+ /* ══════════════════════════════════════════════════════════════════
+    PATTERN PASS — where the queue-and-table shape was the default
+    rather than the right answer: messages read in two panes, the
+    pipeline reads as one bar and a grouped list, and the live control
+    panel shows the shape of the traffic, not a directory.
+    ══════════════════════════════════════════════════════════════════ */
+
+ /* ── small marks ──────────────────────────────────────────────── */
+ function spark(v,w,h,opts){
+   opts=opts||{}; w=w||120; h=h||28;
+   var mn=Math.min.apply(null,v), mx=Math.max.apply(null,v), rg=(mx-mn)||1;
+   var x=function(i){ return (i/(v.length-1))*(w-4)+2 }, y=function(n){ return 2+(1-(n-mn)/rg)*(h-4) };
+   var d=v.map(function(n,i){ return (i?'L':'M')+x(i).toFixed(1)+' '+y(n).toFixed(1) }).join(' ');
+   var col=opts.color||getComputedStyle(document.documentElement).getPropertyValue('--navy').trim();
+   return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'" aria-hidden="true"><path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round"/>'
+    +'<circle cx="'+x(v.length-1).toFixed(1)+'" cy="'+y(v[v.length-1]).toFixed(1)+'" r="2.5" fill="'+col+'"/></svg>';
+ }
+ function hbars(v,opts){
+   opts=opts||{}; var W=opts.w||380, H=opts.h||120, top=6, base=H-22, mx=Math.max.apply(null,v), n=v.length, slot=W/n, bw=slot*0.62, out='';
+   var cv=function(k){ return getComputedStyle(document.documentElement).getPropertyValue(k).trim() };
+   v.forEach(function(val,i){ var h=val/mx*(base-top), x=i*slot+(slot-bw)/2, hot=opts.hot&&opts.hot(i);
+     out+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1" fill="'+(hot?cv('--warn'):cv('--navy'))+'" opacity="'+(hot?1:(i>opts.nowIdx?0.18:0.85))+'"/>'; });
+   [0,6,12,18,23].forEach(function(i){ out+='<text x="'+(i*slot+slot/2).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="'+cv('--g400')+'">'+(i<10?'0'+i:i)+':00</text>' });
+   return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; display:block; font-family:var(--ui)" aria-hidden="true">'+out+'</svg>';
+ }
+
+ /* ── MESSAGES · two panes ─────────────────────────────────────── */
+ /* rows: [{id,t,about,w,st,last,msgs,a}] · o: {who, status(t)→[cls,label], open, onOpen, reply(t,text), resolve(t), host} */
+ function threadPane(o){
+   var rank=function(t){ var s=o.status(t)[0]; return s==='wa'?0:s==='nt'?1:2 };
+   var rows=o.rows.slice().sort(function(a,b){ return rank(a)-rank(b) }), cur=rows.filter(function(t){return t.id===o.open})[0]||rows[0];
+   if(cur && cur.id!==o.open) o.onOpen(cur.id);
+   var list=rows.map(function(t){ var s=o.status(t);
+     return '<a data-t="'+t.id+'" class="'+(cur&&t.id===cur.id?'on':'')+'"><span class="t">'+esc(t.t)+'</span>'
+      +'<span class="m"><span class="st '+s[0]+'">'+esc(s[1])+'</span><span class="mute nw">'+esc(t.last)+'</span></span>'
+      +'<span class="a mute">'+esc(o.who2?o.who2(t):(t.about||''))+'</span></a>' }).join('');
+   var thread='';
+   if(cur){
+     var s=o.status(cur);
+     thread='<div class="th"><div class="hd"><h2>'+esc(cur.t)+'</h2><div class="meta"><span>'+esc(cur.about||'')+'</span><span>·</span><span>with '+esc(cur.w)+'</span><span>·</span><span class="st '+s[0]+'">'+esc(s[1])+'</span></div></div>'
+      +cur.msgs.slice().reverse().map(function(m){ var us=m[1]==='Global Payment Network';
+         return '<div class="msg'+(us?' us':'')+'"><div class="who">'+esc(m[0])+' <span class="mute">· '+esc(m[1])+' · '+esc(m[2])+'</span></div><p>'+esc(m[3])+'</p></div>' }).join('')
+      +'<div class="reply"><label>Reply<small>as '+esc(o.who)+'</small></label><textarea class="in" rows="3" id="thRep" placeholder="Type a reply"></textarea>'
+      +'<div class="act" style="display:flex; gap:14px; align-items:center; margin-top:12px"><button class="btn pri" id="thSend">Send</button>'
+      +(cur.st==='done'?'<span class="t13" style="color:var(--g550)">Resolved · reopen by replying</span>':'<span class="lnk" id="thRes">Mark resolved</span>')+'</div></div></div>';
+   } else thread='<div class="blank" style="margin-top:0"><div class="t">Nothing here.</div><p>'+esc(o.empty||'Every thread is either with the other side or closed.')+'</p></div>';
+   o.host.innerHTML='<div class="mp"><div class="list">'+(list||'<div class="blank" style="margin-top:0; padding:30px 16px"><div class="t">'+esc(o.emptyT||'Nothing here.')+'</div><p>'+esc(o.empty||'')+'</p></div>')+'</div><div class="pane">'+thread+'</div></div>';
+   $$('.mp .list a').forEach(function(a){ a.addEventListener('click',function(){ o.onOpen(a.dataset.t); o.redraw(); }) });
+   if($('#thSend')) $('#thSend').addEventListener('click',function(){ var v=$('#thRep').value.trim(); if(!v){ toast('Nothing to send yet.'); return; } o.reply(cur,v); });
+   if($('#thRes')) $('#thRes').addEventListener('click',function(){ o.resolve(cur); });
+ }
+
+ drawMsgs=function(){
+   var all=mine(), yours=all.filter(function(t){return t.st==='you'});
+   $('#msgSub').textContent=all.length+' threads · '+(yours.length?yours.length+' awaiting your reply':'nothing waiting on you')
+     +' · replies reach '+(acc==='rf'?'Dara Whitfield':acc==='nf'?'your integration manager':'the servicing desk')+' inside a working day';
+   var K=[['all','All threads',all.length],['you','Awaiting your reply',yours.length],['done','Resolved',all.filter(function(t){return t.st==='done'}).length]];
+   $('#msgSeg').innerHTML='<span class="seg">'+K.map(function(t){ return '<button data-m="'+t[0]+'" aria-pressed="'+(msgF===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')+'</span>';
+   $$('#msgSeg button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#msgSeg'), function(){ msgF=b.dataset.m; msgOpen=null; drawMsgs(); }) }) });
+   var rows=all.filter(function(t){ return msgF==='all'||t.st===msgF });
+   if(!msgOpen || !rows.some(function(t){return t.id===msgOpen})) msgOpen = (rows.filter(function(t){return t.st==='you'})[0]||rows[0]||{}).id;
+   var ST={you:['wa','Awaiting your reply'], none:['nt','With GPN'], done:['ok','Resolved']};
+   threadPane({ rows:rows, host:$('#msgBody'), open:msgOpen, who:ACC[acc].who, status:function(t){ return ST[t.st] },
+     emptyT: msgF==='done'?'Nothing has been resolved yet.':'Nothing is waiting on you.',
+     empty: msgF==='done'?'A thread moves here when either side marks it resolved.':'Every thread is either with us or closed. You will get an email the moment one comes back to you.',
+     onOpen:function(id){ msgOpen=id }, redraw:function(){ drawMsgs() },
+     reply:function(t,v){ t.msgs.unshift([ACC[acc].who.split(' · ')[0],ACC[acc].n,'Just now',v]); t.st='none'; t.last='Just now'; drawMsgs(); refreshNav();
+       toast('Sent. '+t.w+' sees it now.',function(){ t.msgs.shift(); t.st='you'; drawMsgs(); refreshNav(); }); },
+     resolve:function(t){ var was=t.st; t.st='done'; drawMsgs(); refreshNav(); toast('Resolved. It stays readable, and reopens if either side replies.',function(){ t.st=was; drawMsgs(); refreshNav(); }); }
+   });
+ };
+ PDRAW['pa-msgs']=drawMsgs;
+
+ drawAgentMsgs=function(){
+   var all=THREAD.slice();
+   var awaiting=function(t){ return t.st!=='done' && t.msgs[0][1]!=='Global Payment Network' };
+   var yours=all.filter(awaiting);
+   $('#amSub').textContent=all.length+' threads across three accounts · '+yours.length+' awaiting your reply · a thread is attached to the record it is about';
+   var K=[['all','All threads',all.length],['you','Awaiting your reply',yours.length],['theirs','With them',all.filter(function(t){return !awaiting(t)&&t.st!=='done'}).length],['done','Resolved',all.filter(function(t){return t.st==='done'}).length]];
+   $('#amSeg').innerHTML='<span class="seg">'+K.map(function(t){ return '<button data-m="'+t[0]+'" aria-pressed="'+(agentMsgF===t[0])+'">'+t[1]+'<span class="ct">'+t[2]+'</span></button>' }).join('')+'</span>';
+   $$('#amSeg button').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#amSeg'), function(){ agentMsgF=b.dataset.m; agentMsgOpen=null; drawAgentMsgs(); }) }) });
+   var rows=all.filter(function(t){ return agentMsgF==='all' || (agentMsgF==='you'&&awaiting(t)) || (agentMsgF==='theirs'&&!awaiting(t)&&t.st!=='done') || (agentMsgF==='done'&&t.st==='done') });
+   if(!agentMsgOpen || !rows.some(function(t){return t.id===agentMsgOpen})) agentMsgOpen=(rows.filter(awaiting)[0]||rows[0]||{}).id;
+   threadPane({ rows:rows, host:$('#amBody'), open:agentMsgOpen, who:'Dara Whitfield',
+     status:function(t){ return t.st==='done'?['ok','Resolved']:awaiting(t)?['wa','Awaiting your reply']:['nt','With '+ACC[t.a].n.split(' ')[0]] },
+     who2:function(t){ return ACC[t.a].n+' · '+(t.about||t.id) },
+     emptyT:'Nothing here.', empty:'Every thread is with the participant or closed.',
+     onOpen:function(id){ agentMsgOpen=id }, redraw:function(){ drawAgentMsgs() },
+     reply:function(t,v){ t.msgs.unshift(['Dara Whitfield','Global Payment Network','Just now',v]); t.st='you'; t.last='Just now'; drawAgentMsgs(); refreshNav();
+       toast('Sent to '+ACC[t.a].who+'. It is on their screen against '+(t.about||t.id).split(' · ')[0].toLowerCase()+'.', function(){ t.msgs.shift(); drawAgentMsgs(); refreshNav(); }); },
+     resolve:function(t){ var was=t.st; t.st='done'; drawAgentMsgs(); refreshNav(); toast('Resolved on both sides.',function(){ t.st=was; drawAgentMsgs(); refreshNav(); }); }
+   });
+ };
+ PDRAW['pd-msgs']=drawAgentMsgs;
+
+ /* ── PIPELINE · one bar, one grouped list ────────────────────── */
+ var pipeSort='days';
+ paintPipeSub=function(){
+   var inflight=A.filter(function(p){ return p.cat==='enr' });
+   var stalled=inflight.filter(function(p){ return daysIn(p)>7 });
+   var T=[['list','Pipeline'],['fore','Forecast'],['conv','Conversion']];
+   var onList = ['flight','stage','stall'].indexOf(pipeView)>-1;
+   $('#pipetabs').innerHTML=T.map(function(t){ var on = t[0]==='list' ? onList : pipeView===t[0];
+     return '<button data-pt="'+t[0]+'" aria-pressed="'+on+'">'+t[1]+'</button>'; }).join('');
+   $$('#pipetabs button').forEach(function(b){ b.addEventListener('click',function(){ pipeView = b.dataset.pt==='list' ? 'flight' : b.dataset.pt; drawPipe(); }) });
+   var V=[['flight','In flight',inflight.length],['stall','Stalled',stalled.length]];
+   $('#pipesub2').style.display = onList ? '' : 'none';
+   $('#pipesub2').innerHTML='<span class="seg">'+V.map(function(v){ return '<button data-pv="'+v[0]+'" aria-pressed="'+(pipeView===v[0])+'">'+v[1]+'<span class="ct">'+v[2]+'</span></button>' }).join('')+'</span>'
+    +'<div class="rt"><span class="lnk" id="pipeSort">Sort: '+(pipeSort==='days'?'days in stage':'projected volume')+'</span></div>';
+   $$('#pipesub2 [data-pv]').forEach(function(b){ b.addEventListener('click',function(){ anchored($('#pipesub2'), function(){ pipeView=b.dataset.pv; drawPipe(); }) }) });
+   $('#pipeSort').addEventListener('click',function(){ pipeSort=pipeSort==='days'?'vol':'days'; drawPipe(); });
+ };
+ var _drawPipe_ui2=drawPipe;
+ drawPipe=function(){
+   if(pipeView==='stage') pipeView='flight';
+   if(pipeView==='fore'||pipeView==='conv'){ _drawPipe_ui2(); return; }
+   paintPipeSub();
+   var all=A.filter(function(p){ return p.cat==='enr' });
+   var st2=all.filter(function(p){ return daysIn(p)>7 }).length;
+   $('#pipesub').textContent=all.length+' partners between introduction and live · $18.4M projected · '+st2+' stalled';
+   $('#pipehd').style.display='none'; $('#pipe').style.display='none';
+   var counts=STG.map(function(st){ return all.filter(function(p){ return stageOf(p)===st }).length });
+   var tot=counts.reduce(function(a,b){return a+b},0)||1;
+   $('#stages').style.display=''; $('#stages').className='sbar';
+   $('#stages').innerHTML='<div class="track">'+STG.map(function(s,i){ var n=counts[i];
+      return '<i data-st="'+s+'" class="'+(n?'':'none')+'" style="flex:'+(n?n+' 1 128px':'0 0 128px')+'" title="'+s+' · '+n+'"></i>' }).join('')+'</div>'
+    +'<div class="lbls">'+STG.map(function(s,i){ var n=counts[i];
+      return '<div data-st="'+s+'" class="'+(n?'':'none')+'" style="flex:'+(n?n+' 1 128px':'0 0 128px')+'"><span class="n">'+n+'</span><span class="s">'+s+'</span><span class="m">'+(n?STGMED[s]+' days median':'nobody')+'</span></div>' }).join('')+'</div>';
+   var list=all.filter(function(p){ return pipeView!=='stall' || daysIn(p)>7 });
+   var host=$('#pipegrp'); host.style.display='';
+   if(!list.length){ host.innerHTML='<div class="blank"><div class="t">Nothing is stalled.</div><p>Every partner in flight has moved stage in the last week.</p></div>'; return; }
+   var sub=function(p){ return p.n==='Northgate Financial'?'certification · '+(suiteTot('fail')||'no')+' cases failing':p.n==='Ridgeline Freight'?(handed?'handed to operations':'one signature short'):p.n==='Stonecrop Labs'?'signed · handed to ops today':p.n==='Vantage Hospitality'?'UBO verification':p.n==='Verity Spend'?'adverse media, second look':p.n==='Wrenfield Cards'?'waiting on the AML pack':'' };
+   var groups=STG.map(function(st){ var g=list.filter(function(p){ return stageOf(p)===st });
+     g.sort(function(a,b){ return pipeSort==='days' ? daysIn(b)-daysIn(a) : num(proj(b))-num(proj(a)) }); return [st,g] }).filter(function(g){ return g[1].length });
+   host.innerHTML=groups.map(function(g){ var st=g[0], in_=g[1];
+     return '<div class="grpsec" id="grp-'+st.replace(/\s/g,'-')+'"><div class="sech"><h2>'+st+'</h2><span class="t13">'+in_.length+(in_.length===1?' partner':' partners')+' · '+STGMED[st]+' days median</span></div>'
+      +'<table class="tb" style="margin-top:8px"><tbody>'+in_.map(function(p){ var idx=A.indexOf(p), d=daysIn(p);
+         return '<tr data-i="'+idx+'"'+(idx===0?' class="hot"':'')+'><td><span class="av">'+p.i+'</span>'+esc(p.n)+'<span class="s2" style="margin-left:46px">'+esc(p.t)+(sub(p)?' · '+esc(sub(p)):'')+'</span></td>'
+          +'<td style="width:170px">'+d+' days'+(d>7?' <span class="st wa">stalled</span>':'')+'</td><td class="n opt2" style="width:150px">'+esc(proj(p))+'</td><td class="opt" style="width:170px">'+esc(p.own)+'</td>'
+          +'<td class="n" style="width:110px"><span class="menu2"><span class="lnk" data-mm="'+idx+'">Move ▾</span><div class="pop" data-pp="'+idx+'">'+STG.map(function(s){ return '<a data-to="'+s+'" data-i="'+idx+'">'+s+'</a>' }).join('')+'</div></span></td></tr>' }).join('')
+      +'</tbody></table></div>' }).join('')
+    +'<p class="t13" style="margin-top:26px; color:var(--g550)">'+(STG.length-groups.length)+' stages have nobody at them: '+STG.filter(function(x){ return !groups.some(function(g){return g[0]===x}) }).join(', ')+'.</p>';
+   $$('#stages [data-st]').forEach(function(el){ el.addEventListener('click',function(){ var g=$('#grp-'+el.dataset.st.replace(/\s/g,'-')); if(g) g.scrollIntoView({behavior:'smooth', block:'start'}); }) });
+   $$('#pipegrp [data-mm]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); $$('#pipegrp .pop').forEach(function(p){ p.classList.toggle('on', p.dataset.pp===a.dataset.mm && !p.classList.contains('on')) }); }) });
+   $$('#pipegrp [data-to]').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); var i=+a.dataset.i, was=A[i].stage, wasc=A[i].cat;
+     A[i].stage=a.dataset.to; if(a.dataset.to==='Live') A[i].cat='live'; drawPipe(); paintTabs();
+     toast(A[i].n+' moved to '+a.dataset.to+'.',function(){ A[i].stage=was; A[i].cat=wasc; drawPipe(); paintTabs(); }); }) });
+   $$('#pipegrp tr[data-i]').forEach(function(tr){ tr.addEventListener('click',function(e){ if(e.target.closest('.menu2')) return; var p=A[+tr.dataset.i];
+     if(p.n==='Ridgeline Freight'){ go('pd-onboard'); return; }
+     if(typeof DEALS!=='undefined'){ var d=DEALS.filter(function(x){return x.n===p.n})[0]; if(d && stageOf(p)!=='Integration'){ openDeal(d.k); return; } }
+     openRecord(+tr.dataset.i); }) });
+ };
+
+ /* ── CONTROL PANEL · the shape of the traffic ─────────────────── */
+ var HOURLY=[12,9,7,6,5,7,14,28,41,63,71,58,44,39,42,45,47,44,38,31,26,21,17,14];
+ var SPARK={ 'tx-auth':[52,54,51,57,60,58,61,59,63,62,60,64,61,61], 'tx-settle':[8.1,8.4,6.9,5.3,8.2,8.5,8.3,8.4,8.7,7.0,5.4,8.1,8.8,8.3], 'tx-disp':[14,13,15,12,11,11,10,12,11,10,9,9,10,9] };
+ var _drawPanel_ui2=drawPanel;
+ drawPanel=function(){
+   _drawPanel_ui2();
+   var un=unread('mt');
+   /* the brief's right column: today, by hour */
+   var rec=$('#panelNow .rec'); if(rec){
+     var nowIdx=9;
+     rec.outerHTML='<div class="inst sm"><div class="cap t13">Authorizations today, by hour · 09:00 to 11:00 is the decline spike</div>'+hbars(HOURLY,{w:380,h:130,hot:function(i){return i>=9&&i<=11},nowIdx:11})
+      +'<div class="ax" style="padding-left:0"><span>Cut-off 17:00 · next cycle 06:00 tomorrow</span><span>$4.21M ready to pay out</span></div></div>';
+   }
+   /* servicing rows carry the last fourteen days */
+   var MOD=MODULE.map(function(m){ return m.k==='pa-msgs' ? {k:m.k,n:m.n,v:un+' thread'+(un===1?'':'s'),s:'awaiting your reply',act:'',hot:false} : m });
+   var host=$('#panelBody > div:nth-of-type(2)') || $('#panelBody .row').parentNode;
+   host.innerHTML=MOD.map(function(m){ var sp=SPARK[m.k];
+     return '<div class="row srow" data-m="'+m.k+'"><div><b style="font-size:16px">'+esc(m.n)+'</b>'+(m.act?'<div class="d"'+(m.hot?' style="color:var(--warn)"':'')+'>'+esc(m.act)+'</div>':'')+'</div>'
+      +'<div class="sp">'+(sp?spark(sp,140,30):'')+'</div>'
+      +'<div style="text-align:right"><b style="font-size:16px">'+esc(m.v)+'</b><div class="d">'+esc(m.s)+'</div></div></div>' }).join('');
+   $$('#panelBody [data-m]').forEach(function(r){ r.addEventListener('click',function(){ go(r.dataset.m) }) });
+ };
+ PDRAW['pa-panel']=drawPanel;
+
+ /* ── quiet briefs: nothing outstanding takes one line, not a box of prose ── */
+ var _drawApply_ui2=drawApply;
+ drawApply=function(){ _drawApply_ui2(); var n=$('#paNow'); if(n && n.classList.contains('calm') && !FIRST) n.classList.add('quiet'); };
+ PDRAW['pa-apply']=drawApply;
+ var _drawOnboard_ui2=drawOnboard;
+ drawOnboard=function(){ _drawOnboard_ui2(); var n=$('#obNow'); if(n && handed) n.classList.add('quiet'); };
+ PDRAW['pd-onboard']=drawOnboard;

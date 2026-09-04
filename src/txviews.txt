@@ -20,7 +20,7 @@
       <div class="ph"><div><h1>Authorizations</h1><p>Every message as it crossed the wire · last 7 days · 61,412 messages</p></div>
         <div class="act"><button class="btn">Export</button></div></div>
       <p class="fs fsbar">Showing <b>all messages</b> from <b>all acquirers</b> in the <b>last 7 days</b>, newest first <span class="add">+ condition</span></p>
-      <table class="tb" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th class="opt2">Entry</th><th class="n">Amount</th><th class="opt">Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
+      <table class="tb dense" id="msgt" style="margin-top:28px"><thead><tr><th>Message</th><th>Acquirer</th><th class="opt2">Entry</th><th class="n">Amount</th><th class="opt">Latency</th><th>Result</th></tr></thead><tbody></tbody></table>
       <div class="tfoot"><span>1–6 of 61,412</span><span>·</span><span class="lnk">Next</span></div>
     </section>
 
@@ -35,7 +35,7 @@
         <div><div class="sech" style="margin-top:0"><h2>Exceptions</h2><span class="t13">this cycle</span></div><div class="row" style="margin-top:6px"><div>3 reversals after cut-off<div class="d">Carried to 3 September</div></div><span class="st nt">Carried</span></div><div class="row"><div>1 cycle held<div class="d">29 August · document expiry</div></div><span class="st wa">Held</span></div><div class="row"><div>Interchange variance<div class="d">$212 against scheme file</div></div><span class="st ok">Within tolerance</span></div></div>
       </div>
       <div class="sech"><h2>Cycles</h2><span class="t13">last five</span></div>
-      <table class="tb" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
+      <table class="tb dense" id="sett" style="margin-top:14px"><thead><tr><th>Cycle</th><th class="n">Gross</th><th class="n">Interchange</th><th class="n">Net to fund</th><th>Status</th></tr></thead><tbody></tbody></table>
     </section>
 
     <!-- DISPUTES -->

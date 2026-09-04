@@ -270,7 +270,7 @@
    var last=POLDATE[acc].filter(Boolean).slice(-1)[0]||POLWHEN[acc];
    $('#paRulesSub').textContent=POLICY.length+' documents · '+(todo?todo+' to acknowledge':'all acknowledged')
      +' · last acknowledged by '+who+' on '+last;
-   $('#paRules').innerHTML='<table class="tb" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+   $('#paRules').innerHTML='<table class="tb dense" style="margin-top:26px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.map(function(p,i){
       var s=st[i], lab=s==='ack'?'<span class="st ok">Acknowledged</span>':s==='new'?'<span class="st wa">New version</span>':'<span class="st nt">To read</span>';
       var sub = s==='ack' ? 'Acknowledged '+(POLDATE[acc][i]||POLWHEN[acc])+' by '+who
@@ -410,7 +410,7 @@
    if($('#cpConf')) $('#cpConf').addEventListener('click',function(){ toast('Relationship confirmed with Lena Ostrom, 3 September. Recorded on Meridian Trust’s file.') });
 
    var MOD=MODULE.map(function(m){ return m.k==='pa-msgs' ? {k:m.k,n:m.n,v:un+' thread'+(un===1?'':'s'),s:'awaiting your reply',act:'',hot:false} : m });
-   $('#panelBody').innerHTML='<div class="sech"><h2>Servicing</h2><span class="t13">everything Meridian can act on</span>'
+   $('#panelBody').innerHTML='<div class="sech"><h2>Servicing</h2><span class="t13">everything Meridian can act on · the line is the last fourteen days</span>'
     +'<div class="rt"><span class="lnk" id="cpAlerts">Alerts and notifications</span></div></div>'
     +'<div style="margin-top:6px">'+MOD.map(function(m){
       return '<div class="row" data-m="'+m.k+'" style="cursor:pointer"><div><b style="font-weight:400; font-size:16px">'+esc(m.n)+'</b>'
@@ -944,7 +944,7 @@
       +line([31,30,32,33,31,30,29,31,34,36,33,31],{w:cwidth(1160),h:230,min:20,max:120,prev:[62,60,64,68,66,63,61,66,74,110,80,68],fmt:function(n){return Math.round(n)+' ms'}})
       +'<div class="ax"><span>24 hours ago</span><span>12 hours</span><span>now</span></div></div>'
       +'<div class="sech" style="margin-top:44px"><h2>By endpoint</h2><span class="t13">budget is 400 ms at p95 on everything except file upload</span></div>'
-      +'<table class="tb" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
+      +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Endpoint</th><th class="n">Calls</th><th class="n">p50</th><th class="n">p95</th><th class="n opt">Errors</th></tr></thead><tbody>'
       +ENDP.map(function(e){
         return '<tr'+(e[5]?' class="hot"':'')+'><td><span class="key">'+esc(e[0])+'</span>'+(e[5]?'<span class="s2">over budget · 1,240 ms against 400</span>':'')+'</td>'
          +'<td class="n mute">'+e[1]+'</td><td class="n">'+e[2]+'</td><td class="n'+(e[5]?' st wa':'')+'">'+e[3]+'</td><td class="n opt mute">'+e[4]+'</td></tr>' }).join('')

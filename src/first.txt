@@ -187,10 +187,10 @@
      return '<tr data-p0="'+i+'"'+(s==='later'?' style="color:var(--g550)"':'')+'><td>'+esc(p[0])+'<span class="s2">'+(s==='ack'?'Acknowledged today by Elena Ridge':s==='todo'?'Read it before the pack goes in':'Opens when integration is scheduled')+'</span></td>'
       +'<td class="opt2">'+esc(p[1])+'</td><td class="opt mute">'+esc(p[2])+'</td><td class="n opt2 mute">'+p[3]+'</td><td>'+lab+'</td><td class="n"><span class="lnk">'+(s==='ack'?'Open':s==='todo'?'Read':'Preview')+'</span></td></tr>' };
    $('#paRules').innerHTML='<div class="sech"><h2>Before risk review</h2><span class="t13">two documents · about seventy pages between them</span></div>'
-    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'
     +POLICY.slice(0,2).map(row).join('')+'</tbody></table>'
     +'<div class="sech" style="margin-top:40px"><h2>Before integration</h2><span class="t13">four documents · not yet · we will ask when they matter</span></div>'
-    +'<table class="tb" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
+    +'<table class="tb dense" style="margin-top:12px"><thead><tr><th>Policy</th><th class="opt2">Version</th><th class="opt">Effective</th><th class="n opt2">Pages</th><th>Status</th><th class="n"></th></tr></thead><tbody>'+POLICY.slice(2).map(function(p,i){ return row(p,i+2) }).join('')+'</tbody></table>'
     +'<div class="txtwo" style="margin-top:38px"><div class="note plain"><div class="k">Why two now and four later</div><p>Acknowledgement is recorded against a version. If we asked for all six today, at least one would change before you went live and you would read it twice. The two that govern risk review are the two that cannot move.</p></div>'
     +'<div class="note plain"><div class="k">What acknowledging means</div><p>That the named person has read the version shown and the account is bound by it. The button is at the end of the document, so it cannot be reached without passing the text.</p></div></div>';
    $$('#paRules tr[data-p0]').forEach(function(tr){ tr.addEventListener('click',function(){
@@ -310,7 +310,7 @@
      return;
    }
    $('#lgBody').innerHTML='<div class="facts" style="margin-top:26px"><div><div class="k">Requests</div><div class="v">1</div></div><div><div class="k">Answered 2xx</div><div class="v">100<small>%</small></div></div><div><div class="k">4xx</div><div class="v">0</div></div><div><div class="k">Latency</div><div class="v">41<small>ms</small></div></div></div>'
-    +'<table class="tb" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
+    +'<table class="tb dense" style="margin-top:26px"><thead><tr><th>Time</th><th>Request</th><th>Status</th><th class="opt">Latency</th><th class="n opt2">Id</th></tr></thead><tbody>'
     +'<tr><td style="width:120px">14:31:08</td><td><span class="key">POST /v1/authorizations</span><span class="s2">pm_card_fuel_approve · $42.00 · approved</span></td><td class="st ok">200</td><td class="opt"><span class="lat"><i><b style="width:68%"></b></i>41 ms</span></td><td class="n opt2 mute">req_a41f0001</td></tr>'
     +'</tbody></table>'
     +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">That is the first 200. The next thing worth proving is that we can reach you: add a webhook endpoint and fire a signed test event at it.</p>'
@@ -323,7 +323,7 @@
    $('#ky0live').addEventListener('click',function(){ toast('Production keys are generated at activation, not before.') });
    $('#kyNew').addEventListener('click',function(){ toast('A second key holder is on the go-live checklist. One person with the only key is an audit finding.') });
    $('#kyBody').innerHTML='<div class="sech"><h2>API keys</h2><span class="t13">1 active</span></div>'
-    +'<table class="tb" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
+    +'<table class="tb dense" style="margin-top:14px"><thead><tr><th>Name</th><th>Key</th><th class="opt2">Created</th><th class="opt">Last used</th><th class="n"></th></tr></thead><tbody>'
     +'<tr><td>Host, authorization service<span class="s2">Ravi Kapoor</span></td><td><span class="key">gpn_sand_a41f…9d2c</span></td><td class="opt2 mute">Today, 14:22</td><td class="opt mute">'+(HOUR.req?'14:31 today':'Never')+'</td><td class="n"><span class="lnk" id="ky0rev">Reveal</span></td></tr>'
     +'</tbody></table>'
     +'<div class="sech" style="margin-top:44px"><h2>Webhooks</h2><span class="t13">signed with GPN-Signature · five-minute replay window</span></div>'

@@ -42,8 +42,7 @@
 
     <!-- ═══ PARTICIPANT · CONTROL PANEL ═══ -->
     <section class="view" data-v="pa-panel">
-      <div class="ph"><div><h1 id="panelTitle">Control panel</h1><p id="panelSub"></p></div>
-        <div class="act"><button class="btn">Export</button></div></div>
+      <div class="ph"><div><h1 id="panelTitle">Control panel</h1><p id="panelSub"></p></div></div>
       <div id="panelBanner"></div>
       <div class="now" id="panelNow"></div>
       <div id="panelBody"></div>

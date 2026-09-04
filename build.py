@@ -47,6 +47,7 @@ def main():
                          ('/*TXENV*/', 'txenv.txt'),
                          ('/*IAJS*/', 'iajs.txt'),
                         ('/*FIRSTJS*/', 'first.txt'),
+                        ('/*UI2JS*/', 'ui2.txt'),
                          ('/*DATA*/', 't1data.txt')):
         if marker in s:
             s = s.replace(marker, read(part), 1)

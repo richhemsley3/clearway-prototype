@@ -351,8 +351,9 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 }
 .tight .ptw{grid-template-columns:150px 1fr 84px; font-size:14px; padding:7px 0}
 /* ---- the sequence's own forward step: navy, not the signal ---- */
-.btn.go{background:var(--navy); border-color:var(--navy); color:var(--white)}
-.btn.go:hover{background:#012B41; border-color:#012B41}
+/* one primary colour, whatever the mood of the screen: .go is kept as a name so the markup reads, but it is the primary */
+.btn.go{background:var(--sig); border-color:var(--sig); color:#fff}
+.btn.go:hover{background:#E85600; border-color:#E85600}
 .btn[disabled]{background:var(--g050); border-color:var(--g150); color:var(--g400); cursor:default}
 
 /* ---- milestones: a project as rows, with an owner on every one ---- */
@@ -372,3 +373,59 @@ input.in, textarea.in, select.in{display:block; font-family:var(--ui); font-weig
 /* ---- who owes it: the column that runs through every queue ---- */
 .turn{font-size:13px; color:var(--g550); white-space:nowrap}
 .turn.you{color:var(--g900)}
+
+/* ── pattern pass ─────────────────────────────────────────────── */
+/* messages read in two panes: a list you scan, a thread you read */
+.mp{display:grid; grid-template-columns:minmax(280px,360px) minmax(0,1fr); margin-top:22px; border-top:1px solid var(--g150); min-height:420px}
+.mp .list{border-right:1px solid var(--g150); padding-right:0}
+.mp .list a{display:block; padding:14px 18px 14px 14px; border-bottom:1px solid var(--g100); cursor:pointer; border-radius:0}
+.mp .list a:hover{background:var(--g050)}
+.mp .list a.on{background:var(--blue100); color:var(--navy)}
+.mp .list a .t{display:block; font-size:15px; line-height:1.35}
+.mp .list a .m{display:flex; justify-content:space-between; gap:12px; font-size:13px; margin-top:4px}
+.mp .list a .a{display:block; font-size:13px; margin-top:2px}
+.mp .list a.on .mute, .mp .list a.on .a{color:var(--navy); opacity:.75}
+.mp .pane{padding:22px 0 0 32px; min-width:0}
+.mp .th .hd h2{font-size:22px; letter-spacing:-.015em; line-height:1.2}
+.mp .th .hd .meta{display:flex; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--g550); margin-top:6px}
+.mp .th .msg{padding:16px 0; border-bottom:1px solid var(--g100); max-width:72ch}
+.mp .th .msg .who{font-size:13px; color:var(--g900)}
+.mp .th .msg p{font-size:15px; line-height:1.55; margin-top:6px; color:var(--g650)}
+.mp .th .msg.us p{color:var(--g900)}
+.mp .th .reply{margin-top:20px; max-width:72ch}
+.mp .th .reply .in{width:100%; box-sizing:border-box}
+.mp .th .reply label{display:block; font-size:14px; margin-bottom:8px} .mp .th .reply label small{color:var(--g550); margin-left:8px}
+@media (max-width:1000px){ .mp{grid-template-columns:1fr} .mp .list{border-right:0; border-bottom:1px solid var(--g150)} .mp .pane{padding-left:0} }
+
+/* pipeline: one proportional bar, five labels, the list grouped beneath */
+.sbar{margin-top:32px; background:var(--g025); border-radius:var(--r-surface); padding:24px 28px 20px}
+.sbar .track{display:flex; gap:3px; height:12px}
+.sbar .track i{display:block; background:var(--navy); border-radius:2px; cursor:pointer; opacity:.9}
+.sbar .track i:hover{opacity:1}
+.sbar .track i.none{background:var(--g200)}
+.sbar .lbls{display:flex; gap:3px; margin-top:12px}
+.sbar .lbls > div{min-width:0; padding:0 4px 0 0; cursor:pointer; line-height:1.3}
+.sbar .lbls .n{font-size:22px; letter-spacing:-.02em; margin-right:8px}
+.sbar .lbls .s{font-size:14px; white-space:nowrap}
+.sbar .lbls .m{display:block; font-size:13px; color:var(--g550); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sbar .lbls .none .n, .sbar .lbls .none .s{color:var(--g400)}
+.grpsec + .grpsec{margin-top:34px}
+
+/* the live control panel: rows that carry a fortnight */
+.row.srow{grid-template-columns:1fr 140px 220px; gap:36px; cursor:pointer}
+.row.srow .sp{width:140px; height:30px}
+.spark{display:block}
+@media (max-width:900px){ .row.srow .sp{display:none} }
+
+/* a brief with nothing outstanding stays grounded, but takes less room */
+.now.quiet{padding:22px 28px; gap:36px}
+.now.quiet h2{font-size:22px; letter-spacing:-.015em}
+.now.quiet .why{margin-top:6px; max-width:64ch}
+.now.quiet .also{margin-top:14px; padding-top:12px}
+.now.quiet .rec .rr{padding:5px 0}
+.now.quiet::before{top:24px; bottom:24px}
+
+/* two densities, by what the table holds: records get two lines, ledgers get one */
+.tb.dense td{padding:9px 16px; height:auto}
+.tb.dense .s2{display:inline; margin:0 0 0 10px}
+.tb.dense th{padding:8px 16px 10px}
