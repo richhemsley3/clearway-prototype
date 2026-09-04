@@ -89,6 +89,7 @@
      note:what||'Received. Our review takes up to two business hours in working time.'});
    refreshNav();
  }
+ function riskDone(){ return QUEUE.filter(function(q){return q.k==='risk'})[0].dstate==='done' }
  function contractingClosed(){
    var a=QUEUE.filter(function(q){return q.k==='agr'})[0], r=QUEUE.filter(function(q){return q.k==='risk'})[0];
    return a.dstate==='done' && r.dstate==='done';
@@ -138,7 +139,7 @@
       +'<div class="also"><span>Also open</span><span><b>'+mine.length+'</b> with you</span><span><b>'+ours.length+'</b> with GPN</span>'
       +(over.length?'<span><b>'+over.length+'</b> overdue</span>':'')+'</div></div>'
       +'<div class="rec"><h4>Where the application sits</h4>'
-      +'<div class="rr"><span class="l">Risk due diligence</span><span class="v st ok">Passed, 28 August</span></div>'
+      +'<div class="rr"><span class="l">Risk due diligence</span><span class="v st '+(riskDone()?'ok':'wa')+'">'+(riskDone()?'Passed':'First line passed 28 August · second line pending')+'</span></div>'
       +'<div class="rr"><span class="l">Contracting</span><span class="v st '+(contractingClosed()?'ok':'wa')+'">'+(contractingClosed()?'Closed, 3 September':agrState())+'</span></div>'
       +'<div class="rr"><span class="l">Integration</span><span class="v st nt">Not started</span></div>'
       +'<div class="rr"><span class="l">Your agent</span><span class="v">Dara Whitfield</span></div></div>';
@@ -849,7 +850,7 @@
         return '<tr data-f="'+f.id+'"'+(!f.passed&&f.id==='AUTH-14'?' class="hot"':'')+'><td><span class="key">'+f.id+'</span> '+esc(f.n)+'<span class="s2">'+esc(f.code)+'</span></td>'
          +'<td class="opt mute">'+esc(f.exp)+'</td><td class="opt2 st '+(f.passed?'ok':'no')+'">'+esc(f.act)+'</td>'
          +'<td>'+(f.passed?'<span class="st ok">Passing</span>':'<span class="st no">Failing</span>')+'</td>'
-         +'<td class="n"><span class="lnk" data-r="'+f.id+'">Re-run</span></td></tr>' }).join('')
+         +'<td class="n nw"><span class="lnk" data-r="'+f.id+'">Re-run</span></td></tr>' }).join('')
       +'</tbody></table>'
       +'<p class="t13" style="color:var(--g550); margin-top:22px; max-width:80ch">One case, on its own, in about nine seconds. Running sixty-one to find out whether you fixed one is how a two-day fix becomes a two-week one.</p>';
      $$('#tkBody tr[data-f]').forEach(function(tr){ tr.addEventListener('click',function(e){
